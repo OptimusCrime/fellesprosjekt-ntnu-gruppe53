@@ -14,6 +14,8 @@ public class Calendar {
 	 */
 	
 	private Gui g;
+	private String server;
+	private int port;
 	
 	/*
 	 * Constructor
