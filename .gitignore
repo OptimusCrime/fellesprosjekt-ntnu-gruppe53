@@ -2,5 +2,7 @@
 .settings/
 .project
 .classpath
-*.classi
+*.class
 .DS_Store
+bin/
+bin/*
