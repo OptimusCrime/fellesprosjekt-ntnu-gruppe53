@@ -15,6 +15,8 @@ public class Gui {
 	
 	private Program p;
 	private Calendar c;
+	private ViewLogin login;
+	private ViewMain main;
 	
 	/*
 	 * Constructor
@@ -25,16 +27,40 @@ public class Gui {
 		this.p = p;
 		this.c = c;
 		
-		// Debug-testing123
-		ViewLogin login = new ViewLogin(this);
+		// Display login-screen
+		login = new ViewLogin(this);
 		login.setVisible(true);
-		
-		// Testing here aswell
-		//ViewMain main = new ViewMain();
-		//main.setVisible(true);
 	}
+	
+	
+	/*
+	 * Testing connection entered during login
+	 */
 	
 	public boolean testConnection(String s, int port) {
 		return p.testConnection(s, port);
+	}
+	
+	/*
+	 * User is logged in, display home-screen
+	 */
+	
+	public void showHome() {
+		login.setVisible(false);
+		login = null;
+		main = new ViewMain(this);
+		main.setVisible(true);
+	}
+	
+	/*
+	 * User wishes to log out, display login-screen again
+	 */
+	
+	public void logout() {
+		main.setVisible(false);
+		main = null;
+		login = new ViewLogin(this);
+		login.setVisible(true);
+		
 	}
 }

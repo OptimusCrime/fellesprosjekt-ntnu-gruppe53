@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -134,7 +133,7 @@ public class ViewLogin extends JFrame {
 					// Let's try to connect to the database
 					if (g.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
 						// Connect OK
-						System.out.println("ok");
+						g.showHome();
 					}
 					else {
 						// Something's fucked up

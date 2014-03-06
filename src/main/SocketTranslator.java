@@ -8,5 +8,4 @@ package main;
  */
 
 public class SocketTranslator {
-
 }

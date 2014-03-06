@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,6 +24,7 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private static final long serialVersionUID = 1L;
+	protected Gui g;
 	
 	// Panels, parts of the window
 	private JPanel header;
@@ -37,7 +40,10 @@ public class ViewMain extends JFrame {
 	 * Constructor
 	 */
 	
-	public ViewMain() {
+	public ViewMain(Gui gui) {
+		// Set gui
+		this.g = gui;
+		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -95,6 +101,14 @@ public class ViewMain extends JFrame {
 		header.add(panel_3, BorderLayout.EAST);
 		
 		JButton btnNewButton = new JButton("Logg ut");
+		btnNewButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				g.logout();
+			}
+			
+		});
 		panel_3.add(btnNewButton);
 		
 		
