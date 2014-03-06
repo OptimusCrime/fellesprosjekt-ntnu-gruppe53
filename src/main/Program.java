@@ -14,7 +14,8 @@ public class Program {
 	 */
 	
 	private Calendar c;
-	
+	private SocketHandler sh;
+	private SocketTranslator st;
 	
 	/*
 	 * Constructor
@@ -22,7 +23,11 @@ public class Program {
 	
 	public Program() {
 		// Init new instance of Calendar-class
-		c = new Calendar();
+		c = new Calendar(this);
+		
+		// Init sockets
+		sh = new SocketHandler();
+		st = new SocketTranslator();
 	}
 	
 	/*
@@ -31,7 +36,13 @@ public class Program {
 	
 	public static void main(String[] args) {
 		// Call the constructor here
-		Program p = new Program();
+		new Program();
+		
+	}
+	
+	public boolean testConnection(String s, int p) {
+		// Trying to connect to socket
+		return sh.connect(s, p);
 	}
 
 }

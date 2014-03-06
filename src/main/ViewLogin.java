@@ -1,11 +1,15 @@
 package main;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -20,33 +24,38 @@ import com.jgoodies.forms.layout.RowSpec;
  * 
  */
 
-public class ViewLogin extends JPanel {
+public class ViewLogin extends JFrame {
 	
 	/*
 	 * Variables
 	 */
 	
+	protected Gui g;
 	private static final long serialVersionUID = 1L;
-	private JFrame frame;
+	protected JTextField textField1;
+	protected JTextField textField2;
+	protected JTextField textField3;
+	protected JPasswordField textField4;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public ViewLogin() {
-		// Init new frame
-		frame = new JFrame();
+	public ViewLogin(Gui gui) {
+		// Set gui
+		this.g = gui;
 		
 		// Set close-operation
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// Set title
-		frame.setTitle("NTNU Calendar - Login");
+		super.setTitle("NTNU Calendar - Login");
 		
 		// Set size
-		frame.setPreferredSize(new Dimension(500, 300));
+		super.setPreferredSize(new Dimension(500, 300));
 		
-		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
+		// Set layout TODO
+		super.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -69,39 +78,76 @@ public class ViewLogin extends JPanel {
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,}));
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		frame.getContentPane().add(lblNewLabel, "4, 4, right, default");
+		// Add all labels
+		JLabel label1 = new JLabel("Server:");
+		super.getContentPane().add(label1, "4, 4, right, default");
+		JLabel label2 = new JLabel("Port:");
+		super.getContentPane().add(label2, "4, 6, right, default");
+		JLabel label3 = new JLabel("E-post");
+		super.getContentPane().add(label3, "4, 10, right, default");
+		JLabel label4 = new JLabel("Passord");
+		super.getContentPane().add(label4, "4, 12, right, default");
 		
-		JTextField textField = new JTextField();
-		frame.getContentPane().add(textField, "6, 4, fill, default");
-		textField.setColumns(10);
+		// Add all textfields
+		textField1 = new JTextField("localhost");
+		super.getContentPane().add(textField1, "6, 4, fill, default");
+		textField1.setColumns(10);
+		textField2 = new JTextField("8080");
+		super.getContentPane().add(textField2, "6, 6, fill, default");
+		textField2.setColumns(10);
+		textField3 = new JTextField();
+		super.getContentPane().add(textField3, "6, 10, fill, default");
+		textField3.setColumns(10);
+		textField4 = new JPasswordField();
+		super.getContentPane().add(textField4, "6, 12, fill, default");
+		textField4.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		frame.getContentPane().add(lblNewLabel_1, "4, 6, right, default");
+		// Tweak textfields
 		
-		JTextField textField_1 = new JTextField();
-		frame.getContentPane().add(textField_1, "6, 6, fill, default");
-		textField_1.setColumns(10);
+		// Add button
+		JButton button1 = new JButton("Logg inn");
+		button1.addActionListener(new ActionListener () {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Button was clicked, check input
+				String errors = "";
+				
+				if (textField1.getText().length() == 0) {
+					errors += "- Server\n";
+				}
+				if (textField2.getText().length() == 0) {
+					errors += "- Port\n";
+				}
+				if (textField3.getText().length() == 0) {
+					errors += "- E-post\n";
+				}
+				if (textField4.getPassword().length == 0) {
+					errors += "- Passord\n";
+				}
+				
+				// Check if we had any errors
+				if (errors.length() > 0) {
+					JOptionPane.showMessageDialog(null, "Vennligst fyll ut manglende informasjon:\n\n" + errors, "Feil", JOptionPane.PLAIN_MESSAGE);
+				}
+				else {
+					// Let's try to connect to the database
+					if (g.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
+						// Connect OK
+						System.out.println("ok");
+					}
+					else {
+						// Something's fucked up
+						System.out.println("no");
+					}
+				}
+			}
+		});
+		super.getContentPane().add(button1, "6, 14");
 		
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		frame.getContentPane().add(lblNewLabel_2, "4, 10, right, default");
-		
-		JTextField textField_2 = new JTextField();
-		frame.getContentPane().add(textField_2, "6, 10, fill, default");
-		textField_2.setColumns(10);
-		
-		JLabel lblNewLabel_3 = new JLabel("New label");
-		frame.getContentPane().add(lblNewLabel_3, "4, 12, right, default");
-		
-		JTextField textField_3 = new JTextField();
-		frame.getContentPane().add(textField_3, "6, 12, fill, default");
-		textField_3.setColumns(10);
-		
-		JButton btnNewButton = new JButton("New button");
-		frame.getContentPane().add(btnNewButton, "6, 14");
 		
 		// Pack everything
-		frame.pack();
+		super.pack();
 	}
 	
 	/*
@@ -109,6 +155,6 @@ public class ViewLogin extends JPanel {
 	 */
 	
 	public void setVisible(boolean b) {
-		frame.setVisible(b);	
+		super.setVisible(b);	
 	}
 }

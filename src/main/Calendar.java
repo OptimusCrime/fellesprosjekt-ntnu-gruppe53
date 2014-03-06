@@ -14,6 +14,7 @@ public class Calendar {
 	 */
 	
 	private Gui g;
+	private Program p;
 	private String server;
 	private int port;
 	
@@ -21,8 +22,8 @@ public class Calendar {
 	 * Constructor
 	 */
 	
-	public Calendar() {
+	public Calendar(Program p) {
 		// Create new instance of the Gui-class
-		g = new Gui();
+		g = new Gui(p, this);
 	}
 }
