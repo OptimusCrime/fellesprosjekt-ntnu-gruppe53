@@ -14,10 +14,8 @@ public class Calendar {
 	 */
 	
 	private Gui g;
-	private Program p;
-	private String username;
-	private String password;
-	private boolean loggedIn;
+	private User u;
+	
 	private SocketHandler sh;
 	private SocketTranslator st;
 	
@@ -25,30 +23,31 @@ public class Calendar {
 	 * Constructor
 	 */
 	
-	public Calendar(Program p, SocketHandler socketHandler, SocketTranslator socketTranslator) {
+	public Calendar() {
+		// User
+		this.u = new User(this);
+		
 		// Create new instance of the Gui-class
-		g = new Gui(p, this);
+		this.g = new Gui(this);
 		
-		// Derp
-		sh = socketHandler;
-		st = socketTranslator;
-		
-		// Set initial data
-		username = "";
-		password = "";
-		loggedIn = false;
+		// Sockets
+		sh = new SocketHandler();
+		st = new SocketTranslator();
 	}
 	
 	/*
 	 * Set username and password for the current user
 	 */
 	
-	public void setLogin(String u, String p) {
-		username = u;
-		password = p;
+	public void setLogin(String user, String pass) {
+		//u.(user, pass);
 	}
 	
 	public boolean testConnection(String s, int port) {
 		return sh.connect(s, port);
+	}
+	
+	public String send(String s) {
+		return "Derp";
 	}
 }

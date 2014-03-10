@@ -21,7 +21,7 @@ public class Program {
 	
 	public Program() {	
 		// Init new instance of Calendar-class
-		c = new Calendar(this, new SocketHandler(), new SocketTranslator());
+		c = new Calendar();
 	}
 	
 	/*

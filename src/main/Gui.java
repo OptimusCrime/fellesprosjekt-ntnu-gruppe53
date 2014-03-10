@@ -13,7 +13,6 @@ public class Gui {
 	 * Variables
 	 */
 	
-	private Program p;
 	private Calendar c;
 	private ViewLogin login;
 	private ViewMain main;
@@ -22,9 +21,8 @@ public class Gui {
 	 * Constructor
 	 */
 	
-	public Gui (Program p, Calendar c) {
+	public Gui (Calendar c) {
 		// Set references
-		this.p = p;
 		this.c = c;
 		
 		// Display login-screen

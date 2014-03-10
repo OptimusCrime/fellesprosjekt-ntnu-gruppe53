@@ -68,7 +68,7 @@ public class SocketHandler extends Thread {
 		return true;
 	}
 	
-	public void sendMessage() {
+	public void sendMessage(String s) {
 		// TODO
 	}
 	
