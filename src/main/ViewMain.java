@@ -1,6 +1,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -33,6 +34,8 @@ public class ViewMain extends JFrame {
 	private JPanel seperator;
 	private JSplitPane main;
 	
+	private JPanel panel_7;
+	
 	// Buttons
 	private JButton homeBtn;
 	private JButton notificationsBtn;
@@ -57,8 +60,8 @@ public class ViewMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set initial size of the window and the relative loaction
-	    super.setBounds(100, 100, (int) dim.getWidth(), (int) dim.getHeight());
-	    super.setLocationRelativeTo(null);
+	    
+		super.setPreferredSize(new Dimension((int) dim.getWidth() - 200, (int) dim.getHeight()));
 	    
 	    // Adder springlayout to base
 	    SpringLayout springLayout = new SpringLayout();
@@ -132,14 +135,14 @@ public class ViewMain extends JFrame {
 		main.setRightComponent(panel_4);
 		SpringLayout sl_panel_4 = new SpringLayout();
 		panel_4.setLayout(sl_panel_4);
-		
-		JPanel panel_7 = new JPanel();
+		panel_7 = new JPanel();
 		sl_panel_4.putConstraint(SpringLayout.NORTH, panel_7, 55, SpringLayout.NORTH, panel_4);
 		sl_panel_4.putConstraint(SpringLayout.SOUTH, panel_7, -24, SpringLayout.SOUTH, panel_4);
-		panel_7.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		sl_panel_4.putConstraint(SpringLayout.WEST, panel_7, 14, SpringLayout.WEST, panel_4);
 		sl_panel_4.putConstraint(SpringLayout.EAST, panel_7, -6, SpringLayout.EAST, panel_4);
-		panel_4.add(panel_7);
+		panel_4.add(panel_7);		
+		
+	
 		panel_7.setLayout(new GridLayout(1, 8, 0, 0));
 		
 		JPanel panel_6 = new JPanel();
@@ -160,6 +163,32 @@ public class ViewMain extends JFrame {
 		JLabel lblDerp = new JLabel("Derp");
 		lblDerp.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_6.add(lblDerp, BorderLayout.NORTH);
+		
+		
+		super.setVisible(true);
+		super.setBounds(100, 100, (int) dim.getWidth() - 200, (int) dim.getHeight());
+	    super.setLocationRelativeTo(null);
+	    super.pack();
+	    this.drawCalendar();
+	    
+	    System.out.println(panel_4.getWidth());
+	    
+	    System.out.println(main.getHeight());
+	}
+	
+	public void drawCalendar() {
+		int base = (int) panel_7.getWidth() / 8;
+		System.out.println("Hello: " + base);
+		for (int i = 0; i < 8; i++) {
+			GraphicSquare square = new GraphicSquare(0, 0, base, panel_7.getHeight() - 23);
+			square.setLayout(null);
+			JLabel ngger = new JLabel("hallo");
+			ngger.setBounds(0, 33, 50, 50);
+			square.add(ngger);
+			panel_7.add(square);
+		}
+		
+		System.out.println(getContentPane().getWidth());
 	}
 	
 	/*
@@ -167,6 +196,6 @@ public class ViewMain extends JFrame {
 	 */
 	
 	public void setVisible(boolean b) {
-		super.setVisible(b);	
+		//super.setVisible(b);
 	}
 }

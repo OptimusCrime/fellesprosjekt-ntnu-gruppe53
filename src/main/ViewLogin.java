@@ -93,7 +93,7 @@ public class ViewLogin extends JFrame {
 		textField1 = new JTextField("localhost");
 		super.getContentPane().add(textField1, "6, 4, fill, default");
 		textField1.setColumns(10);
-		textField2 = new JTextField("8080");
+		textField2 = new JTextField("9000");
 		super.getContentPane().add(textField2, "6, 6, fill, default");
 		textField2.setColumns(10);
 		textField3 = new JTextField();
@@ -134,6 +134,7 @@ public class ViewLogin extends JFrame {
 				else {
 					// Let's try to connect to the database
 					if (calendar.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
+						calendar.setLogin(textField3.getText(), new String(textField4.getPassword()));
 						if (calendar.doLogin()) {
 							// Logged successfully in
 							gui.showHome();

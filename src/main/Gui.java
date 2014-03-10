@@ -25,9 +25,12 @@ public class Gui {
 		// Set references
 		this.calendar = c;
 		
+		main = new ViewMain(this, this.calendar);
+		main.setVisible(true);
+		
 		// Display login-screen
-		login = new ViewLogin(this, this.calendar);
-		login.setVisible(true);
+		//login = new ViewLogin(this, this.calendar);
+		//login.setVisible(true);
 	}
 	
 	/*
