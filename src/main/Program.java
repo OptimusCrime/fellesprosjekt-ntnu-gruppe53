@@ -14,20 +14,14 @@ public class Program {
 	 */
 	
 	private Calendar c;
-	private SocketHandler sh;
-	private SocketTranslator st;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public Program() {
+	public Program() {	
 		// Init new instance of Calendar-class
-		c = new Calendar(this);
-		
-		// Init sockets
-		sh = new SocketHandler();
-		st = new SocketTranslator();
+		c = new Calendar(this, new SocketHandler(), new SocketTranslator());
 	}
 	
 	/*
@@ -39,10 +33,4 @@ public class Program {
 		new Program();
 		
 	}
-	
-	public boolean testConnection(String s, int p) {
-		// Trying to connect to socket
-		return sh.connect(s, p);
-	}
-
 }

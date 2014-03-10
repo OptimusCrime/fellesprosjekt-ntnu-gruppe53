@@ -131,7 +131,7 @@ public class ViewLogin extends JFrame {
 				}
 				else {
 					// Let's try to connect to the database
-					if (g.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
+					if (!g.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
 						// Connect OK
 						g.showHome();
 					}
@@ -143,7 +143,6 @@ public class ViewLogin extends JFrame {
 			}
 		});
 		super.getContentPane().add(button1, "6, 14");
-		
 		
 		// Pack everything
 		super.pack();

@@ -45,7 +45,7 @@ public class SocketHandler extends Thread {
 			in = new DataInputStream(inFromServer);
 			
 			// Try to read
-			in.readUTF();
+			//in.readUTF();
 			
 			// Start listning
 			// TODO
@@ -59,6 +59,7 @@ public class SocketHandler extends Thread {
 			return false;
 		} catch (IOException e3) {
 			// Could not connect to the server
+			System.out.println(e3);
 			System.out.println("Err4");
 			return false;
 		}

@@ -32,13 +32,20 @@ public class Gui {
 		login.setVisible(true);
 	}
 	
+	/*
+	 * Set username and password
+	 */
+	
+	public void setLogin(String username, String password) {
+		c.setLogin(username, password);
+	}
 	
 	/*
 	 * Testing connection entered during login
 	 */
 	
 	public boolean testConnection(String s, int port) {
-		return p.testConnection(s, port);
+		return c.testConnection(s, port);
 	}
 	
 	/*
