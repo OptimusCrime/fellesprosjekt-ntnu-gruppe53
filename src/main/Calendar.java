@@ -13,8 +13,8 @@ public class Calendar {
 	 * Variables
 	 */
 	
-	private Gui g;
-	private User u;
+	private Gui gui;
+	private User user;
 	
 	private SocketHandler sh;
 	private SocketTranslator st;
@@ -24,30 +24,27 @@ public class Calendar {
 	 */
 	
 	public Calendar() {
-		// User
-		this.u = new User(this);
-		
 		// Create new instance of the Gui-class
-		this.g = new Gui(this);
+		this.gui = new Gui(this);
+		
+		// User
+		this.user = new User(this.gui);
 		
 		// Sockets
 		sh = new SocketHandler();
 		st = new SocketTranslator();
 	}
-	
-	/*
-	 * Set username and password for the current user
-	 */
-	
-	public void setLogin(String user, String pass) {
-		//u.(user, pass);
+
+	public void setLogin(String u, String p) {
+		this.user.setLogin(u, p);
 	}
 	
-	public boolean testConnection(String s, int port) {
-		return sh.connect(s, port);
+	public boolean testConnection(String s, int p) {
+		return sh.connect(s, p);
 	}
 	
-	public String send(String s) {
-		return "Derp";
+	public boolean doLogin() {
+		user.setLoggedIn(true);
+		return true;
 	}
 }

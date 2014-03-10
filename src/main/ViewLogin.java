@@ -29,7 +29,8 @@ public class ViewLogin extends JFrame {
 	 * Variables
 	 */
 	
-	protected Gui g;
+	protected Gui gui;
+	protected Calendar calendar;
 	private static final long serialVersionUID = 1L;
 	protected JTextField textField1;
 	protected JTextField textField2;
@@ -40,9 +41,10 @@ public class ViewLogin extends JFrame {
 	 * Constructor
 	 */
 	
-	public ViewLogin(Gui gui) {
+	public ViewLogin(Gui g, Calendar c) {
 		// Set gui
-		this.g = gui;
+		this.gui = g;
+		this.calendar = c;
 		
 		// Set close-operation
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -131,13 +133,19 @@ public class ViewLogin extends JFrame {
 				}
 				else {
 					// Let's try to connect to the database
-					if (!g.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
-						// Connect OK
-						g.showHome();
+					if (calendar.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
+						if (calendar.doLogin()) {
+							// Logged successfully in
+							gui.showHome();
+						}
+						else {
+							// Username and stuff wrong
+							JOptionPane.showMessageDialog(null, "Passord og/eller brukernavn feil. Prøv igjen!", "Feil", JOptionPane.PLAIN_MESSAGE);
+						}
 					}
 					else {
 						// Something's fucked up
-						System.out.println("no");
+						JOptionPane.showMessageDialog(null, "Kunne ikke koble til serveren.", "Feil", JOptionPane.PLAIN_MESSAGE);
 					}
 				}
 			}

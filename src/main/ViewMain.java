@@ -24,7 +24,9 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private static final long serialVersionUID = 1L;
-	protected Gui g;
+	
+	protected Gui gui;
+	protected Calendar calendar;
 	
 	// Panels, parts of the window
 	private JPanel header;
@@ -40,9 +42,10 @@ public class ViewMain extends JFrame {
 	 * Constructor
 	 */
 	
-	public ViewMain(Gui gui) {
+	public ViewMain(Gui g, Calendar c) {
 		// Set gui
-		this.g = gui;
+		this.gui = g;
+		this.calendar = c;
 		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,7 +108,7 @@ public class ViewMain extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				g.logout();
+				gui.logout();
 			}
 			
 		});

@@ -13,7 +13,7 @@ public class Gui {
 	 * Variables
 	 */
 	
-	private Calendar c;
+	private Calendar calendar;
 	private ViewLogin login;
 	private ViewMain main;
 	
@@ -23,27 +23,11 @@ public class Gui {
 	
 	public Gui (Calendar c) {
 		// Set references
-		this.c = c;
+		this.calendar = c;
 		
 		// Display login-screen
-		login = new ViewLogin(this);
+		login = new ViewLogin(this, this.calendar);
 		login.setVisible(true);
-	}
-	
-	/*
-	 * Set username and password
-	 */
-	
-	public void setLogin(String username, String password) {
-		c.setLogin(username, password);
-	}
-	
-	/*
-	 * Testing connection entered during login
-	 */
-	
-	public boolean testConnection(String s, int port) {
-		return c.testConnection(s, port);
 	}
 	
 	/*
@@ -53,7 +37,7 @@ public class Gui {
 	public void showHome() {
 		login.setVisible(false);
 		login = null;
-		main = new ViewMain(this);
+		main = new ViewMain(this, this.calendar);
 		main.setVisible(true);
 	}
 	
@@ -64,8 +48,7 @@ public class Gui {
 	public void logout() {
 		main.setVisible(false);
 		main = null;
-		login = new ViewLogin(this);
+		login = new ViewLogin(this, this.calendar);
 		login.setVisible(true);
-		
 	}
 }
