@@ -14,15 +14,12 @@ import javax.swing.JPanel;
 public class GraphicSquare extends JPanel {
 	private Rectangle rect;
 	private int space;
-	private int spacefirst;
 	private int width;
-	public GraphicSquare(int x, int y, int width, int height) {
+	public GraphicSquare(int x, int y, int width, int height, int spaceHeight) {
 		super();
-		this.space = (int) height / 16;
-		this.spacefirst = height - (space * 15);
+		this.space = spaceHeight;
 		this.width = height;
 		
-		System.out.println("Height: " + height);
 		rect = new Rectangle(x, y, width, height);
 	}
 	
@@ -38,8 +35,7 @@ public class GraphicSquare extends JPanel {
 		g2.draw(rect);
 		
 		g2.setColor(new Color(28, 64, 148));
-		System.out.println("Space = " + space);
-		for (int i = 1; i <= 16; i++) {
+		for (int i = 1; i <= 9; i++) {
 			g2.drawLine(0, this.space*i, this.width, this.space*i);
 		}
 	}

@@ -2,12 +2,14 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -177,14 +179,35 @@ public class ViewMain extends JFrame {
 	}
 	
 	public void drawCalendar() {
-		int base = (int) panel_7.getWidth() / 8;
-		System.out.println("Hello: " + base);
+		// Some variables we need
+		int width = panel_7.getWidth();
+		int column_width = (int) panel_7.getWidth() / 8;
+		int row_height = (int) (panel_7.getHeight() - 23) / 10;
+		int height = row_height * 10;
+		
 		for (int i = 0; i < 8; i++) {
-			GraphicSquare square = new GraphicSquare(0, 0, base, panel_7.getHeight() - 23);
+			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
 			square.setLayout(null);
-			JLabel ngger = new JLabel("hallo");
-			ngger.setBounds(0, 33, 50, 50);
-			square.add(ngger);
+			Box box = Box.createVerticalBox();
+			if (i == 0) {
+				box.setOpaque(true);
+				box.setBackground(Color.yellow);
+				box.setBounds(0, 0, column_width, height);
+				for (int j = 0; j < 10; j++) {
+					JLabel ngger = new JLabel("08:00");
+					ngger.setAlignmentX(Component.RIGHT_ALIGNMENT);
+					box.add(ngger);
+				}
+			}
+			else {
+				box.setOpaque(false);
+				int datePadding = (int) (row_height-16)/2;
+				JLabel ngger = new JLabel("ma 17.02");
+				box.setBounds(0, datePadding, column_width, 30);
+				ngger.setAlignmentX(Component.CENTER_ALIGNMENT);
+				box.add(ngger);
+			}
+			square.add(box);
 			panel_7.add(square);
 		}
 		
