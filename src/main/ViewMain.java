@@ -301,19 +301,11 @@ public class ViewMain extends JFrame {
 				}
 			}
 			else {
-				// Set box-settings (TODO debug)
-				box.setOpaque(true);
-				box.setBackground(Color.yellow);
-				
 				// Calculate padding based on the height of the rows
 				int datePadding = (int) (row_height-16)/2;
 				
 				// Append day-date
 				JLabel dayLegend = new JLabel(calendarText[i - 1]);
-				
-				// Debug (TODO)
-				dayLegend.setOpaque(true);
-				dayLegend.setBackground(Color.pink);
 				
 				// Set height and width of the box to fix the date-content
 				box.setBounds(0, datePadding, column_width, 30);
