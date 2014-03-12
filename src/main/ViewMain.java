@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -57,6 +58,7 @@ public class ViewMain extends JFrame {
 	
 	// For calculating the displayed week
 	private Timestamp ts;
+	private long tsOffset;
 	
 	/*
 	 * Constructor
@@ -183,7 +185,7 @@ public class ViewMain extends JFrame {
 		splitRightNav.add(navRight, BorderLayout.EAST);
 		
 		// Add label which identifies what week we're currently in
-		navWeek = new JLabel("Uke xx");
+		navWeek = new JLabel("Laster...");
 		navWeek.setHorizontalAlignment(SwingConstants.CENTER);
 		splitRightNav.add(navWeek, BorderLayout.NORTH);
 		
@@ -208,6 +210,7 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void setTime() {
+		this.tsOffset = 0;
 		this.ts = new Timestamp(System.currentTimeMillis());
 	}
 	
@@ -216,9 +219,22 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void calculateCalendar() {
+		// Parse timestamp to Date-object
 		Date d = new Date(ts.getTime());
+		
+		// Use the Calendar-class to get the info
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(d);
+		
+		// Extract week
+		int week = cal.get(Calendar.WEEK_OF_YEAR);
+		
+		// Set week in the label
+		navWeek.setText("Uke " + Integer.toString(week));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		System.out.println(sdf.format(cal.getTime()));    
 	}
 	
 	/*
