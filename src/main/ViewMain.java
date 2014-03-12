@@ -24,7 +24,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
-import javax.swing.border.BevelBorder;
 
 public class ViewMain extends JFrame {
 	
@@ -282,25 +281,60 @@ public class ViewMain extends JFrame {
 	private void drawCalendar() {
 		// Some variables we need
 		int width = splitRightInner.getWidth();
-		int column_width = (int) splitRightInner.getWidth() / 8;
-		int row_height = (int) (splitRightInner.getHeight() - 23) / 10;
-		int height = row_height * 10;
+		int numRows = 10;
+		int column_width = (int) width / 8;
+		int row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		int height = row_height * numRows;
 		
+		// Loop over each of the squares (one for each day in the week + one for holding the time)
 		for (int i = 0; i < 8; i++) {
+			// Create new square
 			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
+			
+			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
-			Box box = Box.createVerticalBox();
+			
+			// Check what column we are working with
 			if (i == 0) {
-				box.setOpaque(true);
-				box.setBackground(Color.yellow);
-				box.setBounds(0, 0, column_width, height);
-				for (int j = 0; j < 10; j++) {
-					JLabel ngger = new JLabel("08:00");
-					ngger.setAlignmentX(Component.RIGHT_ALIGNMENT);
-					box.add(ngger);
+				// Define where we start the hours and how much we should move the block to match the horizontal lines
+				int startHour = 8;
+				int compensateForLineOffset = 7;
+				
+				// Loop ten times to fill the time-column with hours from 08:00 to 18:00
+				for (int j = 0; j < numRows; j++) {
+					// Create box
+					Box box = Box.createVerticalBox();
+					
+					// Check if we should adjust the compenstate-value
+					if ((j + 1) == numRows) {
+						compensateForLineOffset = 14;
+					}
+					
+					// Set bounds for the box
+					box.setBounds(1, (((j + 1) * row_height) - compensateForLineOffset), (column_width - 1), 14);
+					
+					// Little hack to hide the horizontal line in this column
+					box.setOpaque(true);
+					box.setBackground(new Color(212, 229, 245));
+					
+					// Set content of the label
+					JLabel calendarHours = new JLabel(((startHour < 10)? "0" : "") + Integer.toString(startHour) + ":00");
+					
+					// Right-align it to prettify it
+					calendarHours.setAlignmentX(Component.RIGHT_ALIGNMENT);
+					
+					// Add to the square
+					box.add(calendarHours);
+					square.add(box);
+					
+					// Increase the hour by one
+					startHour++;
 				}
 			}
 			else {
+				// We're working on a weekday, create box-object
+				Box box = Box.createVerticalBox();
+				
 				// Calculate padding based on the height of the rows
 				int datePadding = (int) (row_height-16)/2;
 				
@@ -315,10 +349,10 @@ public class ViewMain extends JFrame {
 				
 				// Add legend to the box
 				box.add(dayLegend);
+				
+				// Add the box (with all content) to the square
+				square.add(box);
 			}
-			
-			// Add the box (with all content) to the square
-			square.add(box);
 			
 			// Add the square (with all content) to the calendar-wrapepr
 			splitRightInner.add(square);
