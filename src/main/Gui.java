@@ -13,7 +13,7 @@ public class Gui {
 	 * Variables
 	 */
 	
-	private Calendar calendar;
+	private Cal calendar;
 	private ViewLogin login;
 	private ViewMain main;
 	
@@ -21,7 +21,7 @@ public class Gui {
 	 * Constructor
 	 */
 	
-	public Gui (Calendar c) {
+	public Gui (Cal c) {
 		// Set references
 		this.calendar = c;
 		

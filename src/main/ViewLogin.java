@@ -30,7 +30,7 @@ public class ViewLogin extends JFrame {
 	 */
 	
 	protected Gui gui;
-	protected Calendar calendar;
+	protected Cal calendar;
 	private static final long serialVersionUID = 1L;
 	protected JTextField textField1;
 	protected JTextField textField2;
@@ -41,7 +41,7 @@ public class ViewLogin extends JFrame {
 	 * Constructor
 	 */
 	
-	public ViewLogin(Gui g, Calendar c) {
+	public ViewLogin(Gui g, Cal c) {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
