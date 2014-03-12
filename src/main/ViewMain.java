@@ -8,6 +8,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -29,7 +32,7 @@ public class ViewMain extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	protected Gui gui;
-	protected Calendar calendar;
+	protected Cal calendar;
 	
 	// Panels, parts of the window
 	private JPanel header;
@@ -52,11 +55,14 @@ public class ViewMain extends JFrame {
 	private JButton navRight;
 	private JLabel navWeek;
 	
+	// For calculating the displayed week
+	private Timestamp ts;
+	
 	/*
 	 * Constructor
 	 */
 	
-	public ViewMain(Gui g, Calendar c) {
+	public ViewMain(Gui g, Cal c) {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
@@ -171,10 +177,10 @@ public class ViewMain extends JFrame {
 		splitRightNav.setLayout(new BorderLayout(0, 0));
 		
 		// Add nav-buttons to the right-split nav-panel
-		navLeft = new JButton("<<");
-		splitRightNav.add(navLeft, BorderLayout.EAST);
-		navRight = new JButton(">>");
-		splitRightNav.add(navRight, BorderLayout.WEST);
+		navLeft = new JButton("◄");
+		splitRightNav.add(navLeft, BorderLayout.WEST);
+		navRight = new JButton("►");
+		splitRightNav.add(navRight, BorderLayout.EAST);
 		
 		// Add label which identifies what week we're currently in
 		navWeek = new JLabel("Uke xx");
@@ -187,6 +193,9 @@ public class ViewMain extends JFrame {
 	    super.setLocationRelativeTo(null);
 	    super.pack();
 	    
+	    // Set initial time
+	    this.setTime();
+	    
 	    // Calculate week, dates etc
 	    this.calculateCalendar();
 	    
@@ -195,11 +204,21 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
+	 * Sets the time for the calendar
+	 */
+	
+	private void setTime() {
+		this.ts = new Timestamp(System.currentTimeMillis());
+	}
+	
+	/*
 	 * Calculates what dates to display, what week we're in etc
 	 */
 	
 	private void calculateCalendar() {
-		
+		Date d = new Date(ts.getTime());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
 	}
 	
 	/*
