@@ -12,6 +12,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -59,6 +61,8 @@ public class ViewMain extends JFrame {
 	// For calculating the displayed week
 	private Timestamp ts;
 	private long tsOffset;
+	private String[] calendarText;
+	private Map<String, String> calendarReplaces;
 	
 	/*
 	 * Constructor
@@ -68,6 +72,11 @@ public class ViewMain extends JFrame {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// Setting up array for replacing english weekdays to norwegian ones
+		calendarReplaces = new HashMap<String, String>();
+		calendarReplaces.put("l?", "lø");
+		calendarReplaces.put("s?", "sø");
 		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -232,9 +241,38 @@ public class ViewMain extends JFrame {
 		// Set week in the label
 		navWeek.setText("Uke " + Integer.toString(week));
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("MM dd yyyy");
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
-		System.out.println(sdf.format(cal.getTime()));    
+		// Calculate the days we display as a legend for the calendar
+		calendarText = new String[7];
+		
+		// Dateformatters
+		SimpleDateFormat formatEngToNor = new SimpleDateFormat("E");
+		SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM");
+		
+		// Loop all the days and calculate dates
+		for (int i = 1; i <= 7; i++) {
+			// Set date
+			cal.set(Calendar.DAY_OF_WEEK, i);
+			
+			// Create string for the date (such hack)
+			String tempDate;
+			if (calendarReplaces.get(formatEngToNor.format(cal.getTime())) != null) {
+				tempDate = calendarReplaces.get(formatEngToNor.format(cal.getTime()));
+			}
+			else {
+				tempDate = formatEngToNor.format(cal.getTime());
+			}
+			
+			// Append the actual date
+			tempDate += " " + formatDate.format(cal.getTime());
+			
+			// Check where in the array we should put it (US has Sunday as first day or week, stupids)
+			if (i == 1) {
+				calendarText[6] = tempDate;
+			}
+			else {
+				calendarText[i - 2] = tempDate;
+			}
+		}
 	}
 	
 	/*
@@ -263,18 +301,36 @@ public class ViewMain extends JFrame {
 				}
 			}
 			else {
-				box.setOpaque(false);
+				// Set box-settings (TODO debug)
+				box.setOpaque(true);
+				box.setBackground(Color.yellow);
+				
+				// Calculate padding based on the height of the rows
 				int datePadding = (int) (row_height-16)/2;
-				JLabel ngger = new JLabel("ma 17.02");
+				
+				// Append day-date
+				JLabel dayLegend = new JLabel(calendarText[i - 1]);
+				
+				// Debug (TODO)
+				dayLegend.setOpaque(true);
+				dayLegend.setBackground(Color.pink);
+				
+				// Set height and width of the box to fix the date-content
 				box.setBounds(0, datePadding, column_width, 30);
-				ngger.setAlignmentX(Component.CENTER_ALIGNMENT);
-				box.add(ngger);
+				
+				// Set center-align
+				dayLegend.setAlignmentX(Component.CENTER_ALIGNMENT);
+				
+				// Add legend to the box
+				box.add(dayLegend);
 			}
+			
+			// Add the box (with all content) to the square
 			square.add(box);
+			
+			// Add the square (with all content) to the calendar-wrapepr
 			splitRightInner.add(square);
 		}
-		
-		System.out.println(getContentPane().getWidth());
 	}
 	
 	/*
