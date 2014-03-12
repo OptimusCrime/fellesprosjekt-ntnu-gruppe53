@@ -9,7 +9,7 @@ import org.json.simple.JSONObject;
  * 
  */
 
-public class Calendar {
+public class Cal {
 	
 	/*
 	 * Variables
@@ -25,7 +25,7 @@ public class Calendar {
 	 * Constructor
 	 */
 	
-	public Calendar() {
+	public Cal() {
 		// Create new instance of the Gui-class
 		this.gui = new Gui(this);
 		

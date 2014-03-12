@@ -13,7 +13,7 @@ public class Program {
 	 * Variables
 	 */
 	
-	private Calendar c;
+	private Cal c;
 	
 	/*
 	 * Constructor
@@ -21,7 +21,7 @@ public class Program {
 	
 	public Program() {	
 		// Init new instance of Calendar-class
-		c = new Calendar();
+		c = new Cal();
 	}
 	
 	/*

@@ -8,6 +8,12 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -29,28 +35,48 @@ public class ViewMain extends JFrame {
 	private static final long serialVersionUID = 1L;
 	
 	protected Gui gui;
-	protected Calendar calendar;
+	protected Cal calendar;
 	
 	// Panels, parts of the window
 	private JPanel header;
 	private JPanel seperator;
 	private JSplitPane main;
 	
-	private JPanel panel_7;
+	private JPanel splitLeft;
+	private JPanel splitRight;
+	private JPanel splitRightInner;
+	private JPanel splitRightNav;
 	
 	// Buttons
 	private JButton homeBtn;
 	private JButton notificationsBtn;
 	private JButton employeesBtn;
+	private JButton logoutBtn;
+	
+	// For the nav
+	private JButton navLeft;
+	private JButton navRight;
+	private JLabel navWeek;
+	
+	// For calculating the displayed week
+	private Timestamp ts;
+	private long tsOffset;
+	private String[] calendarText;
+	private Map<String, String> calendarReplaces;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public ViewMain(Gui g, Calendar c) {
+	public ViewMain(Gui g, Cal c) {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// Setting up array for replacing english weekdays to norwegian ones
+		calendarReplaces = new HashMap<String, String>();
+		calendarReplaces.put("l?", "lø");
+		calendarReplaces.put("s?", "sø");
 		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,7 +88,6 @@ public class ViewMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set initial size of the window and the relative loaction
-	    
 		super.setPreferredSize(new Dimension((int) dim.getWidth() - 200, (int) dim.getHeight()));
 	    
 	    // Adder springlayout to base
@@ -93,23 +118,27 @@ public class ViewMain extends JFrame {
 		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
 		
-		JPanel panel_2 = new JPanel();
-		header.add(panel_2, BorderLayout.WEST);
+		// Add header-left panel
+		JPanel headerLeft = new JPanel();
+		header.add(headerLeft, BorderLayout.WEST);
 		
+		// Add all buttons in the header-left panel
 		homeBtn = new JButton("Hjem");
-		panel_2.add(homeBtn);
-		
+		headerLeft.add(homeBtn);
 		notificationsBtn = new JButton("Varsler (2)");
-		panel_2.add(notificationsBtn);
-		
+		headerLeft.add(notificationsBtn);
 		employeesBtn = new JButton("Ansatte");
-		panel_2.add(employeesBtn);
+		headerLeft.add(employeesBtn);
 		
-		JPanel panel_3 = new JPanel();
-		header.add(panel_3, BorderLayout.EAST);
+		// Add header-right panel
+		JPanel headerRight = new JPanel();
+		header.add(headerRight, BorderLayout.EAST);
 		
-		JButton btnNewButton = new JButton("Logg ut");
-		btnNewButton.addActionListener(new ActionListener() {
+		// Add logout-button in the header-right panel
+		logoutBtn = new JButton("Logg ut");
+		
+		// Add actionListner for the logout-button
+		logoutBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -117,72 +146,144 @@ public class ViewMain extends JFrame {
 			}
 			
 		});
-		panel_3.add(btnNewButton);
+		headerRight.add(logoutBtn);
 		
-		
-		
-		
-		JSeparator separatdfdfgor = new JSeparator();
-		seperator.add(separatdfdfgor);
+		// Add seperator (TODO, this is not working)
+		JSeparator swingSeperator = new JSeparator();
+		seperator.add(swingSeperator);
 		getContentPane().add(main);
 		
-		JPanel panel_5 = new JPanel();
-		main.setLeftComponent(panel_5);
+		// Set left-split content
+		splitLeft = new JPanel();
+		main.setLeftComponent(splitLeft);
 		
+		// Placeholder TODO
 		JLabel lblNewLabel = new JLabel("New label");
-		panel_5.add(lblNewLabel);
+		splitLeft.add(lblNewLabel);
 		
-		JPanel panel_4 = new JPanel();
-		panel_4.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		main.setRightComponent(panel_4);
-		SpringLayout sl_panel_4 = new SpringLayout();
-		panel_4.setLayout(sl_panel_4);
-		panel_7 = new JPanel();
-		sl_panel_4.putConstraint(SpringLayout.NORTH, panel_7, 55, SpringLayout.NORTH, panel_4);
-		sl_panel_4.putConstraint(SpringLayout.SOUTH, panel_7, -24, SpringLayout.SOUTH, panel_4);
-		sl_panel_4.putConstraint(SpringLayout.WEST, panel_7, 14, SpringLayout.WEST, panel_4);
-		sl_panel_4.putConstraint(SpringLayout.EAST, panel_7, -6, SpringLayout.EAST, panel_4);
-		panel_4.add(panel_7);		
+		// Set right-split content
+		splitRight = new JPanel();
+		main.setRightComponent(splitRight);
 		
-	
-		panel_7.setLayout(new GridLayout(1, 8, 0, 0));
+		// Add SpringLayout to the right-split content
+		SpringLayout splitRightLayout = new SpringLayout();
+		splitRight.setLayout(splitRightLayout);
 		
-		JPanel panel_6 = new JPanel();
-		panel_6.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		sl_panel_4.putConstraint(SpringLayout.NORTH, panel_6, 12, SpringLayout.NORTH, panel_4);
-		sl_panel_4.putConstraint(SpringLayout.WEST, panel_6, 20, SpringLayout.WEST, panel_4);
-		sl_panel_4.putConstraint(SpringLayout.SOUTH, panel_6, -6, SpringLayout.NORTH, panel_7);
-		sl_panel_4.putConstraint(SpringLayout.EAST, panel_6, -4, SpringLayout.EAST, panel_4);
-		panel_4.add(panel_6);
-		panel_6.setLayout(new BorderLayout(0, 0));
+		// Add inner JPanel to the right-split content (holds the calendar and nav)
+		splitRightInner = new JPanel();
+		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightInner, 55, SpringLayout.NORTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightInner, -24, SpringLayout.SOUTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightInner, 14, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightInner, -6, SpringLayout.EAST, splitRight);
+		splitRight.add(splitRightInner);		
+		splitRightInner.setLayout(new GridLayout(1, 8, 0, 0));
 		
-		JButton btnNewButton_4 = new JButton("New button");
-		panel_6.add(btnNewButton_4, BorderLayout.EAST);
+		// Add inner JPanel to the right-split content that holds the nav
+		splitRightNav = new JPanel();
+		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightNav, 12, SpringLayout.NORTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightNav, 20, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightNav, -6, SpringLayout.NORTH, splitRightInner);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightNav, -4, SpringLayout.EAST, splitRight);
+		splitRight.add(splitRightNav);
+		splitRightNav.setLayout(new BorderLayout(0, 0));
 		
-		JButton btnNewButton_5 = new JButton("New button");
-		panel_6.add(btnNewButton_5, BorderLayout.WEST);
+		// Add nav-buttons to the right-split nav-panel
+		navLeft = new JButton("◄");
+		splitRightNav.add(navLeft, BorderLayout.WEST);
+		navRight = new JButton("►");
+		splitRightNav.add(navRight, BorderLayout.EAST);
 		
-		JLabel lblDerp = new JLabel("Derp");
-		lblDerp.setHorizontalAlignment(SwingConstants.CENTER);
-		panel_6.add(lblDerp, BorderLayout.NORTH);
+		// Add label which identifies what week we're currently in
+		navWeek = new JLabel("Laster...");
+		navWeek.setHorizontalAlignment(SwingConstants.CENTER);
+		splitRightNav.add(navWeek, BorderLayout.NORTH);
 		
-		
+		// Show, set width etc
 		super.setVisible(true);
 		super.setBounds(100, 100, (int) dim.getWidth() - 200, (int) dim.getHeight());
 	    super.setLocationRelativeTo(null);
 	    super.pack();
+	    
+	    // Set initial time
+	    this.setTime();
+	    
+	    // Calculate week, dates etc
+	    this.calculateCalendar();
+	    
+	    // Draw calendar
 	    this.drawCalendar();
-	    
-	    System.out.println(panel_4.getWidth());
-	    
-	    System.out.println(main.getHeight());
 	}
 	
-	public void drawCalendar() {
+	/*
+	 * Sets the time for the calendar
+	 */
+	
+	private void setTime() {
+		this.tsOffset = 0;
+		this.ts = new Timestamp(System.currentTimeMillis());
+	}
+	
+	/*
+	 * Calculates what dates to display, what week we're in etc
+	 */
+	
+	private void calculateCalendar() {
+		// Parse timestamp to Date-object
+		Date d = new Date(ts.getTime());
+		
+		// Use the Calendar-class to get the info
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		
+		// Extract week
+		int week = cal.get(Calendar.WEEK_OF_YEAR);
+		
+		// Set week in the label
+		navWeek.setText("Uke " + Integer.toString(week));
+		
+		// Calculate the days we display as a legend for the calendar
+		calendarText = new String[7];
+		
+		// Dateformatters
+		SimpleDateFormat formatEngToNor = new SimpleDateFormat("E");
+		SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM");
+		
+		// Loop all the days and calculate dates
+		for (int i = 1; i <= 7; i++) {
+			// Set date
+			cal.set(Calendar.DAY_OF_WEEK, i);
+			
+			// Create string for the date (such hack)
+			String tempDate;
+			if (calendarReplaces.get(formatEngToNor.format(cal.getTime())) != null) {
+				tempDate = calendarReplaces.get(formatEngToNor.format(cal.getTime()));
+			}
+			else {
+				tempDate = formatEngToNor.format(cal.getTime());
+			}
+			
+			// Append the actual date
+			tempDate += " " + formatDate.format(cal.getTime());
+			
+			// Check where in the array we should put it (US has Sunday as first day or week, stupids)
+			if (i == 1) {
+				calendarText[6] = tempDate;
+			}
+			else {
+				calendarText[i - 2] = tempDate;
+			}
+		}
+	}
+	
+	/*
+	 * Draws the actual graphics for the calendar (not appointments)
+	 */
+	
+	private void drawCalendar() {
 		// Some variables we need
-		int width = panel_7.getWidth();
-		int column_width = (int) panel_7.getWidth() / 8;
-		int row_height = (int) (panel_7.getHeight() - 23) / 10;
+		int width = splitRightInner.getWidth();
+		int column_width = (int) splitRightInner.getWidth() / 8;
+		int row_height = (int) (splitRightInner.getHeight() - 23) / 10;
 		int height = row_height * 10;
 		
 		for (int i = 0; i < 8; i++) {
@@ -200,18 +301,36 @@ public class ViewMain extends JFrame {
 				}
 			}
 			else {
-				box.setOpaque(false);
+				// Set box-settings (TODO debug)
+				box.setOpaque(true);
+				box.setBackground(Color.yellow);
+				
+				// Calculate padding based on the height of the rows
 				int datePadding = (int) (row_height-16)/2;
-				JLabel ngger = new JLabel("ma 17.02");
+				
+				// Append day-date
+				JLabel dayLegend = new JLabel(calendarText[i - 1]);
+				
+				// Debug (TODO)
+				dayLegend.setOpaque(true);
+				dayLegend.setBackground(Color.pink);
+				
+				// Set height and width of the box to fix the date-content
 				box.setBounds(0, datePadding, column_width, 30);
-				ngger.setAlignmentX(Component.CENTER_ALIGNMENT);
-				box.add(ngger);
+				
+				// Set center-align
+				dayLegend.setAlignmentX(Component.CENTER_ALIGNMENT);
+				
+				// Add legend to the box
+				box.add(dayLegend);
 			}
+			
+			// Add the box (with all content) to the square
 			square.add(box);
-			panel_7.add(square);
+			
+			// Add the square (with all content) to the calendar-wrapepr
+			splitRightInner.add(square);
 		}
-		
-		System.out.println(getContentPane().getWidth());
 	}
 	
 	/*
@@ -219,6 +338,6 @@ public class ViewMain extends JFrame {
 	 */
 	
 	public void setVisible(boolean b) {
-		//super.setVisible(b);
+		super.setVisible(b);
 	}
 }
