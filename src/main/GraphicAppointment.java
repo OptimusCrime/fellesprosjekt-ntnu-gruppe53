@@ -24,7 +24,7 @@ public class GraphicAppointment extends JPanel {
 	private Rectangle rect;
 	private Color color;
 	
-	public GraphicAppointment(int x, int y, int width, int height, int spaceHeight, Color c) {
+	public GraphicAppointment(int x, int y, int width, int height, Color c) {
 		super();
 		
 		// Store color

@@ -70,6 +70,9 @@ public class ViewMain extends JFrame {
 	private String[] calendarText;
 	private Map<String, String> calendarReplaces;
 	
+	// The different squares
+	private GraphicSquare[] squareArr;
+	
 	/*
 	 * Constructor
 	 */
@@ -83,6 +86,9 @@ public class ViewMain extends JFrame {
 		calendarReplaces = new HashMap<String, String>();
 		calendarReplaces.put("l?", "lø");
 		calendarReplaces.put("s?", "sø");
+		
+		// Setting up array for holding the different squares
+		squareArr = new GraphicSquare[8];
 		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -236,6 +242,9 @@ public class ViewMain extends JFrame {
 	    
 	    // Draw calendar
 	    this.drawCalendar();
+	    
+	    // Debug, TODO
+	    this.drawAppointments();
 	}
 	
 	/*
@@ -416,7 +425,24 @@ public class ViewMain extends JFrame {
 			
 			// Add the square (with all content) to the calendar-wrapepr
 			splitRightInner.add(square);
+			
+			// Add square to the array
+			squareArr[i] = square;
 		}
+	}
+	
+	/*
+	 * Draws the appointments in the calendar (TODO, test)
+	 */
+	
+	private void drawAppointments() {
+		// Debug-code
+		GraphicSquare nigger = squareArr[2];
+		GraphicAppointment squar2222e = new GraphicAppointment(0, 0, 100, 100, Color.pink);
+		squar2222e.setLayout(null);
+		squar2222e.setBounds(0, 0, 100, 100);
+		nigger.add(squar2222e);
+		
 	}
 	
 	/*
