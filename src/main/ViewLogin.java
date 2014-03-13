@@ -163,6 +163,7 @@ public class ViewLogin extends JFrame {
 	
 	public void sendLoginFailedMessage() {
 		send.setText("Logg inn");
+		send.setEnabled(true);
 		JOptionPane.showMessageDialog(null, "Brukernavn og/eller passord feil. Prøv igjen!", "Feil", JOptionPane.PLAIN_MESSAGE);
 	}
 	
