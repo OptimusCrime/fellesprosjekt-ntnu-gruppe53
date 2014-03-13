@@ -54,4 +54,8 @@ public class Gui {
 		login = new ViewLogin(this, this.calendar);
 		login.setVisible(true);
 	}
+	
+	public void reflectChange(String t, String f, Object o) {
+		
+	}
 }

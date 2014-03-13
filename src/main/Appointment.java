@@ -1,5 +1,125 @@
 package main;
 
-public class Appointment {
+import java.util.Date;
 
+/*
+ * Appointment
+ * 
+ * Class for storing information about the appointment
+ * 
+ */
+
+public class Appointment {
+	
+	/*
+	 * Variables we need
+	 */
+	
+	private Gui gui;
+	
+	private String title;
+	private String description;
+	private Date start;
+	private Date end;
+	private String place;
+	private Room room;
+	
+	private boolean participates;
+	private boolean hide;
+	private boolean alarm;
+	private Date alarmTime;
+	
+	/*
+	 * Constructor
+	 */
+	
+	public Appointment (Gui g) {
+		this.gui = g;
+	}
+	
+	/*
+	 * Generated getters and setters
+	 */
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+		this.gui.reflectChange("appointment", "title", this);
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+		this.gui.reflectChange("appointment", "description", this);
+	}
+
+	public Date getStart() {
+		return start;
+	}
+
+	public void setStart(Date start) {
+		this.start = start;
+		this.gui.reflectChange("appointment", "start", this);
+	}
+
+	public Date getEnd() {
+		return end;
+	}
+
+	public void setEnd(Date end) {
+		this.end = end;
+		this.gui.reflectChange("appointment", "end", this);
+	}
+
+	public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+		this.gui.reflectChange("appointment", "place", this);
+	}
+
+	public Room getRoom() {
+		return room;
+	}
+
+	public void setRoom(Room room) {
+		this.room = room;
+		this.gui.reflectChange("appointment", "room", this);
+	}
+
+	public void setParticipates(boolean participates) {
+		this.participates = participates;
+		this.gui.reflectChange("appointment", "participates", this);
+	}
+
+	public void setHide(boolean hide) {
+		this.hide = hide;
+		this.gui.reflectChange("appointment", "hide", this);
+	}
+	
+	public boolean getHide() {
+		return this.hide;
+	}
+	
+	public void setAlarm(boolean alarm) {
+		this.alarm = alarm;
+		this.gui.reflectChange("appointment", "alarm", this);
+	}
+
+	public Date getAlarmTime() {
+		return alarmTime;
+	}
+
+	public void setAlarmTime(Date alarmTime) {
+		this.alarmTime = alarmTime;
+		this.gui.reflectChange("appointment", "alarmtime", this);
+	}
 }
