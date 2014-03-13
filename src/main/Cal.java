@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 /*
- * Calendar
+ * Cal(endar)
  * 
  * Takes care of handling user-state, handles GUI etc
  * 
@@ -110,27 +110,34 @@ public class Cal {
 	}
 	
 	/*
-	 * Derp
+	 * This method takes care of incoming messages from the socket
 	 */
 	
 	public void handleIncoming(String r) {
 		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
 		
+		// Exstract the different action and types
 		String action = (String) requestObj.get("action");
 		String type = (String) requestObj.get("type");
 		
 		// Change according to the different incoming types here
 		if (action.equals("appointment")) {
+			// We're dealing with an appointment
 			if (type.equals("get")) {
+				// The request is of the type get
+				
+				// Parse to array
 				JSONArray appointments = (JSONArray) requestObj.get("data");
+				
+				// Loop all the appointments
 				for (int i = 0; i < appointments.size(); i++) {
 					JSONObject thisAppointment = (JSONObject) appointments.get(i);
 					
-					// Create new appintment
+					// Create new appointment
 					Appointment a = new Appointment(this.gui);
 					
-					// Set each field, gogo
+					// Set each field (TODO)
 					a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
 					a.setTitle((String) thisAppointment.get("title"));
 					a.setDescription((String) thisAppointment.get("description"));
@@ -143,8 +150,11 @@ public class Cal {
 					a.setAlarm(false);
 					a.setAlarmTime(new Date());
 					
-					// Create
+					// Create the object
 					a.create();
+					
+					// Add appointment to user
+					this.user.addAppointment(a);
 				}
 			}
 		}
