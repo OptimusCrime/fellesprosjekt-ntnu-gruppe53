@@ -95,6 +95,11 @@ public class Room implements CalendarObjects {
  		}
  		return true;
 	}
+	public void reserve(Date startDate, Date endDate) {
+		availability.add(ArrayList<Date>);
+		availability.get(availability.size() - 1).add(startDate);
+		availability.get(availability.size() - 1).add(endDate);
+	}
 	private Date getStartDate(int index) {
 		return availability.get(index).get(0);
 	}
