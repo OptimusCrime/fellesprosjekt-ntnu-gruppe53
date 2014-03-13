@@ -311,9 +311,14 @@ public class ViewMain extends JFrame {
 		
 		// Store dates for the beginning and end of the week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 1);
 		this.weekDateStart = cal.getTime();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		cal.add(Calendar.HOUR_OF_DAY, 24);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
 		this.weekDateEnd = cal.getTime();
 		
 		// Calculate the days we display as a legend for the calendar
@@ -451,8 +456,8 @@ public class ViewMain extends JFrame {
 			// Load the current appointment
 			Appointment thisAppointment = userAppointments.get(i);
 			
-			System.out.println("Start = " + thisAppointment.getStart());
-			System.out.println("End = " + thisAppointment.getEnd());
+			System.out.println("Start = " + this.weekDateStart);
+			System.out.println("End = " + this.weekDateEnd);
 			
 			// Check if we are in the right week for this appointment
 			if (thisAppointment.getStart().after(this.weekDateStart)) {
