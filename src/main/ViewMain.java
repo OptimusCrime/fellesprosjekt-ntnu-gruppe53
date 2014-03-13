@@ -482,20 +482,25 @@ public class ViewMain extends JFrame {
 					// Get the correct square
 					GraphicSquare thisSquare = squareArr[dayOfWeek];
 					
-					// Get start-point in pixels
+					// Get start-point offset
 					c = Calendar.getInstance();
 					c.setTime(thisAppointment.getStart());
 					int startValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
 					double startPos = (this.row_height/60.0)*startValue;
-					System.out.println(startValue + " - " + startPos);
+					
+					// Get the height of the box
+					c.setTime(thisAppointment.getEnd());
+					int endValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
+					double heightValue = (this.row_height/60.0)*endValue - startPos;
+					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), 100, Color.pink);
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink);
 					
 					// Reset layout
 					appointmentSquare.setLayout(null);
 					
-					
-					appointmentSquare.setBounds(1, (int) startPos, (this.column_width - 1), 100);
+					// Setting bounds (not really sure what does that, but this works)
+					appointmentSquare.setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
 					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
