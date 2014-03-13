@@ -55,6 +55,10 @@ public class User implements CalendarObjects {
 		return this.created;
 	}
 	
+	public void sendReflect(String r) {
+		this.gui.reflectChange("user", r, this);
+	}
+	
 	/*
 	 * Public setter for login
 	 */

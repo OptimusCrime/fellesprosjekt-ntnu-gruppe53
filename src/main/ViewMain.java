@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,9 +67,16 @@ public class ViewMain extends JFrame {
 	
 	// For calculating the displayed week
 	private Timestamp ts;
+	private Date weekDateStart;
+	private Date weekDateEnd;
 	private long tsOffset;
 	private String[] calendarText;
 	private Map<String, String> calendarReplaces;
+	
+	// The different squares
+	private GraphicSquare[] squareArr;
+	private int column_width;
+	private int row_height;
 	
 	/*
 	 * Constructor
@@ -83,6 +91,9 @@ public class ViewMain extends JFrame {
 		calendarReplaces = new HashMap<String, String>();
 		calendarReplaces.put("l?", "lø");
 		calendarReplaces.put("s?", "sø");
+		
+		// Setting up array for holding the different squares
+		squareArr = new GraphicSquare[8];
 		
 		// Set close-mode
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -300,6 +311,18 @@ public class ViewMain extends JFrame {
 		// Set week in the label
 		navWeek.setText("Uke " + Integer.toString(week));
 		
+		// Store dates for the beginning and end of the week
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 1);
+		this.weekDateStart = cal.getTime();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.SECOND, 59);
+		this.weekDateEnd = cal.getTime();
+		
 		// Calculate the days we display as a legend for the calendar
 		calendarText = new String[7];
 		
@@ -342,8 +365,8 @@ public class ViewMain extends JFrame {
 		// Some variables we need
 		int width = splitRightInner.getWidth();
 		int numRows = 10;
-		int column_width = (int) width / 8;
-		int row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		this.column_width = (int) width / 8;
+		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
 		int height = row_height * numRows;
 		
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
@@ -416,6 +439,76 @@ public class ViewMain extends JFrame {
 			
 			// Add the square (with all content) to the calendar-wrapepr
 			splitRightInner.add(square);
+			
+			// Add square to the array
+			squareArr[i] = square;
+		}
+	}
+	
+	/*
+	 * Draws the appointments in the calendar (TODO, test)
+	 */
+	
+	public void drawAppointments() {
+		// Get all appointments from the user
+		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
+		
+		// Loop all the appointments
+		for (int i = 0; i < userAppointments.size(); i++) {
+			// Load the current appointment
+			Appointment thisAppointment = userAppointments.get(i);
+			
+			// Debug
+			System.out.println("Start = " + this.weekDateStart);
+			System.out.println("End = " + this.weekDateEnd);
+			System.out.println(thisAppointment.getStart() + " & " + thisAppointment.getEnd());
+			
+			// Check if we are in the right week for this appointment
+			if (thisAppointment.getStart().after(this.weekDateStart)) {
+				if (thisAppointment.getEnd().before(this.weekDateEnd)) {
+					// This appointment should be painted to the calendar, get what weekday
+					Calendar c = Calendar.getInstance();
+					c.setTime(thisAppointment.getStart());
+					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+					
+					// Retarded US has sunday as first day of week...
+					if (dayOfWeek == 1) {
+						dayOfWeek = 7;
+					}
+					else {
+						dayOfWeek--;
+					}
+					
+					// Get the correct square
+					GraphicSquare thisSquare = squareArr[dayOfWeek];
+					
+					// Get start-point offset
+					c = Calendar.getInstance();
+					c.setTime(thisAppointment.getStart());
+					int startValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
+					double startPos = (this.row_height/60.0)*startValue;
+					
+					// Get the height of the box
+					c.setTime(thisAppointment.getEnd());
+					int endValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
+					double heightValue = (this.row_height/60.0)*endValue - startPos;
+					
+					// Create new square for this appointment
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink);
+					
+					// Reset layout
+					appointmentSquare.setLayout(null);
+					
+					// Setting bounds (not really sure what does that, but this works)
+					appointmentSquare.setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
+					
+					// Add the block to the square
+					thisSquare.add(appointmentSquare);
+					
+					// Repaint
+					thisSquare.repaint();
+				}
+			}
 		}
 	}
 	
