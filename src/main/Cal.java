@@ -149,8 +149,10 @@ public class Cal {
 					
 					// Add appointment to user
 					this.user.addAppointment(a);
-					this.user.sendReflect("loaded-appointments");
 				}
+				
+				// Send reflect to the gui from the user-class
+				this.user.sendReflect("loaded-appointments");
 			}
 		}
 		else if (action.equals("login")) {
