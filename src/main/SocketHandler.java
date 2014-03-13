@@ -32,6 +32,7 @@ public class SocketHandler extends Thread {
 	private DataOutputStream out;
 	private DataInputStream in;
 	private Map<String, String> requestQueue;
+	private boolean doesRun;
 	
 	/*
 	 * Constructor
@@ -43,6 +44,7 @@ public class SocketHandler extends Thread {
 		this.client = null;
 		this.out = null;
 		this.in = null;
+		this.doesRun = false;
 		
 		this.requestQueue = new HashMap<String, String>();
 	}
@@ -65,7 +67,10 @@ public class SocketHandler extends Thread {
 			InputStream inFromServer = this.client.getInputStream();
 			this.in = new DataInputStream(inFromServer);
 			
-			start();
+			// Only start if we're not already running
+			if (!this.doesRun) {
+				start();
+			}
 		} catch (ConnectException e1) {
 			// Could not connect to the server
 			System.out.println("Err1");
@@ -98,32 +103,13 @@ public class SocketHandler extends Thread {
 	}
 	
 	/*
-	 * Derp TODO, this does not wkrk as intended
-	 */
-	
-	public String sendMessageWithResponse(String s, String p) {
-		try {
-			out.writeUTF(s);
-		} catch (IOException e) {
-			return null;
-		}
-		
-		requestQueue.put(p, null);
-		
-		while (true) {
-			String request = requestQueue.get(p);
-			if (request != null) {
-				requestQueue.remove(p);
-				return request;
-			}
-		}
-	}
-	
-	/*
 	 * Listen for stuff in the stream
 	 */
 	
 	public void run() {
+		// Set run to true
+		this.doesRun = true;
+		
 		// Store message here
 		String msg;
 		

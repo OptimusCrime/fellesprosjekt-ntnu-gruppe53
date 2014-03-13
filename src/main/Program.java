@@ -19,7 +19,7 @@ public class Program {
 	 * Constructor
 	 */
 	
-	public Program() {	
+	public Program() {
 		// Init new instance of Calendar-class
 		c = new Cal();
 	}
@@ -31,6 +31,5 @@ public class Program {
 	public static void main(String[] args) {
 		// Call the constructor here
 		new Program();
-		
 	}
 }
