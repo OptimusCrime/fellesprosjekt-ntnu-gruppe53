@@ -36,6 +36,7 @@ public class ViewLogin extends JFrame {
 	protected JTextField textField2;
 	protected JTextField textField3;
 	protected JPasswordField textField4;
+	protected JButton send;
 	
 	/*
 	 * Constructor
@@ -106,8 +107,8 @@ public class ViewLogin extends JFrame {
 		// Tweak textfields
 		
 		// Add button
-		JButton button1 = new JButton("Logg inn");
-		button1.addActionListener(new ActionListener () {
+		send = new JButton("Logg inn");
+		send.addActionListener(new ActionListener () {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -135,14 +136,12 @@ public class ViewLogin extends JFrame {
 					// Let's try to connect to the database
 					if (calendar.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
 						calendar.setLogin(textField3.getText(), new String(textField4.getPassword()));
-						if (calendar.doLogin()) {
-							// Logged successfully in
-							gui.showHome();
-						}
-						else {
-							// Username and stuff wrong
-							JOptionPane.showMessageDialog(null, "Passord og/eller brukernavn feil. Prøv igjen!", "Feil", JOptionPane.PLAIN_MESSAGE);
-						}
+						
+						// Send the login-info
+						calendar.doLogin();
+						
+						// Set the button to disabled
+						send.setEnabled(false);
 					}
 					else {
 						// Something's fucked up
@@ -151,7 +150,7 @@ public class ViewLogin extends JFrame {
 				}
 			}
 		});
-		super.getContentPane().add(button1, "6, 14");
+		super.getContentPane().add(send, "6, 14");
 		
 		// Pack everything
 		super.pack();
