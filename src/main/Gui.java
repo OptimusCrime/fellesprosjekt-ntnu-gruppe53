@@ -65,9 +65,9 @@ public class Gui {
 			// Object is created, changes should be reflected now
 			if (t.equals("user")) {
 				// Dealing with a user
-				if (f.equals("dep")) {
-					// Update login-stuff
-					login.sendLoginFailedMessage();
+				if (f.equals("loaded-appointments")) {
+					// Draw appointments
+					main.drawAppointments();
 				}
 			}
 		}
@@ -77,7 +77,7 @@ public class Gui {
 	 * Delegate for displaying the error-message in the login-view
 	 */
 	
-	public void sendLoginFsiledMessage() {
+	public void sendLoginFailedMessage() {
 		login.sendLoginFailedMessage();
 	}
 }

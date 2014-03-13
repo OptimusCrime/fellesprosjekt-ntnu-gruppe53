@@ -245,9 +245,6 @@ public class ViewMain extends JFrame {
 	    
 	    // Draw calendar
 	    this.drawCalendar();
-	    
-	    // Debug, TODO
-	    this.drawAppointments();
 	}
 	
 	/*
@@ -445,22 +442,29 @@ public class ViewMain extends JFrame {
 	 * Draws the appointments in the calendar (TODO, test)
 	 */
 	
-	private void drawAppointments() {
+	public void drawAppointments() {
 		// Get all appointments from the user
 		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
 		
 		// Loop all the appointments
 		for (int i = 0; i < userAppointments.size(); i++) {
-			// Check if we are in the right week for this appointment
+			// Load the current appointment
+			Appointment thisAppointment = userAppointments.get(i);
 			
+			System.out.println("Start = " + thisAppointment.getStart());
+			System.out.println("End = " + thisAppointment.getEnd());
+			
+			// Check if we are in the right week for this appointment
+			if (thisAppointment.getStart().after(this.weekDateStart)) {
+				if (thisAppointment.getEnd().before(this.weekDateEnd)) {
+					GraphicSquare nigger = squareArr[2];
+					GraphicAppointment squar2222e = new GraphicAppointment(0, 0, 100, 100, Color.pink);
+					squar2222e.setLayout(null);
+					squar2222e.setBounds(0, 0, 100, 100);
+					nigger.add(squar2222e);
+				}
+			}
 		}
-		
-		GraphicSquare nigger = squareArr[2];
-		GraphicAppointment squar2222e = new GraphicAppointment(0, 0, 100, 100, Color.pink);
-		squar2222e.setLayout(null);
-		squar2222e.setBounds(0, 0, 100, 100);
-		nigger.add(squar2222e);
-		
 	}
 	
 	/*

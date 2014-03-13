@@ -149,6 +149,7 @@ public class Cal {
 					
 					// Add appointment to user
 					this.user.addAppointment(a);
+					this.user.sendReflect("loaded-appointments");
 				}
 			}
 		}
@@ -162,13 +163,18 @@ public class Cal {
 				if (code == 200) {
 					// Login sucessful
 					this.user.setLoggedIn(true);
+					this.user.create();
 					
 					// Show home
 					this.gui.showHome();
+					
+					// Load all stuff the user needs
+					this.loadAppointments();
+					// this.loadStuff**
 				}
 				else {
 					// Send error-message
-					this.gui.sendLoginFsiledMessage();
+					this.gui.sendLoginFailedMessage();
 				}
 			}
 		}
