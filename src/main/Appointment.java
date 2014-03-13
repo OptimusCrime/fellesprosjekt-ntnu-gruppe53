@@ -1,6 +1,6 @@
 package main;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Date;
 
 /*
@@ -32,8 +32,8 @@ public class Appointment implements CalendarObjects {
 	private boolean alarm;
 	private Date alarmTime;
 	
-	private ArrayList<User> users;
-	private ArrayList<Group> groups;
+	private HashMap<User, Status> users;
+	private HashMap<Group, Status> groups;
 	
 	/*
 	 * Constructor
@@ -150,23 +150,23 @@ public class Appointment implements CalendarObjects {
 		this.alarmTime = alarmTime;
 		this.gui.reflectChange("appointment", "alarmtime", this);
 	}
-	public void addUser(User user) {
-		if (!users.contains(user)) {
-			users.add(user);
+	public void inviteUser(User user) {
+		if (!users.containsKey(user)) {
+			users.put(user, Status.NOT_RESPONDED);
 		}
 	}
 	public void removeUser(User user) {
-		if (users.contains(user)) {
+		if (users.containsKey(user)) {
 			users.remove(user);
 		}
 	}
-	public void addGroup(Group group) {
-		if (!groups.contains(group)) {
-			groups.add(group);
+	public void inviteGroup(Group group) {
+		if (!groups.containsKey(group)) {
+			groups.put(group, Status.NOT_RESPONDED);
 		}
 	}
 	public void removeGroup(Group group) {
-		if (groups.contains(group)) {
+		if (groups.containsKey(group)) {
 			groups.remove(group);
 		}
 	}
