@@ -1,6 +1,7 @@
 package main;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,25 +140,14 @@ public class Cal {
 						a.setTitle((String) thisAppointment.get("title"));
 						a.setDescription((String) thisAppointment.get("description"));
 						
-						Date derp1 = new Date();
-						Calendar c = Calendar.getInstance();
-						c.setTime(derp1);
-						c.set(Calendar.HOUR_OF_DAY, 11);
-						c.set(Calendar.MINUTE, 0);
-						a.setStart(c.getTime());
+						a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
+						a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
 						
-						Date derp2 = new Date();
-						c.setTime(derp2);
-						c.set(Calendar.HOUR_OF_DAY, 14);
-						c.set(Calendar.MINUTE, 0);
-						a.setEnd(c.getTime());
-						
-						a.setPlace("Place");
-						a.setRoom(new Room(this.gui));
-						a.setParticipates(true);
-						a.setHide(true);
-						a.setAlarm(false);
-						a.setAlarmTime(new Date());
+						a.setPlace((String) thisAppointment.get("place"));
+						a.setParticipates((boolean) thisAppointment.get("participate"));
+						a.setHide((boolean) thisAppointment.get("hide"));
+						a.setAlarm((boolean) thisAppointment.get("alarm"));
+						a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
 						
 						// Create the object
 						a.create();
