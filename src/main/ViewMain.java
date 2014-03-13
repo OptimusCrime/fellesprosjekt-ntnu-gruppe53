@@ -192,6 +192,24 @@ public class ViewMain extends JFrame {
 		navRight = new JButton("►");
 		splitRightNav.add(navRight, BorderLayout.EAST);
 		
+		// Add actionListeners for the nav-buttons
+		navLeft.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateTime(false);
+			}
+			
+		});
+		navRight.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateTime(true);
+			}
+			
+		});
+		
 		// Add label which identifies what week we're currently in
 		navWeek = new JLabel("Laster...");
 		navWeek.setHorizontalAlignment(SwingConstants.CENTER);
@@ -214,12 +232,47 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
+	 * Method that updates the ts-offset, calculates new timestamp and updates the GUI
+	 */
+	
+	protected void updateTime(boolean w) {
+		System.out.println("Here");
+		if (w) {
+			// Increase
+			this.tsOffset += (60*60*24*7*1000);
+		}
+		else {
+			// Decrease
+			this.tsOffset -= (60*60*24*7*1000);
+		}
+		
+		// Calculate calendar again
+		this.recalculateTime();
+		this.calculateCalendar();
+		
+		// Redraw the calendar
+		this.clearCalendar();
+		this.drawCalendar();
+	}
+	
+	/*
 	 * Sets the time for the calendar
 	 */
 	
 	private void setTime() {
+		// Set initial ts-offset
 		this.tsOffset = 0;
-		this.ts = new Timestamp(System.currentTimeMillis());
+		
+		// Calculate the first timestamp
+		this.recalculateTime();
+	}
+	
+	/*
+	 * Method for calculating timestamp +/- the offset
+	 */
+	
+	private void recalculateTime() {
+		this.ts = new Timestamp(System.currentTimeMillis() + this.tsOffset);
 	}
 	
 	/*
@@ -229,6 +282,7 @@ public class ViewMain extends JFrame {
 	private void calculateCalendar() {
 		// Parse timestamp to Date-object
 		Date d = new Date(ts.getTime());
+		System.out.println(d.toString());
 		
 		// Use the Calendar-class to get the info
 		Calendar cal = Calendar.getInstance();
@@ -357,6 +411,14 @@ public class ViewMain extends JFrame {
 			// Add the square (with all content) to the calendar-wrapepr
 			splitRightInner.add(square);
 		}
+	}
+	
+	/*
+	 * Removes all graphics from the calendar-inner-wrapper
+	 */
+	
+	private void clearCalendar() {
+		splitRightInner.removeAll();
 	}
 	
 	/*
