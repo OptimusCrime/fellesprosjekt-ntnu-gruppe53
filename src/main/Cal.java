@@ -1,6 +1,7 @@
 package main;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,88 +111,83 @@ public class Cal {
 	
 	public void handleIncoming(String r) {
 		// Decode json
+		System.out.println("Got this = " + r);
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
-		
+		System.out.println(requestObj);
 		// Exstract the different action and types
-		String action = (String) requestObj.get("action");
-		String type = (String) requestObj.get("type");
-		
-		// Change according to the different incoming types here
-		if (action.equals("appointment")) {
-			// We're dealing with an appointment
-			if (type.equals("get")) {
-				// The request is of the type get
-				
-				// Parse to array
-				JSONArray appointments = (JSONArray) requestObj.get("data");
-				
-				// Loop all the appointments
-				for (int i = 0; i < appointments.size(); i++) {
-					JSONObject thisAppointment = (JSONObject) appointments.get(i);
+		try {
+			String action = (String) requestObj.get("action");
+			String type = (String) requestObj.get("type");
+			
+			// Change according to the different incoming types here
+			if (action.equals("appointment")) {
+				// We're dealing with an appointment
+				if (type.equals("get")) {
+					// The request is of the type get
 					
-					// Create new appointment
-					Appointment a = new Appointment(this.gui);
+					// Parse to array
+					JSONArray appointments = (JSONArray) requestObj.get("data");
 					
-					// Set each field (TODO)
-					a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
-					a.setTitle((String) thisAppointment.get("title"));
-					a.setDescription((String) thisAppointment.get("description"));
+					// Loop all the appointments
+					for (int i = 0; i < appointments.size(); i++) {
+						JSONObject thisAppointment = (JSONObject) appointments.get(i);
+						
+						// Create new appointment
+						Appointment a = new Appointment(this.gui);
+						
+						// Set each field (TODO)
+						a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
+						a.setTitle((String) thisAppointment.get("title"));
+						a.setDescription((String) thisAppointment.get("description"));
+						
+						a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
+						a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
+						
+						a.setPlace((String) thisAppointment.get("place"));
+						a.setParticipates((boolean) thisAppointment.get("participate"));
+						a.setHide((boolean) thisAppointment.get("hide"));
+						a.setAlarm((boolean) thisAppointment.get("alarm"));
+						a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
+						
+						// Create the object
+						a.create();
+						
+						// Add appointment to user
+						this.user.addAppointment(a);
+					}
 					
-					Date derp1 = new Date();
-					Calendar c = Calendar.getInstance();
-					c.setTime(derp1);
-					c.set(Calendar.HOUR_OF_DAY, 11);
-					c.set(Calendar.MINUTE, 0);
-					a.setStart(c.getTime());
-					
-					Date derp2 = new Date();
-					c.setTime(derp2);
-					c.set(Calendar.HOUR_OF_DAY, 14);
-					c.set(Calendar.MINUTE, 0);
-					a.setEnd(c.getTime());
-					
-					a.setPlace("Place");
-					a.setRoom(new Room(this.gui));
-					a.setParticipates(true);
-					a.setHide(true);
-					a.setAlarm(false);
-					a.setAlarmTime(new Date());
-					
-					// Create the object
-					a.create();
-					
-					// Add appointment to user
-					this.user.addAppointment(a);
+					// Send reflect to the gui from the user-class
+					this.user.sendReflect("loaded-appointments");
 				}
-				
-				// Send reflect to the gui from the user-class
-				this.user.sendReflect("loaded-appointments");
+			}
+			else if (action.equals("login")) {
+				// Login
+				if (type.equals("put")) {
+					// Get the code
+					int code = new BigDecimal((long) requestObj.get("code")).intValueExact();
+					
+					// Check what code was returned
+					if (code == 200) {
+						// Login sucessful
+						this.user.setLoggedIn(true);
+						this.user.create();
+						
+						// Show home
+						this.gui.showHome();
+						
+						// Load all stuff the user needs
+						this.loadAppointments();
+						// this.loadStuff**
+					}
+					else {
+						// Send error-message
+						this.gui.sendLoginFailedMessage();
+					}
+				}
 			}
 		}
-		else if (action.equals("login")) {
-			// Login
-			if (type.equals("put")) {
-				// Get the code
-				int code = new BigDecimal((long) requestObj.get("code")).intValueExact();
-				
-				// Check what code was returned
-				if (code == 200) {
-					// Login sucessful
-					this.user.setLoggedIn(true);
-					this.user.create();
-					
-					// Show home
-					this.gui.showHome();
-					
-					// Load all stuff the user needs
-					this.loadAppointments();
-					// this.loadStuff**
-				}
-				else {
-					// Send error-message
-					this.gui.sendLoginFailedMessage();
-				}
-			}
+		catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
