@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,6 +67,8 @@ public class ViewMain extends JFrame {
 	
 	// For calculating the displayed week
 	private Timestamp ts;
+	private Date weekDateStart;
+	private Date weekDateEnd;
 	private long tsOffset;
 	private String[] calendarText;
 	private Map<String, String> calendarReplaces;
@@ -309,6 +312,13 @@ public class ViewMain extends JFrame {
 		// Set week in the label
 		navWeek.setText("Uke " + Integer.toString(week));
 		
+		// Store dates for the beginning and end of the week
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		this.weekDateStart = cal.getTime();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		cal.add(Calendar.HOUR_OF_DAY, 24);
+		this.weekDateEnd = cal.getTime();
+		
 		// Calculate the days we display as a legend for the calendar
 		calendarText = new String[7];
 		
@@ -436,7 +446,15 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void drawAppointments() {
-		// Debug-code
+		// Get all appointments from the user
+		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
+		
+		// Loop all the appointments
+		for (int i = 0; i < userAppointments.size(); i++) {
+			// Check if we are in the right week for this appointment
+			
+		}
+		
 		GraphicSquare nigger = squareArr[2];
 		GraphicAppointment squar2222e = new GraphicAppointment(0, 0, 100, 100, Color.pink);
 		squar2222e.setLayout(null);

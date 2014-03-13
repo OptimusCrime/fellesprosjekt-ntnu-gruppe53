@@ -1,6 +1,7 @@
 package main;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.simple.JSONArray;
@@ -171,5 +172,13 @@ public class Cal {
 				}
 			}
 		}
+	}
+	
+	/*
+	 * Delete for getting all appointments from the user
+	 */
+	
+	public ArrayList<Appointment> getAppointments() {
+		return this.user.getAppointments();
 	}
 }
