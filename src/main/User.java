@@ -36,6 +36,10 @@ public class User implements CalendarObjects {
 		// Set initial data
 		this.username = "";
 		this.password = "";
+		
+		// Init arrayLists
+		this.appointments = new ArrayList<Appointment>();
+		this.notifications = new ArrayList<Notification>();
 	}
 	
 	/*

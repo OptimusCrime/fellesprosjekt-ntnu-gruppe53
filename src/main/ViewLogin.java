@@ -140,8 +140,9 @@ public class ViewLogin extends JFrame {
 						// Send the login-info
 						calendar.doLogin();
 						
-						// Set the button to disabled
+						// Set the button to disabled and update text
 						send.setEnabled(false);
+						send.setText("Laster...");
 					}
 					else {
 						// Something's fucked up
@@ -154,6 +155,15 @@ public class ViewLogin extends JFrame {
 		
 		// Pack everything
 		super.pack();
+	}
+	
+	/*
+	 * If the login was not successfull, send error here
+	 */
+	
+	public void sendLoginFailedMessage() {
+		send.setText("Logg inn");
+		JOptionPane.showMessageDialog(null, "Brukernavn og/eller passord feil. Prøv igjen!", "Feil", JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	/*

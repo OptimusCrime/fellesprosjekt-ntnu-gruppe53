@@ -56,21 +56,14 @@ public class Cal {
 	}
 	
 	/*
-	 * Method that does the actual login (TOOD this is just a test for now)
+	 * Sends login-details to the server
 	 */
 	
-	public boolean doLogin() {
+	public void doLogin() {
 		JSONObject loginObj = this.initJSONObject("login", "put");
 		String loginObjString = loginObj.toJSONString();
 		
-		//String derp = sh.sendMessageWithResponse(loginObjString, "login/put");
-		
-		this.user.setLoggedIn(true);
-		
-		this.loadAppointments();
-		
-		// Always returns true for testing
-		return true;
+		sh.sendMessage(loginObjString);
 	}
 	
 	/*
@@ -155,6 +148,26 @@ public class Cal {
 					
 					// Add appointment to user
 					this.user.addAppointment(a);
+				}
+			}
+		}
+		else if (action.equals("login")) {
+			// Login
+			if (type.equals("put")) {
+				// Get the code
+				int code = new BigDecimal((long) requestObj.get("code")).intValueExact();
+				
+				// Check what code was returned
+				if (code == 200) {
+					// Login sucessful
+					this.user.setLoggedIn(true);
+					
+					// Show home
+					this.gui.showHome();
+				}
+				else {
+					// Send error-message
+					this.gui.sendLoginFsiledMessage();
 				}
 			}
 		}
