@@ -35,6 +35,8 @@ public class Appointment implements CalendarObjects {
 	private HashMap<User, Status> users;
 	private HashMap<Group, Status> groups;
 	
+	private ArrayList<Room> roomList;
+	
 	/*
 	 * Constructor
 	 */
@@ -169,5 +171,14 @@ public class Appointment implements CalendarObjects {
 		if (groups.containsKey(group)) {
 			groups.remove(group);
 		}
+	}
+	public ArrayList<Room> findRoom(Date startDate, Date endDate, int capacity) {
+		ArrayList<Room> availableRooms = new ArrayList<Room>();
+		for (int i = 0; i < roomList.size(); i++) {
+			if (roomList.get(i).isAvailable(startDate, endDate) && roomList.get(i).getCapacity() >= capacity) {
+				availableRooms.add(roomList.get(i));
+			}
+		}
+		return availableRooms;
 	}
 }
