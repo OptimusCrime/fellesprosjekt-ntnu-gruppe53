@@ -32,9 +32,19 @@ public class Appointment implements CalendarObjects {
 	private boolean alarm;
 	private Date alarmTime;
 	
-	private HashMap<User, Status> users;
+	/*
+	 * List of users and a status for each user which tells if they havent responded, have declined or have confirmed
+	 */
+	private HashMap<User, Status> users; 
+	
+	/*
+	 * Same as users, just with groups
+	 */
 	private HashMap<Group, Status> groups;
 	
+	/*
+	 * List of all rooms 
+	 */
 	private ArrayList<Room> roomList;
 	
 	/*
@@ -122,6 +132,7 @@ public class Appointment implements CalendarObjects {
 
 	public void setRoom(Room room) {
 		this.room = room;
+		this.room.reserve(this.start, this.end); //reserves room in the appointments time
 		this.gui.reflectChange("appointment", "room", this);
 	}
 
@@ -152,7 +163,11 @@ public class Appointment implements CalendarObjects {
 		this.alarmTime = alarmTime;
 		this.gui.reflectChange("appointment", "alarmtime", this);
 	}
-	public void inviteUser(User user) {
+	
+	/*
+	 * Invite and remove methods
+	 */
+	public void inviteUser(User user) { 
 		if (!users.containsKey(user)) {
 			users.put(user, Status.NOT_RESPONDED);
 		}
@@ -162,7 +177,7 @@ public class Appointment implements CalendarObjects {
 			users.remove(user);
 		}
 	}
-	public void inviteGroup(Group group) {
+	public void inviteGroup(Group group) {  
 		if (!groups.containsKey(group)) {
 			groups.put(group, Status.NOT_RESPONDED);
 		}
@@ -172,6 +187,10 @@ public class Appointment implements CalendarObjects {
 			groups.remove(group);
 		}
 	}
+	
+	/*
+	 * returns a list of all rooms that is available at given time, and has capacity bigger or equal to given one
+	 */
 	public ArrayList<Room> findRoom(Date startDate, Date endDate, int capacity) {
 		ArrayList<Room> availableRooms = new ArrayList<Room>();
 		for (int i = 0; i < roomList.size(); i++) {
