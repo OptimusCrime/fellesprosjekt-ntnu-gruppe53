@@ -22,33 +22,48 @@ import org.json.simple.JSONValue;
  */
 
 public class SocketHandler extends Thread {
+	
+	/*
+	 * Variables we need
+	 */
+	
+	private Cal calendar;
 	private Socket client;
 	private DataOutputStream out;
 	private DataInputStream in;
 	private Map<String, String> requestQueue;
+	
+	/*
+	 * Constructor
+	 */
 
-	public SocketHandler () {
+	public SocketHandler (Cal c) {
 		// Set initial values for the variables
-		client = null;
-		out = null;
-		in = null;
+		this.calendar = c;
+		this.client = null;
+		this.out = null;
+		this.in = null;
 		
-		requestQueue = new HashMap<String, String>();
+		this.requestQueue = new HashMap<String, String>();
 	}
+	
+	/*
+	 * Method for connecting to the server
+	 */
 	
 	public boolean connect(String s, int p) {
 		// Trying to establish connection with server
 		try {
 			// Setting up socket-connection here
-			client = new Socket(s, p);
+			this.client = new Socket(s, p);
 			
 			// Set up stream out
-			OutputStream outToServer = client.getOutputStream();
-			out = new DataOutputStream(outToServer);
+			OutputStream outToServer = this.client.getOutputStream();
+			this.out = new DataOutputStream(outToServer);
 			
 			// Set up stream in
-			InputStream inFromServer = client.getInputStream();
-			in = new DataInputStream(inFromServer);
+			InputStream inFromServer = this.client.getInputStream();
+			this.in = new DataInputStream(inFromServer);
 			
 			start();
 		} catch (ConnectException e1) {
@@ -70,13 +85,21 @@ public class SocketHandler extends Thread {
 		return true;
 	}
 	
+	/*
+	 * Method for sending a message
+	 */
+	
 	public void sendMessage(String s) {
 		try {
-			out.writeUTF(s);
+			this.out.writeUTF(s);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/*
+	 * Derp TODO, this does not wkrk as intended
+	 */
 	
 	public String sendMessageWithResponse(String s, String p) {
 		try {
@@ -114,19 +137,11 @@ public class SocketHandler extends Thread {
 				
 				// Check if the variable got actual content
 				if (msg.length() > 0) {
+					// Print message
 					System.out.println(msg);
 					
-					// Check if in queue
-					JSONObject obj = (JSONObject) JSONValue.parse(msg);
-					
-					// Get different values from the json-object
-					String action = (String) obj.get("action");
-					String type = (String) obj.get("type");
-					String path = action + "/" + type;
-					
-					if (requestQueue.containsKey(path)) {
-						requestQueue.put(path, msg);
-					}
+					// Send incoming to calendar-class to take care of it
+					this.calendar.handleIncoming(msg);
 				}
 			} catch (IOException e) {
 				// Quitting

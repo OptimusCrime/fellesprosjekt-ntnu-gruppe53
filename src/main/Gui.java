@@ -54,4 +54,18 @@ public class Gui {
 		login = new ViewLogin(this, this.calendar);
 		login.setVisible(true);
 	}
+	
+	/*
+	 * This message is called when an object is changed
+	 */
+	
+	public void reflectChange(String t, String f, Object o) {
+		// Cast object
+		CalendarObjects obj = (CalendarObjects)o;
+		
+		// Check if created
+		if ((boolean) obj.isCreated()) {
+			// Object is created, changes should be reflected now
+		}
+	}
 }

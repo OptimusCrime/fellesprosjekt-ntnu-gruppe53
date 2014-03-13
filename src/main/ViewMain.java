@@ -25,6 +25,13 @@ import javax.swing.JSplitPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+/*
+ * ViewMain
+ * 
+ * The main view (holds the calendar etc)
+ * 
+ */
+
 public class ViewMain extends JFrame {
 	
 	/*
@@ -236,7 +243,7 @@ public class ViewMain extends JFrame {
 	 */
 	
 	protected void updateTime(boolean w) {
-		System.out.println("Here");
+		// Check what way we're changing the time
 		if (w) {
 			// Increase
 			this.tsOffset += (60*60*24*7*1000);
@@ -282,7 +289,6 @@ public class ViewMain extends JFrame {
 	private void calculateCalendar() {
 		// Parse timestamp to Date-object
 		Date d = new Date(ts.getTime());
-		System.out.println(d.toString());
 		
 		// Use the Calendar-class to get the info
 		Calendar cal = Calendar.getInstance();
