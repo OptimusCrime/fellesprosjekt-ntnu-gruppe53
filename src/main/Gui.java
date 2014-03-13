@@ -25,12 +25,9 @@ public class Gui {
 		// Set references
 		this.calendar = c;
 		
-		main = new ViewMain(this, this.calendar);
-		main.setVisible(true);
-		
 		// Display login-screen
-		//login = new ViewLogin(this, this.calendar);
-		//login.setVisible(true);
+		login = new ViewLogin(this, this.calendar);
+		login.setVisible(true);
 	}
 	
 	/*
@@ -66,6 +63,21 @@ public class Gui {
 		// Check if created
 		if ((boolean) obj.isCreated()) {
 			// Object is created, changes should be reflected now
+			if (t.equals("user")) {
+				// Dealing with a user
+				if (f.equals("dep")) {
+					// Update login-stuff
+					login.sendLoginFailedMessage();
+				}
+			}
 		}
+	}
+	
+	/*
+	 * Delegate for displaying the error-message in the login-view
+	 */
+	
+	public void sendLoginFsiledMessage() {
+		login.sendLoginFailedMessage();
 	}
 }
