@@ -9,14 +9,16 @@ import java.util.Date;
  * 
  */
 
-public class Appointment {
+public class Appointment implements CalendarObjects {
 	
 	/*
 	 * Variables we need
 	 */
 	
 	private Gui gui;
+	private boolean created;
 	
+	private int id;
 	private String title;
 	private String description;
 	private Date start;
@@ -35,11 +37,33 @@ public class Appointment {
 	
 	public Appointment (Gui g) {
 		this.gui = g;
+		this.created = false;
+	}
+	
+	/*
+	 * Create & reflect
+	 */
+	
+	public void create() {
+		this.created = true;
+		this.gui.reflectChange("appointment", "create", this);
+	}
+	
+	public boolean isCreated() {
+		return this.created;
 	}
 	
 	/*
 	 * Generated getters and setters
 	 */
+	
+	public int getId() {
+		return this.id;
+	}
+	
+	public void setId (int i) {
+		this.id = i;
+	}
 	
 	public String getTitle() {
 		return title;

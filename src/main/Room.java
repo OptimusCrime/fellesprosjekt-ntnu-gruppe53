@@ -7,13 +7,15 @@ package main;
  * 
  */
 
-public class Room {
+public class Room implements CalendarObjects {
 	
 	/*
 	 * Variables we need
 	 */
 	
 	private Gui gui;
+	private boolean created;
+	
 	private int id;
 	private String name;
 	private int capacity;
@@ -24,6 +26,20 @@ public class Room {
 	
 	public Room (Gui g) {
 		this.gui = g;
+		this.created = false;
+	}
+		
+	/*
+	 * Create & reflect
+	 */
+	
+	public void create() {
+		this.created = true;
+		this.gui.reflectChange("room", "create", this);
+	}
+	
+	public boolean isCreated() {
+		return this.created;
 	}
 	
 	/*

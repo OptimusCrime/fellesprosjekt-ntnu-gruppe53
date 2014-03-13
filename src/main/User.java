@@ -9,13 +9,15 @@ import java.util.ArrayList;
  * 
  */
 
-public class User {
+public class User implements CalendarObjects {
 	
 	/*
 	 * Variables etc
 	 */
 	
 	private Gui gui;
+	private boolean created;
+	
 	private boolean isLoggedIn;
 	private String username;
 	private String password;
@@ -29,10 +31,24 @@ public class User {
 	public User(Gui g) {
 		// Set reference to gui
 		this.gui = g;
+		this.created = false;
 		
 		// Set initial data
 		this.username = "";
 		this.password = "";
+	}
+	
+	/*
+	 * Create & reflect
+	 */
+	
+	public void create() {
+		this.created = true;
+		this.gui.reflectChange("user", "create", this);
+	}
+	
+	public boolean isCreated() {
+		return this.created;
 	}
 	
 	/*

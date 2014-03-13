@@ -7,13 +7,15 @@ package main;
  * 
  */
 
-public class Group {
+public class Group implements CalendarObjects {
 	
 	/*
 	 * Variables
 	 */
 	
 	private Gui gui;
+	private boolean created;
+	
 	private int id;
 	private String name;
 	
@@ -23,6 +25,20 @@ public class Group {
 	
 	public Group (Gui g) {
 		this.gui = g;
+		this.created = false;
+	}
+	
+	/*
+	 * Create & reflect
+	 */
+	
+	public void create() {
+		this.created = true;
+		this.gui.reflectChange("group", "create", this);
+	}
+	
+	public boolean isCreated() {
+		return this.created;
 	}
 	
 	/*

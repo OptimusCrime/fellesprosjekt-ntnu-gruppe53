@@ -1,6 +1,11 @@
 package main;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 /*
  * Calendar
@@ -17,9 +22,7 @@ public class Cal {
 	
 	private Gui gui;
 	private User user;
-	
 	private SocketHandler sh;
-	private SocketTranslator st;
 	
 	/*
 	 * Constructor
@@ -33,8 +36,7 @@ public class Cal {
 		this.user = new User(this.gui);
 		
 		// Sockets
-		this.sh = new SocketHandler();
-		this.st = new SocketTranslator();
+		this.sh = new SocketHandler(this);
 	}
 	
 	/*
@@ -105,5 +107,46 @@ public class Cal {
 		
 		// Return
 		return tempObj;
+	}
+	
+	/*
+	 * Derp
+	 */
+	
+	public void handleIncoming(String r) {
+		// Decode json
+		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
+		
+		String action = (String) requestObj.get("action");
+		String type = (String) requestObj.get("type");
+		
+		// Change according to the different incoming types here
+		if (action.equals("appointment")) {
+			if (type.equals("get")) {
+				JSONArray appointments = (JSONArray) requestObj.get("data");
+				for (int i = 0; i < appointments.size(); i++) {
+					JSONObject thisAppointment = (JSONObject) appointments.get(i);
+					
+					// Create new appintment
+					Appointment a = new Appointment(this.gui);
+					
+					// Set each field, gogo
+					a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
+					a.setTitle((String) thisAppointment.get("title"));
+					a.setDescription((String) thisAppointment.get("description"));
+					a.setStart(new Date());
+					a.setEnd(new Date());
+					a.setPlace("Place");
+					a.setRoom(new Room(this.gui));
+					a.setParticipates(true);
+					a.setHide(true);
+					a.setAlarm(false);
+					a.setAlarmTime(new Date());
+					
+					// Create
+					a.create();
+				}
+			}
+		}
 	}
 }

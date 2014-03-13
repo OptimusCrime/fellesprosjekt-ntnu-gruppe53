@@ -25,6 +25,13 @@ import javax.swing.JSplitPane;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
+/*
+ * ViewMain
+ * 
+ * The main view (holds the calendar etc)
+ * 
+ */
+
 public class ViewMain extends JFrame {
 	
 	/*
