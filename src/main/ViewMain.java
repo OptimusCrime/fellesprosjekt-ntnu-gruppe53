@@ -75,6 +75,8 @@ public class ViewMain extends JFrame {
 	
 	// The different squares
 	private GraphicSquare[] squareArr;
+	private int column_width;
+	private int row_height;
 	
 	/*
 	 * Constructor
@@ -363,8 +365,8 @@ public class ViewMain extends JFrame {
 		// Some variables we need
 		int width = splitRightInner.getWidth();
 		int numRows = 10;
-		int column_width = (int) width / 8;
-		int row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		this.column_width = (int) width / 8;
+		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
 		int height = row_height * numRows;
 		
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
@@ -456,17 +458,50 @@ public class ViewMain extends JFrame {
 			// Load the current appointment
 			Appointment thisAppointment = userAppointments.get(i);
 			
+			// Debug
 			System.out.println("Start = " + this.weekDateStart);
 			System.out.println("End = " + this.weekDateEnd);
+			System.out.println(thisAppointment.getStart() + " & " + thisAppointment.getEnd());
 			
 			// Check if we are in the right week for this appointment
 			if (thisAppointment.getStart().after(this.weekDateStart)) {
 				if (thisAppointment.getEnd().before(this.weekDateEnd)) {
-					GraphicSquare nigger = squareArr[2];
-					GraphicAppointment squar2222e = new GraphicAppointment(0, 0, 100, 100, Color.pink);
-					squar2222e.setLayout(null);
-					squar2222e.setBounds(0, 0, 100, 100);
-					nigger.add(squar2222e);
+					// This appointment should be painted to the calendar, get what weekday
+					Calendar c = Calendar.getInstance();
+					c.setTime(thisAppointment.getStart());
+					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+					
+					// Retarded US has sunday as first day of week...
+					if (dayOfWeek == 1) {
+						dayOfWeek = 7;
+					}
+					else {
+						dayOfWeek--;
+					}
+					
+					// Get the correct square
+					GraphicSquare thisSquare = squareArr[dayOfWeek];
+					
+					// Get start-point in pixels
+					c = Calendar.getInstance();
+					c.setTime(thisAppointment.getStart());
+					int startValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
+					double startPos = (this.row_height/60.0)*startValue;
+					System.out.println(startValue + " - " + startPos);
+					// Create new square for this appointment
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), 100, Color.pink);
+					
+					// Reset layout
+					appointmentSquare.setLayout(null);
+					
+					
+					appointmentSquare.setBounds(1, (int) startPos, (this.column_width - 1), 100);
+					
+					// Add the block to the square
+					thisSquare.add(appointmentSquare);
+					
+					// Repaint
+					thisSquare.repaint();
 				}
 			}
 		}
