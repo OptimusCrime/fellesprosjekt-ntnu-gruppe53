@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /*
@@ -30,6 +31,9 @@ public class Appointment implements CalendarObjects {
 	private boolean hide;
 	private boolean alarm;
 	private Date alarmTime;
+	
+	private ArrayList<User> users;
+	private ArrayList<Group> groups;
 	
 	/*
 	 * Constructor
@@ -145,5 +149,25 @@ public class Appointment implements CalendarObjects {
 	public void setAlarmTime(Date alarmTime) {
 		this.alarmTime = alarmTime;
 		this.gui.reflectChange("appointment", "alarmtime", this);
+	}
+	public void addUser(User user) {
+		if (!users.contains(user)) {
+			users.add(user);
+		}
+	}
+	public void removeUser(User user) {
+		if (users.contains(user)) {
+			users.remove(user);
+		}
+	}
+	public void addGroup(Group group) {
+		if (!groups.contains(group)) {
+			groups.add(group);
+		}
+	}
+	public void removeGroup(Group group) {
+		if (groups.contains(group)) {
+			groups.remove(group);
+		}
 	}
 }
