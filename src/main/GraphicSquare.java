@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 /*
  * GraphicSquare
@@ -24,6 +26,7 @@ public class GraphicSquare extends JPanel {
 	private Rectangle rect;
 	private int space;
 	private int width;
+	private ArrayList<JLabel> labelsOnHover;
 	
 	/*
 	 * Constructor
@@ -36,8 +39,19 @@ public class GraphicSquare extends JPanel {
 		this.space = spaceHeight;
 		this.width = height;
 		
+		// Initialize list of labels
+		labelsOnHover = new ArrayList<JLabel>();
+		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
+	}
+	
+	/*
+	 * Add label to the square
+	 */
+	
+	public void addLabel(JLabel j) {
+		labelsOnHover.add(j);
 	}
 	
 	/*

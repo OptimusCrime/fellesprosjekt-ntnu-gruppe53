@@ -3,6 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -621,7 +622,8 @@ public class ViewMain extends JFrame {
 			for (int j = 1; j <= 9; j++) {
 				JLabel plusSignLabel = new JLabel("+");
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
-				//plusSignLabel.setVisible(false);
+				plusSignLabel.setVisible(false);
+				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				
 				// Add to square
 				squareArr[i].add(plusSignLabel);
