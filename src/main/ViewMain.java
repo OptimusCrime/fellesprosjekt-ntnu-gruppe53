@@ -26,8 +26,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
@@ -55,9 +57,13 @@ public class ViewMain extends JFrame {
 	private JSplitPane main;
 	
 	private JPanel splitLeft;
+	private JPanel splitLeftInner;
 	private JPanel splitRight;
 	private JPanel splitRightInner;
 	private JPanel splitRightNav;
+	
+	// For the dyanamic sidepanels
+	private JScrollPane ansatteScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -110,7 +116,7 @@ public class ViewMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set initial size of the window and the relative loaction
-		super.setPreferredSize(new Dimension((int) dim.getWidth() - 200, (int) dim.getHeight()));
+		super.setPreferredSize(new Dimension((int) dim.getWidth() - 75, (int) dim.getHeight()));
 	    
 	    // Adder springlayout to base
 	    SpringLayout springLayout = new SpringLayout();
@@ -139,6 +145,9 @@ public class ViewMain extends JFrame {
 		springLayout.putConstraint(SpringLayout.WEST, main, 10, SpringLayout.WEST, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
+		
+		// Set main-panel impossible to resize
+		main.setEnabled(false);
 		
 		// Add header-left panel
 		JPanel headerLeft = new JPanel();
@@ -179,9 +188,12 @@ public class ViewMain extends JFrame {
 		splitLeft = new JPanel();
 		main.setLeftComponent(splitLeft);
 		
-		// Placeholder TODO
-		JLabel lblNewLabel = new JLabel("New label");
-		splitLeft.add(lblNewLabel);
+		// Dynamic left-panel
+		splitLeftInner = new JPanel();
+		splitLeft.add(splitLeftInner);
+		
+		// Build dynamic left-panel
+		this.buildLeftpanel();
 		
 		// Set right-split content
 		splitRight = new JPanel();
@@ -240,9 +252,12 @@ public class ViewMain extends JFrame {
 		
 		// Show, set width etc
 		super.setVisible(true);
-		super.setBounds(100, 100, (int) dim.getWidth() - 200, (int) dim.getHeight());
+		super.setBounds(0, 0, (int) dim.getWidth() - 75, (int) dim.getHeight());
 	    super.setLocationRelativeTo(null);
 	    super.pack();
+	    
+	    // Set resize disallowed
+	    super.setResizable(false);
 	    
 	    // Set initial time
 	    this.setTime();
@@ -454,7 +469,7 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * Draws the appointments in the calendar (TODO, test)
+	 * Draws the appointments in the calendar
 	 */
 	
 	public void drawAppointments() {
@@ -558,5 +573,22 @@ public class ViewMain extends JFrame {
 	
 	public void setVisible(boolean b) {
 		super.setVisible(b);
+	}
+	
+	/*
+	 * Building left panel-content
+	 */
+	
+	private void buildLeftpanel() {
+		// Ansatte
+		ansatteScrollPane = new JScrollPane();
+		ansatteScrollPane.setOpaque(false);
+		ansatteScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		ansatteScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		ansatteScrollPane.setPreferredSize(new Dimension (300, 300));
+		ansatteScrollPane.setBackground(null);
+		ansatteScrollPane.setOpaque(true);
+		ansatteScrollPane.setBorder(null);
+		splitLeftInner.add(ansatteScrollPane, BorderLayout.WEST);
 	}
 }
