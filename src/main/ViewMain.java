@@ -691,6 +691,7 @@ public class ViewMain extends JFrame {
 		employeeScrollPane.setBackground(null);
 		employeeScrollPane.setOpaque(true);
 		employeeScrollPane.setBorder(null);
+		employeeScrollPane.setVisible(false);
 		
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
@@ -711,7 +712,20 @@ public class ViewMain extends JFrame {
 		// Info - Panel
 		//
 		
-		// viewScrollPane
+		JPanel innerViewPanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy = new JLabel("Hallo");
+		innerViewPanel.add(dummy);
+		
+		viewScrollPane = new JScrollPane(innerViewPanel);
+		viewScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		viewScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		viewScrollPane.setPreferredSize(new Dimension (300, 300));
+		viewScrollPane.setBackground(null);
+		viewScrollPane.setOpaque(true);
+		viewScrollPane.setBorder(null);
+		viewScrollPane.setVisible(false);
 	}
 	
 	/*
@@ -721,5 +735,8 @@ public class ViewMain extends JFrame {
 	private void setSizesLeftPanel() {
 		// Employees
 		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// View
+		viewScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 }
