@@ -69,7 +69,8 @@ public class ViewMain extends JFrame {
 	private JPanel splitRightNav;
 	
 	// For the dyanamic sidepanels
-	private JScrollPane ansatteScrollPane;
+	private JScrollPane employeeScrollPane;
+	private JScrollPane viewScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -621,7 +622,7 @@ public class ViewMain extends JFrame {
 		// Employee - Panel
 		//
 		
-		JPanel innerAnsattePanel = new JPanel();
+		JPanel innerEmployeePanel = new JPanel();
 		
 		// Create dynamic RowSpec
 		int rowSpecSize = 9 + (derp.size() * 2);
@@ -635,7 +636,7 @@ public class ViewMain extends JFrame {
 			}
 		}
 		
-		innerAnsattePanel.setLayout(new FormLayout(new ColumnSpec[] {
+		innerEmployeePanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -643,56 +644,56 @@ public class ViewMain extends JFrame {
 				ansatteRowSpec));
 		
 		// Setting up static part of the panel
-		JLabel ansatteAnsatteText = new JLabel("Ansatte");
-		ansatteAnsatteText.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		innerAnsattePanel.add(ansatteAnsatteText, "2, 2");
+		JLabel employeeText = new JLabel("Ansatte");
+		employeeText.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerEmployeePanel.add(employeeText, "2, 2");
 		
 		// First seperator
-		JSeparator ansatteSeperator = new JSeparator();
-		innerAnsattePanel.add(ansatteSeperator, "2, 4, 3, 1");
+		JSeparator employeeSeperator = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator, "2, 4, 3, 1");
 		
 		// My calendar
-		JLabel ansatteMyCalendar = new JLabel("Min kalender");
-		innerAnsattePanel.add(ansatteMyCalendar, "2, 6");
+		JLabel employeeMyCalendar = new JLabel("Min kalender");
+		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
 		
 		// Checkbox for Mt calendar that is already selected
-		JCheckBox ansatteMyCalendarCheckbox = new JCheckBox("");
-		ansatteMyCalendarCheckbox.setSelected(true);
-		innerAnsattePanel.add(ansatteMyCalendarCheckbox, "4, 6");
+		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
+		employeeMyCalendarCheckbox.setSelected(true);
+		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
 		
 		// Second seperator
-		JSeparator ansatteSeperator2 = new JSeparator();
-		innerAnsattePanel.add(ansatteSeperator2, "2, 8, 3, 1");
+		JSeparator employeeSeperator2 = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator2, "2, 8, 3, 1");
 		
 		// Begin dynamic fill in names in the list
 		int ansatteBaseIndex = 10;
 		for (int i = 0; i < derp.size(); i++) {
 			// Create textfield for the name of the employee
-			JLabel ansatteNameList = new JLabel(derp.get(i));
-			JCheckBox ansatteNameListCheckbox = new JCheckBox("");
+			JLabel employeeNameList = new JLabel(derp.get(i));
+			JCheckBox employeeNameListCheckbox = new JCheckBox("");
 			
 			// Set the label for the checkbox (not really sure if this does anything at all?)
-			ansatteNameList.setLabelFor(ansatteNameListCheckbox);
+			employeeNameList.setLabelFor(employeeNameListCheckbox);
 			
 			// Add the items
-			innerAnsattePanel.add(ansatteNameListCheckbox, "4, " + ansatteBaseIndex);
-			innerAnsattePanel.add(ansatteNameList, "2, " + ansatteBaseIndex + ", fill, default");
+			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
+			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
 			
 			// Increase the base by two
 			ansatteBaseIndex+= 2;
 		}
 		
 		// Create new scrollpanel and set the inner content
-		ansatteScrollPane = new JScrollPane(innerAnsattePanel);
-		ansatteScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		ansatteScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		ansatteScrollPane.setPreferredSize(new Dimension (300, 300));
-		ansatteScrollPane.setBackground(null);
-		ansatteScrollPane.setOpaque(true);
-		ansatteScrollPane.setBorder(null);
+		employeeScrollPane = new JScrollPane(innerEmployeePanel);
+		employeeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		employeeScrollPane.setPreferredSize(new Dimension (300, 300));
+		employeeScrollPane.setBackground(null);
+		employeeScrollPane.setOpaque(true);
+		employeeScrollPane.setBorder(null);
 		
 		// Add the panel
-		splitLeftInner.add(ansatteScrollPane, BorderLayout.WEST);
+		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
 		
 		//
 		// Add/edit - Panel
@@ -710,7 +711,7 @@ public class ViewMain extends JFrame {
 		// Info - Panel
 		//
 		
-		// TODO
+		// viewScrollPane
 	}
 	
 	/*
@@ -719,6 +720,6 @@ public class ViewMain extends JFrame {
 	
 	private void setSizesLeftPanel() {
 		// Employees
-		ansatteScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 }
