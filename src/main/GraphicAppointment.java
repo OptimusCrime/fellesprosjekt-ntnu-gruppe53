@@ -1,9 +1,12 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
@@ -14,7 +17,7 @@ import javax.swing.JPanel;
  * 
  */
 
-public class GraphicAppointment extends JPanel {
+public class GraphicAppointment extends JPanel implements MouseMotionListener {
 	
 	/*
 	 * Variables we need
@@ -33,6 +36,9 @@ public class GraphicAppointment extends JPanel {
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
+		
+		// Set cursor
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
 	}
 	
 	/*
@@ -66,6 +72,25 @@ public class GraphicAppointment extends JPanel {
 		
 		// Draw border
 		g2.draw(rect);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		/*final int x = e.getX();
+        final int y = e.getY();
+        // only display a hand if the cursor is over the items
+        final Rectangle cellBounds = list.getCellBounds(0, list.getModel().getSize() - 1);
+        if (cellBounds != null && cellBounds.contains(x, y)) {
+            
+        } else {
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }*/
 	}
 
 }

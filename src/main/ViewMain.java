@@ -522,6 +522,9 @@ public class ViewMain extends JFrame {
 						}
 					});
 					
+					// Mouseover
+					appointmentSquare.addMouseMotionListener(appointmentSquare);
+					
 					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
