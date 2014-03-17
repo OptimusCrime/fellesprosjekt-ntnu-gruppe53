@@ -310,6 +310,9 @@ public class ViewMain extends JFrame {
 	    
 		// Set sizes for left-panel
 		this.setSizesLeftPanel();
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -337,6 +340,9 @@ public class ViewMain extends JFrame {
 		
 		// Add appointments
 		this.drawAppointments();
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -591,6 +597,38 @@ public class ViewMain extends JFrame {
 					thisSquare.repaint();
 				}
 			}
+		}
+	}
+	
+	/*
+	 * Draws + that apprear when hoovering over the calendar
+	 */
+	
+	private void drawPlusSymboles() {
+		// Some variables we need
+		int width = splitRightInner.getWidth();
+		int numRows = 10;
+		this.column_width = (int) width / 8;
+		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		int height = row_height * numRows;
+				
+		// Loop all the squares
+		for (int i = 1; i < squareArr.length; i++) {
+			// Get the current square
+			GraphicSquare thisSquare = squareArr[i];
+			
+			// Loop all nine hours to display + - sign for
+			for (int j = 1; j <= 9; j++) {
+				JLabel plusSignLabel = new JLabel("+");
+				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
+				//plusSignLabel.setVisible(false);
+				
+				// Add to square
+				squareArr[i].add(plusSignLabel);
+			}
+			
+			// Repaint 
+			thisSquare.revalidate();
 		}
 	}
 	
