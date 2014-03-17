@@ -23,6 +23,7 @@ public class GraphicAppointment extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Rectangle rect;
 	private Color color;
+	private int id;
 	
 	public GraphicAppointment(int x, int y, int width, int height, Color c) {
 		super();
@@ -32,6 +33,18 @@ public class GraphicAppointment extends JPanel {
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
+	}
+	
+	/*
+	 * Getter & Setter for the id
+	 */
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	/*
