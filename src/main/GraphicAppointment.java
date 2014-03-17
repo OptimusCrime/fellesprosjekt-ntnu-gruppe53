@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
@@ -17,7 +18,7 @@ import javax.swing.JPanel;
  * 
  */
 
-public class GraphicAppointment extends JPanel implements MouseMotionListener {
+public class GraphicAppointment extends JPanel {
 	
 	/*
 	 * Variables we need
@@ -75,16 +76,4 @@ public class GraphicAppointment extends JPanel implements MouseMotionListener {
 		// Draw border
 		g2.draw(rect);
 	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// Put stuff here
-	}
-
 }

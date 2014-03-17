@@ -3,6 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -11,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -310,6 +312,9 @@ public class ViewMain extends JFrame {
 	    
 		// Set sizes for left-panel
 		this.setSizesLeftPanel();
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -337,6 +342,9 @@ public class ViewMain extends JFrame {
 		
 		// Add appointments
 		this.drawAppointments();
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -439,6 +447,10 @@ public class ViewMain extends JFrame {
 		for (int i = 0; i < 8; i++) {
 			// Create new square
 			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
+			
+			// Add listeners
+			square.addMouseMotionListener(square);
+			square.addMouseListener(square);
 			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
@@ -580,9 +592,8 @@ public class ViewMain extends JFrame {
 						}
 					});
 					
-					// Mouseover
-					appointmentSquare.addMouseMotionListener(appointmentSquare);
-					
+					// Mouseevents
+					//appointmentSquare.addMouseMotionListener(appointmentSquare);
 					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
@@ -591,6 +602,42 @@ public class ViewMain extends JFrame {
 					thisSquare.repaint();
 				}
 			}
+		}
+	}
+	
+	/*
+	 * Draws + that apprear when hoovering over the calendar
+	 */
+	
+	private void drawPlusSymboles() {
+		// Some variables we need
+		int width = splitRightInner.getWidth();
+		int numRows = 10;
+		this.column_width = (int) width / 8;
+		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		int height = row_height * numRows;
+				
+		// Loop all the squares
+		for (int i = 1; i < squareArr.length; i++) {
+			// Get the current square
+			GraphicSquare thisSquare = squareArr[i];
+			
+			// Loop all nine hours to display + - sign for
+			for (int j = 1; j <= 9; j++) {
+				JLabel plusSignLabel = new JLabel("+");
+				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
+				plusSignLabel.setVisible(false);
+				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				
+				// Add pluss to square-object
+				squareArr[i].addLabel(plusSignLabel);
+				
+				// Add to square
+				squareArr[i].add(plusSignLabel);
+			}
+			
+			// Repaint 
+			thisSquare.revalidate();
 		}
 	}
 	

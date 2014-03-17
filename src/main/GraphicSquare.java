@@ -4,8 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.EventListener;
 
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 /*
  * GraphicSquare
@@ -14,7 +20,7 @@ import javax.swing.JPanel;
  * 
  */
 
-public class GraphicSquare extends JPanel {
+public class GraphicSquare extends JPanel implements MouseMotionListener, MouseListener {
 	
 	/*
 	 * Variables we need
@@ -24,6 +30,7 @@ public class GraphicSquare extends JPanel {
 	private Rectangle rect;
 	private int space;
 	private int width;
+	private ArrayList<JLabel> labelsOnHover;
 	
 	/*
 	 * Constructor
@@ -36,8 +43,19 @@ public class GraphicSquare extends JPanel {
 		this.space = spaceHeight;
 		this.width = height;
 		
+		// Initialize list of labels
+		labelsOnHover = new ArrayList<JLabel>();
+		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
+	}
+	
+	/*
+	 * Add label to the square
+	 */
+	
+	public void addLabel(JLabel j) {
+		labelsOnHover.add(j);
 	}
 	
 	/*
@@ -69,4 +87,55 @@ public class GraphicSquare extends JPanel {
 			g2.drawLine(0, this.space*i, this.width, this.space*i);
 		}
 	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		System.out.println("Space = " + this.space);
+		// Calculate what + to show
+		int yPos = e.getY();
+		int index = (int) Math.floor(yPos/this.space) - 1;
+		
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			if (i == index) {
+				labelsOnHover.get(i).setVisible(true);
+			}
+			else {
+				labelsOnHover.get(i).setVisible(false);
+			}
+		}
+	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			labelsOnHover.get(i).setVisible(false);
+		}
+	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
 }
