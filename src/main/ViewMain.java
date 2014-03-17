@@ -9,8 +9,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
@@ -31,7 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
@@ -606,7 +604,7 @@ public class ViewMain extends JFrame {
 		derp.add("a345sdfsdfsf");
 		
 		//
-		// Ansatte
+		// Employee - Panel
 		//
 		
 		JPanel innerAnsattePanel = new JPanel();
@@ -636,41 +634,63 @@ public class ViewMain extends JFrame {
 		ansatteAnsatteText.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		innerAnsattePanel.add(ansatteAnsatteText, "2, 2");
 		
+		// First seperator
 		JSeparator ansatteSeperator = new JSeparator();
 		innerAnsattePanel.add(ansatteSeperator, "2, 4, 3, 1");
 		
+		// My calendar
 		JLabel ansatteMyCalendar = new JLabel("Min kalender");
 		innerAnsattePanel.add(ansatteMyCalendar, "2, 6");
 		
+		// Checkbox for Mt calendar that is already selected
 		JCheckBox ansatteMyCalendarCheckbox = new JCheckBox("");
 		ansatteMyCalendarCheckbox.setSelected(true);
 		innerAnsattePanel.add(ansatteMyCalendarCheckbox, "4, 6");
 		
+		// Second seperator
 		JSeparator ansatteSeperator2 = new JSeparator();
 		innerAnsattePanel.add(ansatteSeperator2, "2, 8, 3, 1");
 		
-		// begin dynamic fill in names in the list
+		// Begin dynamic fill in names in the list
+		int ansatteBaseIndex = 10;
+		for (int i = 0; i < derp.size(); i++) {
+			// Create textfield for the name of the employee
+			JLabel ansatteNameList = new JLabel(derp.get(i));
+			JCheckBox ansatteNameListCheckbox = new JCheckBox("");
+			
+			// Set the label for the checkbox (not really sure if this does anything at all?)
+			ansatteNameList.setLabelFor(ansatteNameListCheckbox);
+			
+			// Add the items
+			innerAnsattePanel.add(ansatteNameListCheckbox, "4, " + ansatteBaseIndex);
+			innerAnsattePanel.add(ansatteNameList, "2, " + ansatteBaseIndex + ", fill, default");
+			
+			// Increase the base by two
+			ansatteBaseIndex+= 2;
+		}
 		
-		JLabel textField = new JLabel("Ingrid Vold");
-		innerAnsattePanel.add(textField, "2, 10, fill, default");
-		
-		JCheckBox checkBox_1 = new JCheckBox("");
-		innerAnsattePanel.add(checkBox_1, "4, 10");
-		
-		JLabel textField_1 = new JLabel("Thomas VOVVOVO");
-		innerAnsattePanel.add(textField_1, "2, 12, fill, default");
-		
-		JCheckBox checkBox_2 = new JCheckBox("");
-		innerAnsattePanel.add(checkBox_2, "4, 12");
-		
+		// Create new scrollpanel and set the inner content
 		ansatteScrollPane = new JScrollPane(innerAnsattePanel);
-		ansatteScrollPane.setOpaque(false);
 		ansatteScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		ansatteScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		ansatteScrollPane.setPreferredSize(new Dimension (300, 300));
 		ansatteScrollPane.setBackground(null);
 		ansatteScrollPane.setOpaque(true);
 		ansatteScrollPane.setBorder(null);
+		
+		// Add the panel
 		splitLeftInner.add(ansatteScrollPane, BorderLayout.WEST);
+		
+		//
+		// Add/edit - Panel
+		//
+		
+		// TODO
+		
+		//
+		// Notifications - Panel
+		//
+		
+		// TODO
 	}
 }
