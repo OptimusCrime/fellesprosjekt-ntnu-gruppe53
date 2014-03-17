@@ -271,6 +271,9 @@ public class ViewMain extends JFrame {
 		// Redraw the calendar
 		this.clearCalendar();
 		this.drawCalendar();
+		
+		// Add appointments
+		this.drawAppointments();
 	}
 	
 	/*
