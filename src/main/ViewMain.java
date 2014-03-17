@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -461,17 +462,14 @@ public class ViewMain extends JFrame {
 			// Load the current appointment
 			Appointment thisAppointment = userAppointments.get(i);
 			
-			// Debug
-			System.out.println("Start = " + this.weekDateStart);
-			System.out.println("End = " + this.weekDateEnd);
-			System.out.println(thisAppointment.getStart() + " & " + thisAppointment.getEnd());
-			
 			// Check if we are in the right week for this appointment
 			if (thisAppointment.getStart().after(this.weekDateStart)) {
 				if (thisAppointment.getEnd().before(this.weekDateEnd)) {
 					// This appointment should be painted to the calendar, get what weekday
-					Calendar c = Calendar.getInstance();
+					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 					c.setTime(thisAppointment.getStart());
+
+					System.out.println(c.get(Calendar.HOUR_OF_DAY));
 					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 					
 					// Retarded US has sunday as first day of week...
