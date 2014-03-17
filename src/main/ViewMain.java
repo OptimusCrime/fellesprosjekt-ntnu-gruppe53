@@ -72,6 +72,7 @@ public class ViewMain extends JFrame {
 	private Map<String, JScrollPane> scrollPanes;
 	private JScrollPane employeeScrollPane;
 	private JScrollPane viewScrollPane;
+	private JScrollPane homeScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -713,7 +714,7 @@ public class ViewMain extends JFrame {
 			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
 			
 			// Increase the base by two
-			ansatteBaseIndex+= 2;
+			ansatteBaseIndex += 2;
 		}
 		
 		// Create new scrollpanel and set the inner content
@@ -749,7 +750,7 @@ public class ViewMain extends JFrame {
 		JPanel innerViewPanel = new JPanel();
 		
 		// Add dummy
-		JLabel dummy = new JLabel("Hallo");
+		JLabel dummy = new JLabel("Info goes here");
 		innerViewPanel.add(dummy);
 		
 		viewScrollPane = new JScrollPane(innerViewPanel);
@@ -759,7 +760,7 @@ public class ViewMain extends JFrame {
 		viewScrollPane.setBackground(null);
 		viewScrollPane.setOpaque(true);
 		viewScrollPane.setBorder(null);
-		viewScrollPane.setVisible(true);
+		viewScrollPane.setVisible(false);
 		
 		// Add the panel
 		splitLeftInner.add(viewScrollPane, BorderLayout.WEST);
@@ -769,8 +770,24 @@ public class ViewMain extends JFrame {
 		// Home - Panel
 		//
 		
-		// TODO
+		JPanel innerHomePanel = new JPanel();
 		
+		// Add dummy
+		JLabel dummy2 = new JLabel("Home goes here");
+		innerHomePanel.add(dummy2);
+		
+		homeScrollPane = new JScrollPane(innerHomePanel);
+		homeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		homeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		homeScrollPane.setPreferredSize(new Dimension (300, 300));
+		homeScrollPane.setBackground(null);
+		homeScrollPane.setOpaque(true);
+		homeScrollPane.setBorder(null);
+		homeScrollPane.setVisible(true);
+		
+		// Add the panel
+		splitLeftInner.add(homeScrollPane, BorderLayout.WEST);
+		scrollPanes.put("home", homeScrollPane);
 	}
 	
 	/*
@@ -783,6 +800,9 @@ public class ViewMain extends JFrame {
 		
 		// View
 		viewScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Home
+		homeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 	
 	/*
