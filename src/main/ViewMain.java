@@ -74,6 +74,7 @@ public class ViewMain extends JFrame {
 	private JScrollPane infoScrollPane;
 	private JScrollPane homeScrollPane;
 	private JScrollPane notificationsScrollPane;
+	private JScrollPane addEditScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -736,7 +737,24 @@ public class ViewMain extends JFrame {
 		// Add/edit - Panel
 		//
 		
-		// TODO
+		JPanel innerAddEditPanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy5 = new JLabel("Add/Edit goes here");
+		innerAddEditPanel.add(dummy5);
+		
+		addEditScrollPane = new JScrollPane(innerAddEditPanel);
+		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		addEditScrollPane.setPreferredSize(new Dimension (300, 300));
+		addEditScrollPane.setBackground(null);
+		addEditScrollPane.setOpaque(true);
+		addEditScrollPane.setBorder(null);
+		addEditScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(addEditScrollPane, BorderLayout.WEST);
+		scrollPanes.put("addedit", addEditScrollPane);
 		
 		//
 		// Notifications - Panel
