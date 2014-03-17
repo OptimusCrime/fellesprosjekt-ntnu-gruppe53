@@ -273,6 +273,9 @@ public class ViewMain extends JFrame {
 	    
 	    // Draw calendar
 	    this.drawCalendar();
+	    
+		// Set sizes for left-panel
+		this.setSizesLeftPanel();
 	}
 	
 	/*
@@ -602,6 +605,17 @@ public class ViewMain extends JFrame {
 		derp.add("a345sdfsdfsf");
 		derp.add("a345sdfsdfsf");
 		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		
 		
 		//
 		// Employee - Panel
@@ -613,7 +627,6 @@ public class ViewMain extends JFrame {
 		int rowSpecSize = 9 + (derp.size() * 2);
 		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
 		for (int i = 0; i < rowSpecSize; i++) {
-			System.out.println(i % 2);
 			if (i % 2 == 0) {
 				ansatteRowSpec[i] = FormFactory.RELATED_GAP_ROWSPEC;
 			}
@@ -692,5 +705,20 @@ public class ViewMain extends JFrame {
 		//
 		
 		// TODO
+		
+		//
+		// Info - Panel
+		//
+		
+		// TODO
+	}
+	
+	/*
+	 * Set the correct height for the side-panels
+	 */
+	
+	private void setSizesLeftPanel() {
+		// Employees
+		ansatteScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 }
