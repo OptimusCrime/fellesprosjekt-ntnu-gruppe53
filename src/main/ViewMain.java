@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -447,6 +448,10 @@ public class ViewMain extends JFrame {
 			// Create new square
 			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
 			
+			// Add listeners
+			square.addMouseMotionListener(square);
+			square.addMouseListener(square);
+			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
 			
@@ -587,9 +592,8 @@ public class ViewMain extends JFrame {
 						}
 					});
 					
-					// Mouseover
-					appointmentSquare.addMouseMotionListener(appointmentSquare);
-					
+					// Mouseevents
+					//appointmentSquare.addMouseMotionListener(appointmentSquare);
 					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
@@ -624,6 +628,9 @@ public class ViewMain extends JFrame {
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				
+				// Add pluss to square-object
+				squareArr[i].addLabel(plusSignLabel);
 				
 				// Add to square
 				squareArr[i].add(plusSignLabel);

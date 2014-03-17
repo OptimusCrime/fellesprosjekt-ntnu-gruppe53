@@ -4,7 +4,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.EventListener;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -16,7 +20,7 @@ import javax.swing.JLabel;
  * 
  */
 
-public class GraphicSquare extends JPanel {
+public class GraphicSquare extends JPanel implements MouseMotionListener, MouseListener {
 	
 	/*
 	 * Variables we need
@@ -83,4 +87,45 @@ public class GraphicSquare extends JPanel {
 			g2.drawLine(0, this.space*i, this.width, this.space*i);
 		}
 	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			labelsOnHover.get(i).setVisible(true);
+		}
+	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseExited(MouseEvent e) {
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			labelsOnHover.get(i).setVisible(false);
+		}
+	}
+	
+	/*
+	 * TODO
+	 */
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
 }
