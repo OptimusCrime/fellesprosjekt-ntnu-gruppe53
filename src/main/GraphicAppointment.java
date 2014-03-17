@@ -1,9 +1,12 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 
@@ -14,7 +17,7 @@ import javax.swing.JPanel;
  * 
  */
 
-public class GraphicAppointment extends JPanel {
+public class GraphicAppointment extends JPanel implements MouseMotionListener {
 	
 	/*
 	 * Variables we need
@@ -23,8 +26,9 @@ public class GraphicAppointment extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Rectangle rect;
 	private Color color;
+	private int id;
 	
-	public GraphicAppointment(int x, int y, int width, int height, Color c) {
+	public GraphicAppointment(int x, int y, int width, int height, Color c, String toolTip) {
 		super();
 		
 		// Store color
@@ -32,6 +36,23 @@ public class GraphicAppointment extends JPanel {
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
+		
+		// Set cursor
+		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
+		setToolTipText(toolTip);
+	}
+	
+	/*
+	 * Getter & Setter for the id
+	 */
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	/*
@@ -53,6 +74,17 @@ public class GraphicAppointment extends JPanel {
 		
 		// Draw border
 		g2.draw(rect);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// Put stuff here
 	}
 
 }

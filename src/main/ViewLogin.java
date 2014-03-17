@@ -3,6 +3,8 @@ package main;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -90,6 +92,9 @@ public class ViewLogin extends JFrame {
 		JLabel label4 = new JLabel("Passord");
 		super.getContentPane().add(label4, "4, 12, right, default");
 		
+		// Init new keylistener for all the input-fields
+		KeyLoginListener enterListener = new KeyLoginListener();
+		
 		// Add all textfields
 		textField1 = new JTextField("localhost");
 		super.getContentPane().add(textField1, "6, 4, fill, default");
@@ -103,6 +108,12 @@ public class ViewLogin extends JFrame {
 		textField4 = new JPasswordField();
 		super.getContentPane().add(textField4, "6, 12, fill, default");
 		textField4.setColumns(10);
+		
+		// Add all events
+		textField1.addKeyListener(enterListener);
+		textField2.addKeyListener(enterListener);
+		textField3.addKeyListener(enterListener);
+		textField4.addKeyListener(enterListener);
 		
 		// Tweak textfields
 		
@@ -173,5 +184,25 @@ public class ViewLogin extends JFrame {
 	
 	public void setVisible(boolean b) {
 		super.setVisible(b);	
+	}
+	
+	/*
+	 * Public class that listens for press with the Enter-button
+	 */
+	
+	public class KeyLoginListener implements KeyListener {
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if (e.getKeyCode() == 10) {
+				// Enter-button, simulate a click on the send-button
+				send.doClick();
+			}
+		}
+		
+		@Override
+		public void keyTyped(KeyEvent e) {}
+	
+		@Override
+		public void keyPressed(KeyEvent e) {}
 	}
 }

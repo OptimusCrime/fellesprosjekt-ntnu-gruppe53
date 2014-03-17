@@ -106,6 +106,7 @@ public class Appointment implements CalendarObjects {
 	}
 
 	public void setStart(Date start) {
+		System.out.println("Nigger = " + start);
 		this.start = start;
 		this.gui.reflectChange("appointment", "start", this);
 	}

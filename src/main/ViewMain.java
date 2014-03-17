@@ -8,6 +8,10 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -271,6 +276,9 @@ public class ViewMain extends JFrame {
 		// Redraw the calendar
 		this.clearCalendar();
 		this.drawCalendar();
+		
+		// Add appointments
+		this.drawAppointments();
 	}
 	
 	/*
@@ -458,17 +466,14 @@ public class ViewMain extends JFrame {
 			// Load the current appointment
 			Appointment thisAppointment = userAppointments.get(i);
 			
-			// Debug
-			System.out.println("Start = " + this.weekDateStart);
-			System.out.println("End = " + this.weekDateEnd);
-			System.out.println(thisAppointment.getStart() + " & " + thisAppointment.getEnd());
-			
 			// Check if we are in the right week for this appointment
 			if (thisAppointment.getStart().after(this.weekDateStart)) {
 				if (thisAppointment.getEnd().before(this.weekDateEnd)) {
 					// This appointment should be painted to the calendar, get what weekday
-					Calendar c = Calendar.getInstance();
+					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 					c.setTime(thisAppointment.getStart());
+
+					System.out.println(c.get(Calendar.HOUR_OF_DAY));
 					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 					
 					// Retarded US has sunday as first day of week...
@@ -494,13 +499,32 @@ public class ViewMain extends JFrame {
 					double heightValue = (this.row_height/60.0)*endValue - startPos;
 					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink);
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
+					appointmentSquare.setId(thisAppointment.getId());
 					
 					// Reset layout
 					appointmentSquare.setLayout(null);
 					
 					// Setting bounds (not really sure what does that, but this works)
 					appointmentSquare.setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
+					
+					// Click
+					appointmentSquare.addMouseListener(new MouseAdapter () {
+						public void mousePressed(MouseEvent e) {
+							// Get object
+							GraphicAppointment clickedAppointment = (GraphicAppointment)e.getSource();
+							
+							// Get id
+							int appointmentId = clickedAppointment.getId();
+							
+							// Call show-method
+							showAppointment(appointmentId);
+						}
+					});
+					
+					// Mouseover
+					appointmentSquare.addMouseMotionListener(appointmentSquare);
+					
 					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
@@ -510,6 +534,14 @@ public class ViewMain extends JFrame {
 				}
 			}
 		}
+	}
+	
+	/*
+	 * TODO
+	 */
+	
+	protected void showAppointment(int id) {
+		System.out.println("Showing id = " + id);
 	}
 	
 	/*
