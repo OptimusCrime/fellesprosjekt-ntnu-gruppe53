@@ -100,6 +100,9 @@ public class ViewMain extends JFrame {
 	private int column_width;
 	private int row_height;
 	
+	// Debugging
+	private JLabel innerInfoTestLabel;
+	
 	/*
 	 * Constructor
 	 */
@@ -592,11 +595,15 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * TODO
+	 * Display information about one appointment (TODO)
 	 */
 	
 	protected void showAppointment(int id) {
+		// Display the correct sidepanel
 		this.displayLeftPanel("info");
+		
+		// TODO, just set id for now
+		innerInfoTestLabel.setText("Showing info for " + id);
 	}
 	
 	/*
@@ -786,8 +793,8 @@ public class ViewMain extends JFrame {
 		JPanel innerInfoPanel = new JPanel();
 		
 		// Add dummy
-		JLabel dummy = new JLabel("Info goes here");
-		innerInfoPanel.add(dummy);
+		innerInfoTestLabel = new JLabel("Info goes here");
+		innerInfoPanel.add(innerInfoTestLabel);
 		
 		infoScrollPane = new JScrollPane(innerInfoPanel);
 		infoScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
