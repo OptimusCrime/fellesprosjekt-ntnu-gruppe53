@@ -94,8 +94,18 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	
 	@Override
 	public void mouseMoved(MouseEvent e) {
+		System.out.println("Space = " + this.space);
+		// Calculate what + to show
+		int yPos = e.getY();
+		int index = (int) Math.floor(yPos/this.space) - 1;
+		
 		for (int i = 0; i < labelsOnHover.size(); i++) {
-			labelsOnHover.get(i).setVisible(true);
+			if (i == index) {
+				labelsOnHover.get(i).setVisible(true);
+			}
+			else {
+				labelsOnHover.get(i).setVisible(false);
+			}
 		}
 	}
 	
