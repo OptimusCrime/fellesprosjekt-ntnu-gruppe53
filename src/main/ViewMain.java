@@ -588,51 +588,68 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void buildLeftpanel() {
+		// Testing ansatte
+		ArrayList<String> derp = new ArrayList<String>();
+		derp.add("Thomas Gautvedt");
+		derp.add("asdfsdfsf");
+		derp.add("43545345");
+		derp.add("asd345345345fsdfsf");
+		derp.add("a345345345sdfsdfsf");
+		derp.add("as3453dfsdfsf");
+		derp.add("as345345dfsdfsf");
+		derp.add("as455dfsdfsf");
+		derp.add("as345dfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		
+		//
 		// Ansatte
+		//
+		
 		JPanel innerAnsattePanel = new JPanel();
+		
+		// Create dynamic RowSpec
+		int rowSpecSize = 9 + (derp.size() * 2);
+		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
+		for (int i = 0; i < rowSpecSize; i++) {
+			System.out.println(i % 2);
+			if (i % 2 == 0) {
+				ansatteRowSpec[i] = FormFactory.RELATED_GAP_ROWSPEC;
+			}
+			else {
+				ansatteRowSpec[i] = FormFactory.DEFAULT_ROWSPEC;
+			}
+		}
+		
 		innerAnsattePanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,},
-			new RowSpec[] {
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,}));
+				ansatteRowSpec));
 		
-		JLabel lblAnsatte = new JLabel("Ansatte");
-		lblAnsatte.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		innerAnsattePanel.add(lblAnsatte, "2, 2");
+		// Setting up static part of the panel
+		JLabel ansatteAnsatteText = new JLabel("Ansatte");
+		ansatteAnsatteText.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerAnsattePanel.add(ansatteAnsatteText, "2, 2");
 		
-		JSeparator separator = new JSeparator();
-		innerAnsattePanel.add(separator, "2, 4, 3, 1");
+		JSeparator ansatteSeperator = new JSeparator();
+		innerAnsattePanel.add(ansatteSeperator, "2, 4, 3, 1");
 		
-		JLabel lblMinKalender = new JLabel("Min kalender");
-		innerAnsattePanel.add(lblMinKalender, "2, 6");
+		JLabel ansatteMyCalendar = new JLabel("Min kalender");
+		innerAnsattePanel.add(ansatteMyCalendar, "2, 6");
 		
-		JCheckBox checkBox = new JCheckBox("");
-		checkBox.setSelected(true);
-		innerAnsattePanel.add(checkBox, "4, 6");
+		JCheckBox ansatteMyCalendarCheckbox = new JCheckBox("");
+		ansatteMyCalendarCheckbox.setSelected(true);
+		innerAnsattePanel.add(ansatteMyCalendarCheckbox, "4, 6");
 		
-		JSeparator separator_1 = new JSeparator();
-		innerAnsattePanel.add(separator_1, "2, 8, 3, 1");
+		JSeparator ansatteSeperator2 = new JSeparator();
+		innerAnsattePanel.add(ansatteSeperator2, "2, 8, 3, 1");
+		
+		// begin dynamic fill in names in the list
 		
 		JLabel textField = new JLabel("Ingrid Vold");
 		innerAnsattePanel.add(textField, "2, 10, fill, default");
