@@ -590,11 +590,6 @@ public class ViewMain extends JFrame {
 	private void buildLeftpanel() {
 		// Ansatte
 		JPanel innerAnsattePanel = new JPanel();
-		innerAnsattePanel.setPreferredSize(new Dimension (350, 350));
-		innerAnsattePanel.setBackground(Color.pink);
-		innerAnsattePanel.setOpaque(true);
-		innerAnsattePanel.setVisible(true);
-		innerAnsattePanel.setBounds(0, 0, 300, 460);
 		innerAnsattePanel.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("default:grow"),
@@ -633,23 +628,20 @@ public class ViewMain extends JFrame {
 		innerAnsattePanel.add(lblMinKalender, "2, 6");
 		
 		JCheckBox checkBox = new JCheckBox("");
+		checkBox.setSelected(true);
 		innerAnsattePanel.add(checkBox, "4, 6");
 		
 		JSeparator separator_1 = new JSeparator();
 		innerAnsattePanel.add(separator_1, "2, 8, 3, 1");
 		
-		JTextField textField = new JTextField();
+		JLabel textField = new JLabel("Ingrid Vold");
 		innerAnsattePanel.add(textField, "2, 10, fill, default");
-		textField.setColumns(10);
-		textField.setEditable(false);
 		
 		JCheckBox checkBox_1 = new JCheckBox("");
 		innerAnsattePanel.add(checkBox_1, "4, 10");
 		
-		JTextField textField_1 = new JTextField();
+		JLabel textField_1 = new JLabel("Thomas VOVVOVO");
 		innerAnsattePanel.add(textField_1, "2, 12, fill, default");
-		textField_1.setColumns(10);
-		textField_1.setEditable(false);
 		
 		JCheckBox checkBox_2 = new JCheckBox("");
 		innerAnsattePanel.add(checkBox_2, "4, 12");
@@ -657,11 +649,11 @@ public class ViewMain extends JFrame {
 		ansatteScrollPane = new JScrollPane(innerAnsattePanel);
 		ansatteScrollPane.setOpaque(false);
 		ansatteScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		//ansatteScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		ansatteScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		ansatteScrollPane.setPreferredSize(new Dimension (300, 300));
-		//ansatteScrollPane.setBackground(null);
-		//ansatteScrollPane.setOpaque(true);
-		//ansatteScrollPane.setBorder(null);
+		ansatteScrollPane.setBackground(null);
+		ansatteScrollPane.setOpaque(true);
+		ansatteScrollPane.setBorder(null);
 		splitLeftInner.add(ansatteScrollPane, BorderLayout.WEST);
 	}
 }
