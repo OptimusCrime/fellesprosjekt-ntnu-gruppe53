@@ -71,7 +71,7 @@ public class ViewMain extends JFrame {
 	// For the dyanamic sidepanels
 	private Map<String, JScrollPane> scrollPanes;
 	private JScrollPane employeeScrollPane;
-	private JScrollPane viewScrollPane;
+	private JScrollPane infoScrollPane;
 	private JScrollPane homeScrollPane;
 	private JScrollPane notificationsScrollPane;
 	
@@ -595,7 +595,7 @@ public class ViewMain extends JFrame {
 	 */
 	
 	protected void showAppointment(int id) {
-		System.out.println("Showing id = " + id);
+		this.displayLeftPanel("info");
 	}
 	
 	/*
@@ -765,24 +765,24 @@ public class ViewMain extends JFrame {
 		// Info - Panel
 		//
 		
-		JPanel innerViewPanel = new JPanel();
+		JPanel innerInfoPanel = new JPanel();
 		
 		// Add dummy
 		JLabel dummy = new JLabel("Info goes here");
-		innerViewPanel.add(dummy);
+		innerInfoPanel.add(dummy);
 		
-		viewScrollPane = new JScrollPane(innerViewPanel);
-		viewScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		viewScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		viewScrollPane.setPreferredSize(new Dimension (300, 300));
-		viewScrollPane.setBackground(null);
-		viewScrollPane.setOpaque(true);
-		viewScrollPane.setBorder(null);
-		viewScrollPane.setVisible(false);
+		infoScrollPane = new JScrollPane(innerInfoPanel);
+		infoScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		infoScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		infoScrollPane.setPreferredSize(new Dimension (300, 300));
+		infoScrollPane.setBackground(null);
+		infoScrollPane.setOpaque(true);
+		infoScrollPane.setBorder(null);
+		infoScrollPane.setVisible(false);
 		
 		// Add the panel
-		splitLeftInner.add(viewScrollPane, BorderLayout.WEST);
-		scrollPanes.put("view", viewScrollPane);
+		splitLeftInner.add(infoScrollPane, BorderLayout.WEST);
+		scrollPanes.put("info", infoScrollPane);
 		
 		//
 		// Home - Panel
@@ -816,8 +816,8 @@ public class ViewMain extends JFrame {
 		// Employees
 		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		
-		// View
-		viewScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		// Info
+		infoScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		
 		// Home
 		homeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
