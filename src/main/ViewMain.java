@@ -9,7 +9,6 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
@@ -19,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.swing.Box;
@@ -69,6 +69,7 @@ public class ViewMain extends JFrame {
 	private JPanel splitRightNav;
 	
 	// For the dyanamic sidepanels
+	private Map<String, JScrollPane> scrollPanes;
 	private JScrollPane employeeScrollPane;
 	private JScrollPane viewScrollPane;
 	
@@ -163,10 +164,36 @@ public class ViewMain extends JFrame {
 		// Add all buttons in the header-left panel
 		homeBtn = new JButton("Hjem");
 		headerLeft.add(homeBtn);
-		notificationsBtn = new JButton("Varsler (2)");
+		notificationsBtn = new JButton("Varsler");
 		headerLeft.add(notificationsBtn);
 		employeesBtn = new JButton("Ansatte");
 		headerLeft.add(employeesBtn);
+		
+		// Add events for all the header-left-buttons
+		homeBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("home");
+			}
+			
+		});
+		notificationsBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("notifications");
+			}
+			
+		});
+		employeesBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("employees");
+			}
+			
+		});
 		
 		// Add header-right panel
 		JPanel headerRight = new JPanel();
@@ -590,6 +617,13 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void buildLeftpanel() {
+		
+		//
+		// Init the list
+		//
+		
+		scrollPanes = new HashMap<String, JScrollPane>();
+		
 		// Testing ansatte
 		ArrayList<String> derp = new ArrayList<String>();
 		derp.add("Thomas Gautvedt");
@@ -616,8 +650,7 @@ public class ViewMain extends JFrame {
 		derp.add("a345sdfsdfsf");
 		derp.add("a345sdfsdfsf");
 		derp.add("a345sdfsdfsf");
-		
-		
+			
 		//
 		// Employee - Panel
 		//
@@ -695,6 +728,7 @@ public class ViewMain extends JFrame {
 		
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
+		scrollPanes.put("employees", employeeScrollPane);
 		
 		//
 		// Add/edit - Panel
@@ -729,6 +763,14 @@ public class ViewMain extends JFrame {
 		
 		// Add the panel
 		splitLeftInner.add(viewScrollPane, BorderLayout.WEST);
+		scrollPanes.put("view", viewScrollPane);
+		
+		//
+		// Home - Panel
+		//
+		
+		// TODO
+		
 	}
 	
 	/*
@@ -741,5 +783,33 @@ public class ViewMain extends JFrame {
 		
 		// View
 		viewScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+	}
+	
+	/*
+	 * Method to show/hide dynamic sidepanels
+	 */
+	
+	protected void displayLeftPanel(String n) {
+		// Get all the keys
+		Set<String> leftPanelKeys = scrollPanes.keySet();
+		
+		// Loop all the keys
+		for (String s : leftPanelKeys) {
+			// Set hidden to all
+			JScrollPane panelToHide = scrollPanes.get(s);
+			if (panelToHide != null) {
+				panelToHide.setVisible(false);
+			}
+		}
+		
+		// Get panel to display
+		JScrollPane panelToView = scrollPanes.get(n);
+		if (panelToView != null) {
+			// Set visible
+			panelToView.setVisible(true);
+			
+			// Redraw super to show the changes!
+			super.revalidate();
+		}
 	}
 }
