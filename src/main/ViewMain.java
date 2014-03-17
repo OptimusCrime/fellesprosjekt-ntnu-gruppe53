@@ -725,7 +725,10 @@ public class ViewMain extends JFrame {
 		viewScrollPane.setBackground(null);
 		viewScrollPane.setOpaque(true);
 		viewScrollPane.setBorder(null);
-		viewScrollPane.setVisible(false);
+		viewScrollPane.setVisible(true);
+		
+		// Add the panel
+		splitLeftInner.add(viewScrollPane, BorderLayout.WEST);
 	}
 	
 	/*
