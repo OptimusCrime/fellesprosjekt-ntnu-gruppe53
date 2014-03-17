@@ -73,6 +73,7 @@ public class ViewMain extends JFrame {
 	private JScrollPane employeeScrollPane;
 	private JScrollPane viewScrollPane;
 	private JScrollPane homeScrollPane;
+	private JScrollPane notificationsScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -741,7 +742,24 @@ public class ViewMain extends JFrame {
 		// Notifications - Panel
 		//
 		
-		// TODO
+		JPanel innerNotificationsPanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy3 = new JLabel("Notifications goes here");
+		innerNotificationsPanel.add(dummy3);
+		
+		notificationsScrollPane = new JScrollPane(innerNotificationsPanel);
+		notificationsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		notificationsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		notificationsScrollPane.setPreferredSize(new Dimension (300, 300));
+		notificationsScrollPane.setBackground(null);
+		notificationsScrollPane.setOpaque(true);
+		notificationsScrollPane.setBorder(null);
+		notificationsScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(notificationsScrollPane, BorderLayout.WEST);
+		scrollPanes.put("notifications", notificationsScrollPane);
 		
 		//
 		// Info - Panel
@@ -803,6 +821,9 @@ public class ViewMain extends JFrame {
 		
 		// Home
 		homeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Notifications
+		notificationsScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 	
 	/*
