@@ -28,7 +28,7 @@ public class GraphicAppointment extends JPanel implements MouseMotionListener {
 	private Color color;
 	private int id;
 	
-	public GraphicAppointment(int x, int y, int width, int height, Color c) {
+	public GraphicAppointment(int x, int y, int width, int height, Color c, String toolTip) {
 		super();
 		
 		// Store color
@@ -39,6 +39,8 @@ public class GraphicAppointment extends JPanel implements MouseMotionListener {
 		
 		// Set cursor
 		setCursor(new Cursor(Cursor.HAND_CURSOR));
+		
+		setToolTipText(toolTip);
 	}
 	
 	/*

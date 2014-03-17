@@ -499,7 +499,7 @@ public class ViewMain extends JFrame {
 					double heightValue = (this.row_height/60.0)*endValue - startPos;
 					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink);
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
 					appointmentSquare.setId(thisAppointment.getId());
 					
 					// Reset layout
