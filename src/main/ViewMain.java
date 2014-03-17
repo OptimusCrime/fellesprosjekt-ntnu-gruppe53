@@ -4,12 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
@@ -19,17 +18,26 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+
+import com.jgoodies.forms.factories.FormFactory;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.RowSpec;
 
 /*
  * ViewMain
@@ -55,9 +63,18 @@ public class ViewMain extends JFrame {
 	private JSplitPane main;
 	
 	private JPanel splitLeft;
+	private JPanel splitLeftInner;
 	private JPanel splitRight;
 	private JPanel splitRightInner;
 	private JPanel splitRightNav;
+	
+	// For the dyanamic sidepanels
+	private Map<String, JScrollPane> scrollPanes;
+	private JScrollPane employeeScrollPane;
+	private JScrollPane infoScrollPane;
+	private JScrollPane homeScrollPane;
+	private JScrollPane notificationsScrollPane;
+	private JScrollPane addEditScrollPane;
 	
 	// Buttons
 	private JButton homeBtn;
@@ -82,6 +99,9 @@ public class ViewMain extends JFrame {
 	private GraphicSquare[] squareArr;
 	private int column_width;
 	private int row_height;
+	
+	// Debugging
+	private JLabel innerInfoTestLabel;
 	
 	/*
 	 * Constructor
@@ -110,7 +130,7 @@ public class ViewMain extends JFrame {
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		// Set initial size of the window and the relative loaction
-		super.setPreferredSize(new Dimension((int) dim.getWidth() - 200, (int) dim.getHeight()));
+		super.setPreferredSize(new Dimension((int) dim.getWidth() - 75, (int) dim.getHeight()));
 	    
 	    // Adder springlayout to base
 	    SpringLayout springLayout = new SpringLayout();
@@ -140,6 +160,9 @@ public class ViewMain extends JFrame {
 		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
 		
+		// Set main-panel impossible to resize
+		main.setEnabled(false);
+		
 		// Add header-left panel
 		JPanel headerLeft = new JPanel();
 		header.add(headerLeft, BorderLayout.WEST);
@@ -147,10 +170,36 @@ public class ViewMain extends JFrame {
 		// Add all buttons in the header-left panel
 		homeBtn = new JButton("Hjem");
 		headerLeft.add(homeBtn);
-		notificationsBtn = new JButton("Varsler (2)");
+		notificationsBtn = new JButton("Varsler");
 		headerLeft.add(notificationsBtn);
 		employeesBtn = new JButton("Ansatte");
 		headerLeft.add(employeesBtn);
+		
+		// Add events for all the header-left-buttons
+		homeBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("home");
+			}
+			
+		});
+		notificationsBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("notifications");
+			}
+			
+		});
+		employeesBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayLeftPanel("employees");
+			}
+			
+		});
 		
 		// Add header-right panel
 		JPanel headerRight = new JPanel();
@@ -179,9 +228,12 @@ public class ViewMain extends JFrame {
 		splitLeft = new JPanel();
 		main.setLeftComponent(splitLeft);
 		
-		// Placeholder TODO
-		JLabel lblNewLabel = new JLabel("New label");
-		splitLeft.add(lblNewLabel);
+		// Dynamic left-panel
+		splitLeftInner = new JPanel();
+		splitLeft.add(splitLeftInner);
+		
+		// Build dynamic left-panel
+		this.buildLeftpanel();
 		
 		// Set right-split content
 		splitRight = new JPanel();
@@ -240,9 +292,12 @@ public class ViewMain extends JFrame {
 		
 		// Show, set width etc
 		super.setVisible(true);
-		super.setBounds(100, 100, (int) dim.getWidth() - 200, (int) dim.getHeight());
+		super.setBounds(0, 0, (int) dim.getWidth() - 75, (int) dim.getHeight());
 	    super.setLocationRelativeTo(null);
 	    super.pack();
+	    
+	    // Set resize disallowed
+	    super.setResizable(false);
 	    
 	    // Set initial time
 	    this.setTime();
@@ -252,6 +307,9 @@ public class ViewMain extends JFrame {
 	    
 	    // Draw calendar
 	    this.drawCalendar();
+	    
+		// Set sizes for left-panel
+		this.setSizesLeftPanel();
 	}
 	
 	/*
@@ -454,7 +512,7 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * Draws the appointments in the calendar (TODO, test)
+	 * Draws the appointments in the calendar
 	 */
 	
 	public void drawAppointments() {
@@ -537,11 +595,15 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * TODO
+	 * Display information about one appointment (TODO)
 	 */
 	
 	protected void showAppointment(int id) {
-		System.out.println("Showing id = " + id);
+		// Display the correct sidepanel
+		this.displayLeftPanel("info");
+		
+		// TODO, just set id for now
+		innerInfoTestLabel.setText("Showing info for " + id);
 	}
 	
 	/*
@@ -558,5 +620,262 @@ public class ViewMain extends JFrame {
 	
 	public void setVisible(boolean b) {
 		super.setVisible(b);
+	}
+	
+	/*
+	 * Building left panel-content
+	 */
+	
+	private void buildLeftpanel() {
+		
+		//
+		// Init the list
+		//
+		
+		scrollPanes = new HashMap<String, JScrollPane>();
+		
+		// Testing ansatte
+		ArrayList<String> derp = new ArrayList<String>();
+		derp.add("Thomas Gautvedt");
+		derp.add("asdfsdfsf");
+		derp.add("43545345");
+		derp.add("asd345345345fsdfsf");
+		derp.add("a345345345sdfsdfsf");
+		derp.add("as3453dfsdfsf");
+		derp.add("as345345dfsdfsf");
+		derp.add("as455dfsdfsf");
+		derp.add("as345dfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+		derp.add("a345sdfsdfsf");
+			
+		//
+		// Employee - Panel
+		//
+		
+		JPanel innerEmployeePanel = new JPanel();
+		
+		// Create dynamic RowSpec
+		int rowSpecSize = 9 + (derp.size() * 2);
+		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
+		for (int i = 0; i < rowSpecSize; i++) {
+			if (i % 2 == 0) {
+				ansatteRowSpec[i] = FormFactory.RELATED_GAP_ROWSPEC;
+			}
+			else {
+				ansatteRowSpec[i] = FormFactory.DEFAULT_ROWSPEC;
+			}
+		}
+		
+		innerEmployeePanel.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,},
+				ansatteRowSpec));
+		
+		// Setting up static part of the panel
+		JLabel employeeText = new JLabel("Ansatte");
+		employeeText.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerEmployeePanel.add(employeeText, "2, 2");
+		
+		// First seperator
+		JSeparator employeeSeperator = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator, "2, 4, 3, 1");
+		
+		// My calendar
+		JLabel employeeMyCalendar = new JLabel("Min kalender");
+		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
+		
+		// Checkbox for Mt calendar that is already selected
+		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
+		employeeMyCalendarCheckbox.setSelected(true);
+		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
+		
+		// Second seperator
+		JSeparator employeeSeperator2 = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator2, "2, 8, 3, 1");
+		
+		// Begin dynamic fill in names in the list
+		int ansatteBaseIndex = 10;
+		for (int i = 0; i < derp.size(); i++) {
+			// Create textfield for the name of the employee
+			JLabel employeeNameList = new JLabel(derp.get(i));
+			JCheckBox employeeNameListCheckbox = new JCheckBox("");
+			
+			// Set the label for the checkbox (not really sure if this does anything at all?)
+			employeeNameList.setLabelFor(employeeNameListCheckbox);
+			
+			// Add the items
+			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
+			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
+			
+			// Increase the base by two
+			ansatteBaseIndex += 2;
+		}
+		
+		// Create new scrollpanel and set the inner content
+		employeeScrollPane = new JScrollPane(innerEmployeePanel);
+		employeeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		employeeScrollPane.setPreferredSize(new Dimension (300, 300));
+		employeeScrollPane.setBackground(null);
+		employeeScrollPane.setOpaque(true);
+		employeeScrollPane.setBorder(null);
+		employeeScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
+		scrollPanes.put("employees", employeeScrollPane);
+		
+		//
+		// Add/edit - Panel
+		//
+		
+		JPanel innerAddEditPanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy5 = new JLabel("Add/Edit goes here");
+		innerAddEditPanel.add(dummy5);
+		
+		addEditScrollPane = new JScrollPane(innerAddEditPanel);
+		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		addEditScrollPane.setPreferredSize(new Dimension (300, 300));
+		addEditScrollPane.setBackground(null);
+		addEditScrollPane.setOpaque(true);
+		addEditScrollPane.setBorder(null);
+		addEditScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(addEditScrollPane, BorderLayout.WEST);
+		scrollPanes.put("addedit", addEditScrollPane);
+		
+		//
+		// Notifications - Panel
+		//
+		
+		JPanel innerNotificationsPanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy3 = new JLabel("Notifications goes here");
+		innerNotificationsPanel.add(dummy3);
+		
+		notificationsScrollPane = new JScrollPane(innerNotificationsPanel);
+		notificationsScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		notificationsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		notificationsScrollPane.setPreferredSize(new Dimension (300, 300));
+		notificationsScrollPane.setBackground(null);
+		notificationsScrollPane.setOpaque(true);
+		notificationsScrollPane.setBorder(null);
+		notificationsScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(notificationsScrollPane, BorderLayout.WEST);
+		scrollPanes.put("notifications", notificationsScrollPane);
+		
+		//
+		// Info - Panel
+		//
+		
+		JPanel innerInfoPanel = new JPanel();
+		
+		// Add dummy
+		innerInfoTestLabel = new JLabel("Info goes here");
+		innerInfoPanel.add(innerInfoTestLabel);
+		
+		infoScrollPane = new JScrollPane(innerInfoPanel);
+		infoScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		infoScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		infoScrollPane.setPreferredSize(new Dimension (300, 300));
+		infoScrollPane.setBackground(null);
+		infoScrollPane.setOpaque(true);
+		infoScrollPane.setBorder(null);
+		infoScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(infoScrollPane, BorderLayout.WEST);
+		scrollPanes.put("info", infoScrollPane);
+		
+		//
+		// Home - Panel
+		//
+		
+		JPanel innerHomePanel = new JPanel();
+		
+		// Add dummy
+		JLabel dummy2 = new JLabel("Home goes here");
+		innerHomePanel.add(dummy2);
+		
+		homeScrollPane = new JScrollPane(innerHomePanel);
+		homeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		homeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		homeScrollPane.setPreferredSize(new Dimension (300, 300));
+		homeScrollPane.setBackground(null);
+		homeScrollPane.setOpaque(true);
+		homeScrollPane.setBorder(null);
+		homeScrollPane.setVisible(true);
+		
+		// Add the panel
+		splitLeftInner.add(homeScrollPane, BorderLayout.WEST);
+		scrollPanes.put("home", homeScrollPane);
+	}
+	
+	/*
+	 * Set the correct height for the side-panels
+	 */
+	
+	private void setSizesLeftPanel() {
+		// Employees
+		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Info
+		infoScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Home
+		homeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Notifications
+		notificationsScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+	}
+	
+	/*
+	 * Method to show/hide dynamic sidepanels
+	 */
+	
+	protected void displayLeftPanel(String n) {
+		// Get all the keys
+		Set<String> leftPanelKeys = scrollPanes.keySet();
+		
+		// Loop all the keys
+		for (String s : leftPanelKeys) {
+			// Set hidden to all
+			JScrollPane panelToHide = scrollPanes.get(s);
+			if (panelToHide != null) {
+				panelToHide.setVisible(false);
+			}
+		}
+		
+		// Get panel to display
+		JScrollPane panelToView = scrollPanes.get(n);
+		if (panelToView != null) {
+			// Set visible
+			panelToView.setVisible(true);
+			
+			// Redraw super to show the changes!
+			super.revalidate();
+		}
 	}
 }
