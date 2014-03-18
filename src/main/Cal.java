@@ -192,7 +192,7 @@ public class Cal {
 	}
 	
 	/*
-	 * Derp (TODO)
+	 * Delegate for loading all employees in the system
 	 */
 	
 	private void loadEmployees() {
