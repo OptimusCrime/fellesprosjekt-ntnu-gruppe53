@@ -57,17 +57,23 @@ public class Gui {
 	 */
 	
 	public void reflectChange(String t, String f, Object o) {
-		// Cast object
-		CalendarObjects obj = (CalendarObjects)o;
-		
-		// Check if created
-		if ((boolean) obj.isCreated()) {
-			// Object is created, changes should be reflected now
-			if (t.equals("user")) {
-				// Dealing with a user
-				if (f.equals("loaded-appointments")) {
-					// Draw appointments
-					main.drawAppointments();
+		if (t.equals("employees")) {
+			// Special case, this is not a part of the CalendarObjects-family
+			main.drawEmployees(calendar.getEmployees());
+		}
+		else {
+			// Cast object
+			CalendarObjects obj = (CalendarObjects)o;
+			
+			// Check if created
+			if ((boolean) obj.isCreated()) {
+				// Object is created, changes should be reflected now
+				if (t.equals("user")) {
+					// Dealing with a user
+					if (f.equals("loaded-appointments")) {
+						// Draw appointments
+						main.drawAppointments();
+					}
 				}
 			}
 		}

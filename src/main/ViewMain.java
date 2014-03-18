@@ -653,6 +653,14 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
+	 * Adds all the employees to the list
+	 */
+	
+	public void drawEmployees(ArrayList<Employee> employees) {
+		// TODO
+	}
+	
+	/*
 	 * Display screen for creating new appointment (TODO)
 	 */
 	

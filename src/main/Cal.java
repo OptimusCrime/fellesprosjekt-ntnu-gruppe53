@@ -42,6 +42,9 @@ public class Cal {
 		
 		// Sockets
 		this.sh = new SocketHandler(this);
+		
+		// Init list of employees
+		this.employees = new ArrayList<Employee>();
 	}
 	
 	/*
@@ -179,6 +182,35 @@ public class Cal {
 					}
 				}
 			}
+			else if (action.equals("employees")) {
+				// We're dealing with the list of employees
+				if (type.equals("get")) {
+					// Get all employees
+					JSONArray employees = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (employees != null) {
+						// Loop all the employees
+						for (int i = 0; i < employees.size(); i++) {
+							JSONObject thisAppointment = (JSONObject) employees.get(i);
+							
+							// Create new employee
+							Employee e = new Employee(new BigDecimal((long) thisAppointment.get("id")).intValueExact(),
+									(String) thisAppointment.get("email"),
+									(String) thisAppointment.get("name"));
+							
+							// Create the object
+							//a.create();
+							
+							// Add appointment to user
+							this.employees.add(e);
+						}
+						
+						// Send reflect to the gui from this class
+						this.gui.reflectChange("employees", "create", null);
+					}
+				}
+			}
 		}
 		catch (Exception e) {}
 	}
@@ -217,7 +249,7 @@ public class Cal {
 	 * Delegate for getting all employees in the system
 	 */
 	
-	public void getEmployees() {
-		// TODO
+	public ArrayList<Employee> getEmployees() {
+		return this.employees;
 	}
 }
