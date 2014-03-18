@@ -199,9 +199,6 @@ public class Cal {
 									(String) thisAppointment.get("email"),
 									(String) thisAppointment.get("name"));
 							
-							// Create the object
-							//a.create();
-							
 							// Add appointment to user
 							this.employees.add(e);
 						}
@@ -233,7 +230,6 @@ public class Cal {
 	 */
 	
 	private void loadEmployees() {
-		System.out.println("Here");
 		JSONObject employeeObj = this.initJSONObject("employees", "get");
 		String employeeObjString = employeeObj.toJSONString();
 		
