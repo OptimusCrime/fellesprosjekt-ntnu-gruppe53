@@ -23,14 +23,11 @@ public class Gui {
 	
 	public Gui (Cal c) {
 		// Set references
-		this.calendar = c;
+		this.calendar = c;	
 		
-		// Display login-screen TODO debug
-		//login = new ViewLogin(this, this.calendar);
-		//login.setVisible(true);
-		
-		main = new ViewMain(this, this.calendar);
-		main.setVisible(true);
+		// Display login-screen
+		login = new ViewLogin(this, this.calendar);
+		login.setVisible(true);
 	}
 	
 	/*

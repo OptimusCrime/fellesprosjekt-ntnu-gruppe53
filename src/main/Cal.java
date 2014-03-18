@@ -27,6 +27,8 @@ public class Cal {
 	private User user;
 	private SocketHandler sh;
 	
+	private ArrayList<Employee> employees;
+	
 	/*
 	 * Constructor
 	 */
@@ -186,7 +188,7 @@ public class Cal {
 	 */
 	
 	private void loadAppointments () {
-		JSONObject appointmentObj = this.initJSONObject("appointment", "get");
+		JSONObject appointmentObj = this.initJSONObject("appointments", "get");
 		String appointmentObjString = appointmentObj.toJSONString();
 		
 		sh.sendMessage(appointmentObjString);
