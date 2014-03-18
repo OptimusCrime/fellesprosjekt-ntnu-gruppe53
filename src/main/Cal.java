@@ -99,54 +99,57 @@ public class Cal {
 	 */
 	
 	public void handleIncoming(String r) {
-		// Decode json
+		// DEBUG TODO
 		System.out.println("Got this = " + r);
+		
+		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
-		System.out.println(requestObj);
+		
 		// Exstract the different action and types
 		try {
 			String action = (String) requestObj.get("action");
 			String type = (String) requestObj.get("type");
 			
 			// Change according to the different incoming types here
-			if (action.equals("appointment")) {
+			if (action.equals("appointments")) {
 				// We're dealing with an appointment
 				if (type.equals("get")) {
-					// The request is of the type get
-					
-					// Parse to array
+					// Get all appointments
 					JSONArray appointments = (JSONArray) requestObj.get("data");
 					
-					// Loop all the appointments
-					for (int i = 0; i < appointments.size(); i++) {
-						JSONObject thisAppointment = (JSONObject) appointments.get(i);
+					// Check that we actually got someting back
+					if (appointments != null) {
+						// Loop all the appointments
+						for (int i = 0; i < appointments.size(); i++) {
+							JSONObject thisAppointment = (JSONObject) appointments.get(i);
+							
+							// Create new appointment
+							Appointment a = new Appointment(this.gui);
+							
+							// Set each field
+							a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
+							a.setTitle((String) thisAppointment.get("title"));
+							a.setDescription((String) thisAppointment.get("description"));
+							
+							a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
+							a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
+							
+							a.setPlace((String) thisAppointment.get("place"));
+							a.setParticipates((boolean) thisAppointment.get("participate"));
+							a.setHide((boolean) thisAppointment.get("hide"));
+							a.setAlarm((boolean) thisAppointment.get("alarm"));
+							a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
+							
+							// Create the object
+							a.create();
+							
+							// Add appointment to user
+							this.user.addAppointment(a);
+						}
 						
-						// Create new appointment
-						Appointment a = new Appointment(this.gui);
-						
-						// Set each field (TODO)
-						a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
-						a.setTitle((String) thisAppointment.get("title"));
-						a.setDescription((String) thisAppointment.get("description"));
-						
-						a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
-						a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
-						
-						a.setPlace((String) thisAppointment.get("place"));
-						a.setParticipates((boolean) thisAppointment.get("participate"));
-						a.setHide((boolean) thisAppointment.get("hide"));
-						a.setAlarm((boolean) thisAppointment.get("alarm"));
-						a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
-						
-						// Create the object
-						a.create();
-						
-						// Add appointment to user
-						this.user.addAppointment(a);
+						// Send reflect to the gui from the user-class
+						this.user.sendReflect("loaded-appointments");
 					}
-					
-					// Send reflect to the gui from the user-class
-					this.user.sendReflect("loaded-appointments");
 				}
 			}
 			else if (action.equals("login")) {
@@ -175,9 +178,7 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		catch (Exception e) {}
 	}
 	
 	/*
