@@ -31,17 +31,19 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	private int space;
 	private int width;
 	private ArrayList<GraphicsLabel> labelsOnHover;
+	private boolean shouldDrawHorizontal;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public GraphicSquare(int x, int y, int width, int height, int spaceHeight) {
+	public GraphicSquare(int x, int y, int width, int height, int spaceHeight, boolean s) {
 		super();
 		
 		// Set some variables we need
 		this.space = spaceHeight;
 		this.width = height;
+		this.shouldDrawHorizontal = s;
 		
 		// Initialize list of labels
 		labelsOnHover = new ArrayList<GraphicsLabel>();
@@ -81,10 +83,13 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 		// Draw border
 		g2.draw(rect);
 		
-		// Draw horizontal lines
-		g2.setColor(new Color(28, 64, 148));
-		for (int i = 1; i <= 9; i++) {
-			g2.drawLine(0, this.space*i, this.width, this.space*i);
+		// Check if we should draw horizontal lines
+		if (this.shouldDrawHorizontal) {
+			// Draw horizontal lines
+			g2.setColor(new Color(28, 64, 148));
+			for (int i = 1; i <= 9; i++) {
+				g2.drawLine(0, this.space*i, this.width, this.space*i);
+			}
 		}
 	}
 	

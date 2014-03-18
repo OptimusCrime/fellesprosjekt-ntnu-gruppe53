@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,7 +60,6 @@ public class ViewMain extends JFrame {
 	
 	// Panels, parts of the window
 	private JPanel header;
-	private JPanel seperator;
 	private JSplitPane main;
 	
 	private JPanel splitLeft;
@@ -141,25 +139,18 @@ public class ViewMain extends JFrame {
 	    // Add header-panel
 		header = new JPanel();
 		springLayout.putConstraint(SpringLayout.NORTH, header, 10, SpringLayout.NORTH, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, header, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, header, 61, SpringLayout.NORTH, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, header, -10, SpringLayout.EAST, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, header, 40, SpringLayout.NORTH, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, header, 0, SpringLayout.EAST, super.getContentPane());
 		super.getContentPane().add(header);
 		header.setLayout(new BorderLayout(0, 0));
 		
-		// Add seperator-panel
-		seperator = new JPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, seperator, 2, SpringLayout.SOUTH, header);
-		springLayout.putConstraint(SpringLayout.WEST, seperator, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, seperator, 53, SpringLayout.SOUTH, header);
-		springLayout.putConstraint(SpringLayout.EAST, seperator, -10, SpringLayout.EAST, super.getContentPane());
-		super.getContentPane().add(seperator);
-		
 		// Add main-panel
 		main = new JSplitPane();
-		springLayout.putConstraint(SpringLayout.NORTH, main, 9, SpringLayout.SOUTH, seperator);
+		main.setDividerSize(0);
+		springLayout.putConstraint(SpringLayout.NORTH, main, 10, SpringLayout.SOUTH, header);
 		springLayout.putConstraint(SpringLayout.WEST, main, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, main, -10, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
 		
 		// Set main-panel impossible to resize
@@ -221,9 +212,7 @@ public class ViewMain extends JFrame {
 		});
 		headerRight.add(logoutBtn);
 		
-		// Add seperator (TODO, this is not working)
-		JSeparator swingSeperator = new JSeparator();
-		seperator.add(swingSeperator);
+		// Add main here
 		getContentPane().add(main);
 		
 		// Set left-split content
@@ -248,18 +237,18 @@ public class ViewMain extends JFrame {
 		// Add inner JPanel to the right-split content (holds the calendar and nav)
 		splitRightInner = new JPanel();
 		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightInner, 55, SpringLayout.NORTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightInner, -24, SpringLayout.SOUTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightInner, 14, SpringLayout.WEST, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightInner, -6, SpringLayout.EAST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightInner, 0, SpringLayout.SOUTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightInner, -2, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightInner, -8, SpringLayout.EAST, splitRight);
 		splitRight.add(splitRightInner);		
 		splitRightInner.setLayout(new GridLayout(1, 8, 0, 0));
 		
 		// Add inner JPanel to the right-split content that holds the nav
 		splitRightNav = new JPanel();
-		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightNav, 12, SpringLayout.NORTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightNav, 20, SpringLayout.WEST, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightNav, -6, SpringLayout.NORTH, splitRightInner);
-		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightNav, -4, SpringLayout.EAST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightNav, 10, SpringLayout.NORTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightNav, -6, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightNav, -2, SpringLayout.NORTH, splitRightInner);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightNav, -6, SpringLayout.EAST, splitRight);
 		splitRight.add(splitRightNav);
 		splitRightNav.setLayout(new BorderLayout(0, 0));
 		
@@ -307,14 +296,21 @@ public class ViewMain extends JFrame {
 	    // Calculate week, dates etc
 	    this.calculateCalendar();
 	    
-	    // Draw calendar
+	    // Set sizes for left-panel
+	 	this.setSizesLeftPanel();
+	    
+	    // Draw calendar (HAX)
 	    this.drawCalendar();
 	    
-		// Set sizes for left-panel
-		this.setSizesLeftPanel();
-		
-		// Add plusses
-		this.drawPlusSymboles();
+	    // Redraw the calendar
+ 		this.clearCalendar();
+ 		this.drawCalendar();
+ 		
+ 		// Add appointments
+ 		this.drawAppointments();
+ 		
+ 		// Add plusses
+ 		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -440,13 +436,13 @@ public class ViewMain extends JFrame {
 		int width = splitRightInner.getWidth();
 		int numRows = 10;
 		this.column_width = (int) width / 8;
-		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		this.row_height = (int) (splitRightInner.getHeight() - 11) / numRows;
 		int height = row_height * numRows;
 		
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
 		for (int i = 0; i < 8; i++) {
 			// Create new square
-			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
+			GraphicSquare square = new GraphicSquare(0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height, ((i == 0)? false : true));
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
@@ -471,7 +467,7 @@ public class ViewMain extends JFrame {
 					}
 					
 					// Set bounds for the box
-					box.setBounds(1, (((j + 1) * row_height) - compensateForLineOffset), (column_width - 1), 14);
+					box.setBounds(1, (((j + 1) * row_height) - compensateForLineOffset), (column_width - 5), 14);
 					
 					// Little hack to hide the horizontal line in this column
 					box.setOpaque(true);
@@ -520,6 +516,8 @@ public class ViewMain extends JFrame {
 			// Add square to the array
 			squareArr[i] = square;
 		}
+		
+		super.revalidate();
 	}
 	
 	/*
@@ -905,6 +903,9 @@ public class ViewMain extends JFrame {
 		if (employeeScrollPane != null) {
 			employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		}
+		
+		// Redraw
+		splitLeftInner.revalidate();
 	}
 	
 	/*
