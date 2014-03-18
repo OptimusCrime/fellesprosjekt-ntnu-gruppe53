@@ -628,10 +628,15 @@ public class ViewMain extends JFrame {
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				plusSignLabel.setTime(j + "");
+				plusSignLabel.setDate(j + "");
 				plusSignLabel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {  
-						System.out.println(e.getSource());
+						// Get the right object
+						GraphicsLabel clickedPlusSignLabel = (GraphicsLabel) e.getSource();
+						
+						// Show new-screen
+						showNewAppointment(clickedPlusSignLabel.getTime(), clickedPlusSignLabel.getDate());
 					} 
 				});
 				
@@ -645,6 +650,17 @@ public class ViewMain extends JFrame {
 			// Repaint 
 			thisSquare.revalidate();
 		}
+	}
+	
+	/*
+	 * Display screen for creating new appointment (TODO)
+	 */
+	
+	protected void showNewAppointment(String t, String d) {
+		System.out.println(t + " - " + d);
+		
+		// Display the right left-panel
+		this.displayLeftPanel("newedit");
 	}
 	
 	/*

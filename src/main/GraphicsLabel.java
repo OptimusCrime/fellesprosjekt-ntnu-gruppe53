@@ -17,6 +17,7 @@ public class GraphicsLabel extends JLabel {
 	
 	private static final long serialVersionUID = 1L;
 	private String time;
+	private String date;
 	
 	/*
 	 * Constructor
@@ -36,5 +37,17 @@ public class GraphicsLabel extends JLabel {
 	
 	public String getTime() {
 		return this.time;
+	}
+	
+	/*
+	 * Getters and setters for the date-variable
+	 */
+	
+	public void setDate(String t) {
+		this.date = t;
+	}
+	
+	public String getDate() {
+		return this.date;
 	}
 }
