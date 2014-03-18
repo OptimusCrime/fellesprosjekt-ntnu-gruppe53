@@ -612,7 +612,6 @@ public class ViewMain extends JFrame {
 		int numRows = 10;
 		this.column_width = (int) width / 8;
 		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
-		int height = row_height * numRows;
 				
 		// Loop all the squares
 		for (int i = 1; i < squareArr.length; i++) {
