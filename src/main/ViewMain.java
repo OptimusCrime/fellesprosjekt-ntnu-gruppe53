@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -140,17 +139,18 @@ public class ViewMain extends JFrame {
 	    // Add header-panel
 		header = new JPanel();
 		springLayout.putConstraint(SpringLayout.NORTH, header, 10, SpringLayout.NORTH, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, header, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, header, 61, SpringLayout.NORTH, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, header, -10, SpringLayout.EAST, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, header, 0, SpringLayout.WEST, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, header, 40, SpringLayout.NORTH, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, header, 0, SpringLayout.EAST, super.getContentPane());
 		super.getContentPane().add(header);
 		header.setLayout(new BorderLayout(0, 0));
 		
 		// Add main-panel
 		main = new JSplitPane();
-		springLayout.putConstraint(SpringLayout.NORTH, main, 9, SpringLayout.SOUTH, header);
+		main.setDividerSize(0);
+		springLayout.putConstraint(SpringLayout.NORTH, main, 10, SpringLayout.SOUTH, header);
 		springLayout.putConstraint(SpringLayout.WEST, main, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, main, -10, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
 		
 		// Set main-panel impossible to resize
@@ -237,18 +237,18 @@ public class ViewMain extends JFrame {
 		// Add inner JPanel to the right-split content (holds the calendar and nav)
 		splitRightInner = new JPanel();
 		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightInner, 55, SpringLayout.NORTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightInner, -24, SpringLayout.SOUTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightInner, 14, SpringLayout.WEST, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightInner, -6, SpringLayout.EAST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightInner, 0, SpringLayout.SOUTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightInner, -2, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightInner, -8, SpringLayout.EAST, splitRight);
 		splitRight.add(splitRightInner);		
 		splitRightInner.setLayout(new GridLayout(1, 8, 0, 0));
 		
 		// Add inner JPanel to the right-split content that holds the nav
 		splitRightNav = new JPanel();
-		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightNav, 12, SpringLayout.NORTH, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightNav, 20, SpringLayout.WEST, splitRight);
-		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightNav, -6, SpringLayout.NORTH, splitRightInner);
-		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightNav, -4, SpringLayout.EAST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.NORTH, splitRightNav, 10, SpringLayout.NORTH, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.WEST, splitRightNav, -6, SpringLayout.WEST, splitRight);
+		splitRightLayout.putConstraint(SpringLayout.SOUTH, splitRightNav, -2, SpringLayout.NORTH, splitRightInner);
+		splitRightLayout.putConstraint(SpringLayout.EAST, splitRightNav, -6, SpringLayout.EAST, splitRight);
 		splitRight.add(splitRightNav);
 		splitRightNav.setLayout(new BorderLayout(0, 0));
 		
@@ -436,7 +436,7 @@ public class ViewMain extends JFrame {
 		int width = splitRightInner.getWidth();
 		int numRows = 10;
 		this.column_width = (int) width / 8;
-		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
+		this.row_height = (int) (splitRightInner.getHeight() - 11) / numRows;
 		int height = row_height * numRows;
 		
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
