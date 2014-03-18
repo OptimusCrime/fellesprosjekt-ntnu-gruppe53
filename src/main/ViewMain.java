@@ -61,7 +61,6 @@ public class ViewMain extends JFrame {
 	
 	// Panels, parts of the window
 	private JPanel header;
-	private JPanel seperator;
 	private JSplitPane main;
 	
 	private JPanel splitLeft;
@@ -147,17 +146,9 @@ public class ViewMain extends JFrame {
 		super.getContentPane().add(header);
 		header.setLayout(new BorderLayout(0, 0));
 		
-		// Add seperator-panel
-		seperator = new JPanel();
-		springLayout.putConstraint(SpringLayout.NORTH, seperator, 2, SpringLayout.SOUTH, header);
-		springLayout.putConstraint(SpringLayout.WEST, seperator, 10, SpringLayout.WEST, super.getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, seperator, 53, SpringLayout.SOUTH, header);
-		springLayout.putConstraint(SpringLayout.EAST, seperator, -10, SpringLayout.EAST, super.getContentPane());
-		super.getContentPane().add(seperator);
-		
 		// Add main-panel
 		main = new JSplitPane();
-		springLayout.putConstraint(SpringLayout.NORTH, main, 9, SpringLayout.SOUTH, seperator);
+		springLayout.putConstraint(SpringLayout.NORTH, main, 9, SpringLayout.SOUTH, header);
 		springLayout.putConstraint(SpringLayout.WEST, main, 10, SpringLayout.WEST, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.SOUTH, main, -25, SpringLayout.SOUTH, super.getContentPane());
 		springLayout.putConstraint(SpringLayout.EAST, main, -10, SpringLayout.EAST, super.getContentPane());
@@ -221,9 +212,7 @@ public class ViewMain extends JFrame {
 		});
 		headerRight.add(logoutBtn);
 		
-		// Add seperator (TODO, this is not working)
-		JSeparator swingSeperator = new JSeparator();
-		seperator.add(swingSeperator);
+		// Add main here
 		getContentPane().add(main);
 		
 		// Set left-split content
