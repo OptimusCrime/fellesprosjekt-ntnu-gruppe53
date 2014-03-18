@@ -656,34 +656,7 @@ public class ViewMain extends JFrame {
 	 * Adds all the employees to the list
 	 */
 	
-	public void drawEmployees(ArrayList<Employee> employees) {
-		// Testing ansatte
-		ArrayList<String> derp = new ArrayList<String>();
-		derp.add("Thomas Gautvedt");
-		derp.add("asdfsdfsf");
-		derp.add("43545345");
-		derp.add("asd345345345fsdfsf");
-		derp.add("a345345345sdfsdfsf");
-		derp.add("as3453dfsdfsf");
-		derp.add("as345345dfsdfsf");
-		derp.add("as455dfsdfsf");
-		derp.add("as345dfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-			
+	public void drawEmployees(ArrayList<Employee> employees) {			
 		//
 		// Employee - Panel
 		//
@@ -691,7 +664,7 @@ public class ViewMain extends JFrame {
 		JPanel innerEmployeePanel = new JPanel();
 		
 		// Create dynamic RowSpec
-		int rowSpecSize = 9 + (derp.size() * 2);
+		int rowSpecSize = 9 + (employees.size() * 2);
 		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
 		for (int i = 0; i < rowSpecSize; i++) {
 			if (i % 2 == 0) {
@@ -733,9 +706,9 @@ public class ViewMain extends JFrame {
 		
 		// Begin dynamic fill in names in the list
 		int ansatteBaseIndex = 10;
-		for (int i = 0; i < derp.size(); i++) {
+		for (int i = 0; i < employees.size(); i++) {
 			// Create textfield for the name of the employee
-			JLabel employeeNameList = new JLabel(derp.get(i));
+			JLabel employeeNameList = new JLabel(employees.get(i).getName());
 			JCheckBox employeeNameListCheckbox = new JCheckBox("");
 			
 			// Set the label for the checkbox (not really sure if this does anything at all?)
@@ -762,6 +735,9 @@ public class ViewMain extends JFrame {
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
 		scrollPanes.put("employees", employeeScrollPane);
+		
+		// Update changes
+		this.setSizesLeftPanel();
 	}
 	
 	/*
@@ -913,9 +889,6 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void setSizesLeftPanel() {
-		// Employees
-		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
-		
 		// Info
 		infoScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		
@@ -927,6 +900,11 @@ public class ViewMain extends JFrame {
 		
 		// Add/Edit
 		addEditScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Employees
+		if (employeeScrollPane != null) {
+			employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		}
 	}
 	
 	/*

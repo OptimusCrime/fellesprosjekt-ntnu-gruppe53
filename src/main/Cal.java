@@ -212,7 +212,9 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
@@ -231,6 +233,7 @@ public class Cal {
 	 */
 	
 	private void loadEmployees() {
+		System.out.println("Here");
 		JSONObject employeeObj = this.initJSONObject("employees", "get");
 		String employeeObjString = employeeObj.toJSONString();
 		
