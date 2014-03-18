@@ -905,6 +905,9 @@ public class ViewMain extends JFrame {
 		if (employeeScrollPane != null) {
 			employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		}
+		
+		// Redraw
+		splitLeftInner.revalidate();
 	}
 	
 	/*
