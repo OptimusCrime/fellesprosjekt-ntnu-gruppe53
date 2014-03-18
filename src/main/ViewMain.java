@@ -450,7 +450,6 @@ public class ViewMain extends JFrame {
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
-			square.addMouseListener(square);
 			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
@@ -628,6 +627,13 @@ public class ViewMain extends JFrame {
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				plusSignLabel.setTime(j + "");
+				plusSignLabel.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {  
+						System.out.println(e.getSource());
+					} 
+				});
 				
 				// Add pluss to square-object
 				squareArr[i].addLabel(plusSignLabel);

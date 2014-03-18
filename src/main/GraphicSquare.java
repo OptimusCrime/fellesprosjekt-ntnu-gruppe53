@@ -20,7 +20,7 @@ import javax.swing.JLabel;
  * 
  */
 
-public class GraphicSquare extends JPanel implements MouseMotionListener, MouseListener {
+public class GraphicSquare extends JPanel implements MouseMotionListener {
 	
 	/*
 	 * Variables we need
@@ -108,32 +108,9 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * When the mouse is moved away from the square, hide all labels
-	 */
-	
-	@Override
-	public void mouseExited(MouseEvent e) {
-		for (int i = 0; i < labelsOnHover.size(); i++) {
-			labelsOnHover.get(i).setVisible(false);
-		}
-	}
-	
-	/*
-	 * Events we must override that we don't use
+	 * Method that we don't need
 	 */
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
 }
