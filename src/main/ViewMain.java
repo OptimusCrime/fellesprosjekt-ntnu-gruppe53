@@ -657,60 +657,6 @@ public class ViewMain extends JFrame {
 	 */
 	
 	public void drawEmployees(ArrayList<Employee> employees) {
-		// TODO
-	}
-	
-	/*
-	 * Display screen for creating new appointment (TODO)
-	 */
-	
-	protected void showNewAppointment(String t, String d) {
-		System.out.println(t + " - " + d);
-		
-		// Display the right left-panel
-		this.displayLeftPanel("addedit");
-	}
-	
-	/*
-	 * Display information about one appointment (TODO)
-	 */
-	
-	protected void showAppointment(int id) {
-		// Display the correct sidepanel
-		this.displayLeftPanel("info");
-		
-		// TODO, just set id for now
-		innerInfoTestLabel.setText("Showing info for " + id);
-	}
-	
-	/*
-	 * Removes all graphics from the calendar-inner-wrapper
-	 */
-	
-	private void clearCalendar() {
-		splitRightInner.removeAll();
-	}
-	
-	/*
-	 * Setter for visiblity of the window
-	 */
-	
-	public void setVisible(boolean b) {
-		super.setVisible(b);
-	}
-	
-	/*
-	 * Building left panel-content
-	 */
-	
-	private void buildLeftpanel() {
-		
-		//
-		// Init the list
-		//
-		
-		scrollPanes = new HashMap<String, JScrollPane>();
-		
 		// Testing ansatte
 		ArrayList<String> derp = new ArrayList<String>();
 		derp.add("Thomas Gautvedt");
@@ -816,6 +762,58 @@ public class ViewMain extends JFrame {
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
 		scrollPanes.put("employees", employeeScrollPane);
+	}
+	
+	/*
+	 * Display screen for creating new appointment (TODO)
+	 */
+	
+	protected void showNewAppointment(String t, String d) {
+		System.out.println(t + " - " + d);
+		
+		// Display the right left-panel
+		this.displayLeftPanel("addedit");
+	}
+	
+	/*
+	 * Display information about one appointment (TODO)
+	 */
+	
+	protected void showAppointment(int id) {
+		// Display the correct sidepanel
+		this.displayLeftPanel("info");
+		
+		// TODO, just set id for now
+		innerInfoTestLabel.setText("Showing info for " + id);
+	}
+	
+	/*
+	 * Removes all graphics from the calendar-inner-wrapper
+	 */
+	
+	private void clearCalendar() {
+		splitRightInner.removeAll();
+	}
+	
+	/*
+	 * Setter for visiblity of the window
+	 */
+	
+	public void setVisible(boolean b) {
+		super.setVisible(b);
+	}
+	
+	/*
+	 * Building left panel-content
+	 */
+	
+	private void buildLeftpanel() {
+		
+		//
+		// Init the list
+		//
+		
+		scrollPanes = new HashMap<String, JScrollPane>();
 		
 		//
 		// Add/edit - Panel
