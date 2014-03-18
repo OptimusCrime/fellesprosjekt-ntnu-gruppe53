@@ -20,7 +20,7 @@ import javax.swing.JLabel;
  * 
  */
 
-public class GraphicSquare extends JPanel implements MouseMotionListener, MouseListener {
+public class GraphicSquare extends JPanel implements MouseMotionListener {
 	
 	/*
 	 * Variables we need
@@ -30,7 +30,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	private Rectangle rect;
 	private int space;
 	private int width;
-	private ArrayList<JLabel> labelsOnHover;
+	private ArrayList<GraphicsLabel> labelsOnHover;
 	
 	/*
 	 * Constructor
@@ -44,7 +44,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 		this.width = height;
 		
 		// Initialize list of labels
-		labelsOnHover = new ArrayList<JLabel>();
+		labelsOnHover = new ArrayList<GraphicsLabel>();
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
@@ -54,7 +54,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	 * Add label to the square
 	 */
 	
-	public void addLabel(JLabel j) {
+	public void addLabel(GraphicsLabel j) {
 		labelsOnHover.add(j);
 	}
 	
@@ -89,13 +89,11 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * TODO
+	 * When the mouse is moved, toggle show/hide on the different labels based on the height of the squares
 	 */
 	
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		System.out.println("Space = " + this.space);
-		// Calculate what + to show
 		int yPos = e.getY();
 		int index = (int) Math.floor(yPos/this.space) - 1;
 		
@@ -110,32 +108,9 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * TODO
-	 */
-	
-	@Override
-	public void mouseExited(MouseEvent e) {
-		for (int i = 0; i < labelsOnHover.size(); i++) {
-			labelsOnHover.get(i).setVisible(false);
-		}
-	}
-	
-	/*
-	 * TODO
+	 * Method that we don't need
 	 */
 	
 	@Override
 	public void mouseDragged(MouseEvent e) {}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
 }

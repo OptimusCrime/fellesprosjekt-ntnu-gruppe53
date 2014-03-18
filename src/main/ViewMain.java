@@ -450,7 +450,6 @@ public class ViewMain extends JFrame {
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
-			square.addMouseListener(square);
 			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
@@ -624,10 +623,22 @@ public class ViewMain extends JFrame {
 			
 			// Loop all nine hours to display + - sign for
 			for (int j = 1; j <= 9; j++) {
-				JLabel plusSignLabel = new JLabel("+");
+				GraphicsLabel plusSignLabel = new GraphicsLabel("+");
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				plusSignLabel.setTime(j + "");
+				plusSignLabel.setDate(j + "");
+				plusSignLabel.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {  
+						// Get the right object
+						GraphicsLabel clickedPlusSignLabel = (GraphicsLabel) e.getSource();
+						
+						// Show new-screen
+						showNewAppointment(clickedPlusSignLabel.getTime(), clickedPlusSignLabel.getDate());
+					} 
+				});
 				
 				// Add pluss to square-object
 				squareArr[i].addLabel(plusSignLabel);
@@ -639,6 +650,17 @@ public class ViewMain extends JFrame {
 			// Repaint 
 			thisSquare.revalidate();
 		}
+	}
+	
+	/*
+	 * Display screen for creating new appointment (TODO)
+	 */
+	
+	protected void showNewAppointment(String t, String d) {
+		System.out.println(t + " - " + d);
+		
+		// Display the right left-panel
+		this.displayLeftPanel("addedit");
 	}
 	
 	/*
@@ -896,6 +918,9 @@ public class ViewMain extends JFrame {
 		
 		// Notifications
 		notificationsScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Add/Edit
+		addEditScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 	
 	/*
