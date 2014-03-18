@@ -446,7 +446,7 @@ public class ViewMain extends JFrame {
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
 		for (int i = 0; i < 8; i++) {
 			// Create new square
-			GraphicSquare square = new GraphicSquare(0, 0, column_width, height, row_height);
+			GraphicSquare square = new GraphicSquare(0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height);
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
