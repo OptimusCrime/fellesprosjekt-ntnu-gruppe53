@@ -70,17 +70,6 @@ public class Cal {
 	}
 	
 	/*
-	 * Delegate for loading all appointments
-	 */
-	
-	private void loadAppointments () {
-		JSONObject appointmentObj = this.initJSONObject("appointment", "get");
-		String loginObjString = appointmentObj.toJSONString();
-		
-		sh.sendMessage(loginObjString);
-	}
-	
-	/*
 	 * Initilize new JSONObject that appends the correct method, action, type and login-information
 	 */
 	
@@ -177,7 +166,7 @@ public class Cal {
 						
 						// Load all stuff the user needs
 						this.loadAppointments();
-						// this.loadStuff**
+						this.loadEmployees();
 					}
 					else {
 						// Send error-message
@@ -192,10 +181,40 @@ public class Cal {
 	}
 	
 	/*
-	 * Delete for getting all appointments from the user
+	 * Delegate for loading all appointments
+	 */
+	
+	private void loadAppointments () {
+		JSONObject appointmentObj = this.initJSONObject("appointment", "get");
+		String appointmentObjString = appointmentObj.toJSONString();
+		
+		sh.sendMessage(appointmentObjString);
+	}
+	
+	/*
+	 * Derp (TODO)
+	 */
+	
+	private void loadEmployees() {
+		JSONObject employeeObj = this.initJSONObject("employees", "get");
+		String employeeObjString = employeeObj.toJSONString();
+		
+		sh.sendMessage(employeeObjString);
+	}
+	
+	/*
+	 * Delegate for getting all appointments from the user
 	 */
 	
 	public ArrayList<Appointment> getAppointments() {
 		return this.user.getAppointments();
+	}
+	
+	/*
+	 * Delegate for getting all employees in the system
+	 */
+	
+	public void getEmployees() {
+		// TODO
 	}
 }
