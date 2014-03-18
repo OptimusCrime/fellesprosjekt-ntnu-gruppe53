@@ -660,7 +660,7 @@ public class ViewMain extends JFrame {
 		System.out.println(t + " - " + d);
 		
 		// Display the right left-panel
-		this.displayLeftPanel("newedit");
+		this.displayLeftPanel("addedit");
 	}
 	
 	/*
@@ -918,6 +918,9 @@ public class ViewMain extends JFrame {
 		
 		// Notifications
 		notificationsScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Add/Edit
+		addEditScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 	}
 	
 	/*
