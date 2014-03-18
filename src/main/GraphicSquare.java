@@ -89,13 +89,11 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * TODO
+	 * When the mouse is moved, toggle show/hide on the different labels based on the height of the squares
 	 */
 	
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		System.out.println("Space = " + this.space);
-		// Calculate what + to show
 		int yPos = e.getY();
 		int index = (int) Math.floor(yPos/this.space) - 1;
 		
@@ -110,7 +108,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * TODO
+	 * When the mouse is moved away from the square, hide all labels
 	 */
 	
 	@Override
@@ -121,7 +119,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	}
 	
 	/*
-	 * TODO
+	 * Events we must override that we don't use
 	 */
 	
 	@Override
