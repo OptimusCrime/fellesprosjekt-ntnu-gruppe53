@@ -653,6 +653,94 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
+	 * Adds all the employees to the list
+	 */
+	
+	public void drawEmployees(ArrayList<Employee> employees) {			
+		//
+		// Employee - Panel
+		//
+		
+		JPanel innerEmployeePanel = new JPanel();
+		
+		// Create dynamic RowSpec
+		int rowSpecSize = 9 + (employees.size() * 2);
+		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
+		for (int i = 0; i < rowSpecSize; i++) {
+			if (i % 2 == 0) {
+				ansatteRowSpec[i] = FormFactory.RELATED_GAP_ROWSPEC;
+			}
+			else {
+				ansatteRowSpec[i] = FormFactory.DEFAULT_ROWSPEC;
+			}
+		}
+		
+		innerEmployeePanel.setLayout(new FormLayout(new ColumnSpec[] {
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC,},
+				ansatteRowSpec));
+		
+		// Setting up static part of the panel
+		JLabel employeeText = new JLabel("Ansatte");
+		employeeText.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerEmployeePanel.add(employeeText, "2, 2");
+		
+		// First seperator
+		JSeparator employeeSeperator = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator, "2, 4, 3, 1");
+		
+		// My calendar
+		JLabel employeeMyCalendar = new JLabel("Min kalender");
+		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
+		
+		// Checkbox for Mt calendar that is already selected
+		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
+		employeeMyCalendarCheckbox.setSelected(true);
+		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
+		
+		// Second seperator
+		JSeparator employeeSeperator2 = new JSeparator();
+		innerEmployeePanel.add(employeeSeperator2, "2, 8, 3, 1");
+		
+		// Begin dynamic fill in names in the list
+		int ansatteBaseIndex = 10;
+		for (int i = 0; i < employees.size(); i++) {
+			// Create textfield for the name of the employee
+			JLabel employeeNameList = new JLabel(employees.get(i).getName());
+			JCheckBox employeeNameListCheckbox = new JCheckBox("");
+			
+			// Set the label for the checkbox (not really sure if this does anything at all?)
+			employeeNameList.setLabelFor(employeeNameListCheckbox);
+			
+			// Add the items
+			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
+			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
+			
+			// Increase the base by two
+			ansatteBaseIndex += 2;
+		}
+		
+		// Create new scrollpanel and set the inner content
+		employeeScrollPane = new JScrollPane(innerEmployeePanel);
+		employeeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		employeeScrollPane.setPreferredSize(new Dimension (300, 300));
+		employeeScrollPane.setBackground(null);
+		employeeScrollPane.setOpaque(true);
+		employeeScrollPane.setBorder(null);
+		employeeScrollPane.setVisible(false);
+		
+		// Add the panel
+		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
+		scrollPanes.put("employees", employeeScrollPane);
+		
+		// Update changes
+		this.setSizesLeftPanel();
+	}
+	
+	/*
 	 * Display screen for creating new appointment (TODO)
 	 */
 	
@@ -702,112 +790,6 @@ public class ViewMain extends JFrame {
 		//
 		
 		scrollPanes = new HashMap<String, JScrollPane>();
-		
-		// Testing ansatte
-		ArrayList<String> derp = new ArrayList<String>();
-		derp.add("Thomas Gautvedt");
-		derp.add("asdfsdfsf");
-		derp.add("43545345");
-		derp.add("asd345345345fsdfsf");
-		derp.add("a345345345sdfsdfsf");
-		derp.add("as3453dfsdfsf");
-		derp.add("as345345dfsdfsf");
-		derp.add("as455dfsdfsf");
-		derp.add("as345dfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-		derp.add("a345sdfsdfsf");
-			
-		//
-		// Employee - Panel
-		//
-		
-		JPanel innerEmployeePanel = new JPanel();
-		
-		// Create dynamic RowSpec
-		int rowSpecSize = 9 + (derp.size() * 2);
-		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
-		for (int i = 0; i < rowSpecSize; i++) {
-			if (i % 2 == 0) {
-				ansatteRowSpec[i] = FormFactory.RELATED_GAP_ROWSPEC;
-			}
-			else {
-				ansatteRowSpec[i] = FormFactory.DEFAULT_ROWSPEC;
-			}
-		}
-		
-		innerEmployeePanel.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
-				FormFactory.RELATED_GAP_COLSPEC,
-				FormFactory.DEFAULT_COLSPEC,},
-				ansatteRowSpec));
-		
-		// Setting up static part of the panel
-		JLabel employeeText = new JLabel("Ansatte");
-		employeeText.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		innerEmployeePanel.add(employeeText, "2, 2");
-		
-		// First seperator
-		JSeparator employeeSeperator = new JSeparator();
-		innerEmployeePanel.add(employeeSeperator, "2, 4, 3, 1");
-		
-		// My calendar
-		JLabel employeeMyCalendar = new JLabel("Min kalender");
-		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
-		
-		// Checkbox for Mt calendar that is already selected
-		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
-		employeeMyCalendarCheckbox.setSelected(true);
-		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
-		
-		// Second seperator
-		JSeparator employeeSeperator2 = new JSeparator();
-		innerEmployeePanel.add(employeeSeperator2, "2, 8, 3, 1");
-		
-		// Begin dynamic fill in names in the list
-		int ansatteBaseIndex = 10;
-		for (int i = 0; i < derp.size(); i++) {
-			// Create textfield for the name of the employee
-			JLabel employeeNameList = new JLabel(derp.get(i));
-			JCheckBox employeeNameListCheckbox = new JCheckBox("");
-			
-			// Set the label for the checkbox (not really sure if this does anything at all?)
-			employeeNameList.setLabelFor(employeeNameListCheckbox);
-			
-			// Add the items
-			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
-			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
-			
-			// Increase the base by two
-			ansatteBaseIndex += 2;
-		}
-		
-		// Create new scrollpanel and set the inner content
-		employeeScrollPane = new JScrollPane(innerEmployeePanel);
-		employeeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		employeeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		employeeScrollPane.setPreferredSize(new Dimension (300, 300));
-		employeeScrollPane.setBackground(null);
-		employeeScrollPane.setOpaque(true);
-		employeeScrollPane.setBorder(null);
-		employeeScrollPane.setVisible(false);
-		
-		// Add the panel
-		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
-		scrollPanes.put("employees", employeeScrollPane);
 		
 		//
 		// Add/edit - Panel
@@ -907,9 +889,6 @@ public class ViewMain extends JFrame {
 	 */
 	
 	private void setSizesLeftPanel() {
-		// Employees
-		employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
-		
 		// Info
 		infoScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
 		
@@ -921,6 +900,11 @@ public class ViewMain extends JFrame {
 		
 		// Add/Edit
 		addEditScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		
+		// Employees
+		if (employeeScrollPane != null) {
+			employeeScrollPane.setPreferredSize(new Dimension (300, this.splitRightInner.getHeight() + 20));
+		}
 	}
 	
 	/*
