@@ -32,6 +32,7 @@ public class User implements CalendarObjects {
 		// Set reference to gui
 		this.gui = g;
 		this.created = false;
+		this.isLoggedIn = false;
 		
 		// Set initial data
 		this.username = "";
