@@ -471,7 +471,7 @@ public class ViewMain extends JFrame {
 					}
 					
 					// Set bounds for the box
-					box.setBounds(1, (((j + 1) * row_height) - compensateForLineOffset), (column_width - 1), 14);
+					box.setBounds(1, (((j + 1) * row_height) - compensateForLineOffset), (column_width - 5), 14);
 					
 					// Little hack to hide the horizontal line in this column
 					box.setOpaque(true);
