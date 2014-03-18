@@ -307,14 +307,21 @@ public class ViewMain extends JFrame {
 	    // Calculate week, dates etc
 	    this.calculateCalendar();
 	    
-	    // Draw calendar
+	    // Set sizes for left-panel
+	 	this.setSizesLeftPanel();
+	    
+	    // Draw calendar (HAX)
 	    this.drawCalendar();
 	    
-		// Set sizes for left-panel
-		this.setSizesLeftPanel();
-		
-		// Add plusses
-		this.drawPlusSymboles();
+	    // Redraw the calendar
+ 		this.clearCalendar();
+ 		this.drawCalendar();
+ 		
+ 		// Add appointments
+ 		this.drawAppointments();
+ 		
+ 		// Add plusses
+ 		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -520,6 +527,8 @@ public class ViewMain extends JFrame {
 			// Add square to the array
 			squareArr[i] = square;
 		}
+		
+		super.revalidate();
 	}
 	
 	/*
