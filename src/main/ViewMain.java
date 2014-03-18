@@ -624,7 +624,7 @@ public class ViewMain extends JFrame {
 			
 			// Loop all nine hours to display + - sign for
 			for (int j = 1; j <= 9; j++) {
-				JLabel plusSignLabel = new JLabel("+");
+				GraphicsLabel plusSignLabel = new GraphicsLabel("+");
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));

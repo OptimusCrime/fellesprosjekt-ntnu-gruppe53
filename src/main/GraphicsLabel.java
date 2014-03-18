@@ -19,6 +19,14 @@ public class GraphicsLabel extends JLabel {
 	private String time;
 	
 	/*
+	 * Constructor
+	 */
+	
+	public GraphicsLabel(String s) {
+		super(s);
+	}
+	
+	/*
 	 * Getters and setters for the time-variable
 	 */
 	

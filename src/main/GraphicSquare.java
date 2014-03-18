@@ -30,7 +30,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	private Rectangle rect;
 	private int space;
 	private int width;
-	private ArrayList<JLabel> labelsOnHover;
+	private ArrayList<GraphicsLabel> labelsOnHover;
 	
 	/*
 	 * Constructor
@@ -44,7 +44,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 		this.width = height;
 		
 		// Initialize list of labels
-		labelsOnHover = new ArrayList<JLabel>();
+		labelsOnHover = new ArrayList<GraphicsLabel>();
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
@@ -54,7 +54,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener, MouseL
 	 * Add label to the square
 	 */
 	
-	public void addLabel(JLabel j) {
+	public void addLabel(GraphicsLabel j) {
 		labelsOnHover.add(j);
 	}
 	
