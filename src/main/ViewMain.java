@@ -25,6 +25,7 @@ import java.util.TimeZone;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -803,44 +804,88 @@ public class ViewMain extends JFrame {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("left:default:grow"),},
 			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,}));
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				}));
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		innerAddEditPanel.add(lblNewLabel, "1, 1, 3, 1");
+		JLabel lblEdit = new JLabel("Legg til");
+		lblEdit.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerAddEditPanel.add(lblEdit, "1, 2, 3, 1");
+		
+		JSeparator separator = new JSeparator();
+		innerAddEditPanel.add(separator, "1, 4, 3, 1");
+		
+		JLabel lblNewLabel = new JLabel("Tittel");
+		innerAddEditPanel.add(lblNewLabel, "1, 6, 3, 1");
 		
 		JTextField textField = new JTextField();
-		innerAddEditPanel.add(textField, "1, 2, 3, 1, fill, default");
+		innerAddEditPanel.add(textField, "1, 7, 3, 1, fill, default");
 		textField.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("New label");
-		innerAddEditPanel.add(lblNewLabel_1, "1, 4, 3, 1");
+		JLabel lblNewLabel_1 = new JLabel("Beskrivelse");
+		innerAddEditPanel.add(lblNewLabel_1, "1, 9, 3, 1");
 		
 		JTextField textField_1 = new JTextField();
-		innerAddEditPanel.add(textField_1, "1, 5, 3, 1, fill, default");
+		innerAddEditPanel.add(textField_1, "1, 10, 3, 1, fill, default");
 		textField_1.setColumns(10);
-		/*
-		//Description label and text area
-		JLabel descriptionLabel = new JLabel("Description");
-		innerAddEditPanel.add(descriptionLabel, "2, 6, left, default");
 		
-		JTextArea descriptionField = new JTextArea();
-		innerAddEditPanel.add(descriptionField, "4, 6, 3, 1, fill, fill");
+		JSeparator separator2 = new JSeparator();
+		innerAddEditPanel.add(separator2, "1, 11, 3, 1");
 		
-		//Date text field
-		JTextField date = new JTextField();
-		date.setText("Date");
-		innerAddEditPanel.add(date, "2, 10, 5, 1, fill, default");
-		date.setColumns(10);
+		JLabel lblNewLabel_3 = new JLabel("Dato:");
+		innerAddEditPanel.add(lblNewLabel_3, "1, 12, left, default");
 		
-		//Label for number of participants
-		JLabel numParticipantsLabel = new JLabel("Participants");
-		innerAddEditPanel.add(numParticipantsLabel, "2, 16, left, default");
-		// Helmer end
-		*/
+		JLabel lblNewLabel_4 = new JLabel("14. mars 2014");
+		innerAddEditPanel.add(lblNewLabel_4, "3, 12");
+		
+		JLabel lblNewLabel_2 = new JLabel("Til:");
+		innerAddEditPanel.add(lblNewLabel_2, "1, 14, left, default");
+		
+		JComboBox comboBox = new JComboBox();
+		innerAddEditPanel.add(comboBox, "3, 14, fill, default");
+		
+		JLabel lblNewLabel_5 = new JLabel("Fra:");
+		innerAddEditPanel.add(lblNewLabel_5, "1, 16, left, default");
+		
+		JComboBox comboBox_1 = new JComboBox();
+		innerAddEditPanel.add(comboBox_1, "3, 16, fill, default");
+		
+		JSeparator separator3 = new JSeparator();
+		innerAddEditPanel.add(separator3, "1, 17, 3, 1");
+		
+		JLabel lblNewLabel_99 = new JLabel("Deltakere:");
+		innerAddEditPanel.add(lblNewLabel_99, "1, 18, left, default");
+		
+		JComboBox comboBo222x = new JComboBox();
+		innerAddEditPanel.add(comboBo222x, "3, 18, fill, default");
+		
+		JLabel lblNewLabel_3453455 = new JLabel("Rom:");
+		innerAddEditPanel.add(lblNewLabel_3453455, "1, 19, left, default");
+		
+		JComboBox comboBo345345x_1 = new JComboBox();
+		innerAddEditPanel.add(comboBo345345x_1, "3, 19, fill, default");
+		
+		JSeparator separator4 = new JSeparator();
+		innerAddEditPanel.add(separator4, "1, 20, 3, 1");
+		
 		addEditScrollPane = new JScrollPane(innerAddEditPanel);
 		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
