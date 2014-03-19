@@ -121,17 +121,8 @@ public class ViewMain extends JFrame {
 	private JButton addEditParticipantsAllButton;
 	private JButton addEditParticipantsChosenButton;
 	private JButton addEditSave;
-	
-	/*
-	 * addEditHeaderLabel
-	 * addEditTitle
-	 * addEditDesc
-	 * addEditDate
-	 * addEditFrom
-	 * addEditTo
-	 * addEditRoom
-	 * addEditParticipants
-	 */
+	private DefaultListModel participantsListNotInvited;
+	private DefaultListModel participantsListInvited;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -144,6 +135,10 @@ public class ViewMain extends JFrame {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// ListModel for the participants-lists
+		participantsListNotInvited = new DefaultListModel();
+		participantsListInvited = new DefaultListModel();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -956,15 +951,12 @@ public class ViewMain extends JFrame {
 		JLabel addEditParticipantsLabel2 = new JLabel("Deltakere:");
 		innerAddEditPanel.add(addEditParticipantsLabel2, "1, 21, 3, 1");
 		
-		// ListModel for the participants-lists
-		DefaultListModel list = new DefaultListModel();
-		
 		// Create border for the JList
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		
 		// Create List for the participants not invited
 		addEditParticipantsAll = new JList();
-		addEditParticipantsAll.setModel(list);
+		addEditParticipantsAll.setModel(participantsListNotInvited);
 		addEditParticipantsAll.setBorder(border);
 		addEditParticipantsAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsAllScrollPane = new JScrollPane(addEditParticipantsAll);
@@ -976,7 +968,7 @@ public class ViewMain extends JFrame {
 		
 		// Create List for the participants invited
 		addEditParticipantsChosen = new JList();
-		addEditParticipantsChosen.setModel(list);
+		addEditParticipantsChosen.setModel(participantsListInvited);
 		addEditParticipantsChosen.setBorder(border);
 		addEditParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsChosenScrollPane = new JScrollPane(addEditParticipantsChosen);
