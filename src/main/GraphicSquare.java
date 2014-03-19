@@ -42,7 +42,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 		
 		// Set some variables we need
 		this.space = spaceHeight;
-		this.width = height;
+		this.width = width;
 		this.shouldDrawHorizontal = s;
 		
 		// Initialize list of labels
@@ -99,15 +99,24 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		int yPos = e.getY();
-		int index = (int) Math.floor(yPos/this.space) - 1;
-		
-		for (int i = 0; i < labelsOnHover.size(); i++) {
-			if (i == index) {
-				labelsOnHover.get(i).setVisible(true);
-			}
-			else {
+		// Check if moving moving to the sides to remove it
+		int xPos = e.getX();
+		if (xPos <= 3 || xPos >= (this.width - 6)) {
+			for (int i = 0; i < labelsOnHover.size(); i++) {
 				labelsOnHover.get(i).setVisible(false);
+			}
+		}
+		else {
+			int yPos = e.getY();
+			int index = (int) Math.floor(yPos/this.space) - 1;
+			
+			for (int i = 0; i < labelsOnHover.size(); i++) {
+				if (i == index) {
+					labelsOnHover.get(i).setVisible(true);
+				}
+				else {
+					labelsOnHover.get(i).setVisible(false);
+				}
 			}
 		}
 	}
