@@ -56,7 +56,11 @@ public class ViewLogin extends JFrame {
 		super.setTitle("NTNU Calendar - Login");
 		
 		// Set size
-		super.setPreferredSize(new Dimension(500, 300));
+		int x = 500; int y = 200;
+		super.setPreferredSize(new Dimension(x, y));
+		
+		// Set location to center
+		super.setLocation(683-x/2, 364-y/2);
 		
 		// Set layout TODO
 		super.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
