@@ -119,6 +119,13 @@ public class ViewLogin extends JFrame {
 		textField3.addKeyListener(enterListener);
 		textField4.addKeyListener(enterListener);
 		
+		// Set focus to E-post textField
+		super.addWindowListener(new WindowAdapter(){ 
+			  public void windowOpened( WindowEvent e){ 
+			    textField3.requestFocus();
+			  } 
+		}); 
+	
 		// Tweak textfields
 		
 		// Add button
