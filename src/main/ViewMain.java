@@ -104,6 +104,7 @@ public class ViewMain extends JFrame {
 	private Date weekDateEnd;
 	private long tsOffset;
 	private String[] calendarText;
+	private int calendarYear;
 	private Map<String, String> calendarReplaces;
 	
 	// The different squares
@@ -388,6 +389,12 @@ public class ViewMain extends JFrame {
 	
 	private void recalculateTime() {
 		this.ts = new Timestamp(System.currentTimeMillis() + this.tsOffset);
+		
+		// Set current year
+		Date d = new Date(ts.getTime());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		calendarYear = cal.get(Calendar.YEAR);
 	}
 	
 	/*
@@ -566,8 +573,7 @@ public class ViewMain extends JFrame {
 					// This appointment should be painted to the calendar, get what weekday
 					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 					c.setTime(thisAppointment.getStart());
-
-					System.out.println(c.get(Calendar.HOUR_OF_DAY));
+					
 					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 					
 					// Retarded US has sunday as first day of week...
@@ -639,7 +645,9 @@ public class ViewMain extends JFrame {
 		int numRows = 10;
 		this.column_width = (int) width / 8;
 		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
-				
+		
+		String plussSymbolesHours[] = new String[]{"08", "09", "10", "11", "12", "13", "14", "15", "16", "17"};
+		
 		// Loop all the squares
 		for (int i = 1; i < squareArr.length; i++) {
 			// Get the current square
@@ -651,8 +659,8 @@ public class ViewMain extends JFrame {
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				plusSignLabel.setTime(j + "");
-				plusSignLabel.setDate(j + "");
+				plusSignLabel.setTime(plussSymbolesHours[j - 1] + ":00");
+				plusSignLabel.setDate(calendarText[i - 1]);
 				plusSignLabel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {  
