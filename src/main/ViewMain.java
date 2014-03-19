@@ -31,9 +31,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -794,10 +797,50 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerAddEditPanel = new JPanel();
 		
-		// Add dummy
-		JLabel dummy5 = new JLabel("Add/Edit goes here");
-		innerAddEditPanel.add(dummy5);
+		// Helmer start
+		innerAddEditPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("left:default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("left:default:grow"),},
+			new RowSpec[] {
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,}));
 		
+		JLabel lblNewLabel = new JLabel("New label");
+		innerAddEditPanel.add(lblNewLabel, "1, 1, 3, 1");
+		
+		JTextField textField = new JTextField();
+		innerAddEditPanel.add(textField, "1, 2, 3, 1, fill, default");
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel_1 = new JLabel("New label");
+		innerAddEditPanel.add(lblNewLabel_1, "1, 4, 3, 1");
+		
+		JTextField textField_1 = new JTextField();
+		innerAddEditPanel.add(textField_1, "1, 5, 3, 1, fill, default");
+		textField_1.setColumns(10);
+		/*
+		//Description label and text area
+		JLabel descriptionLabel = new JLabel("Description");
+		innerAddEditPanel.add(descriptionLabel, "2, 6, left, default");
+		
+		JTextArea descriptionField = new JTextArea();
+		innerAddEditPanel.add(descriptionField, "4, 6, 3, 1, fill, fill");
+		
+		//Date text field
+		JTextField date = new JTextField();
+		date.setText("Date");
+		innerAddEditPanel.add(date, "2, 10, 5, 1, fill, default");
+		date.setColumns(10);
+		
+		//Label for number of participants
+		JLabel numParticipantsLabel = new JLabel("Participants");
+		innerAddEditPanel.add(numParticipantsLabel, "2, 16, left, default");
+		// Helmer end
+		*/
 		addEditScrollPane = new JScrollPane(innerAddEditPanel);
 		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
