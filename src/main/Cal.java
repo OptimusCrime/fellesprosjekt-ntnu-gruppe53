@@ -251,4 +251,36 @@ public class Cal {
 	public ArrayList<Employee> getEmployees() {
 		return this.employees;
 	}
+	
+	/*
+	 * Deletegates for updating the calendars we are displaying
+	 */
+	
+	public void addCalendar(Employee e) {
+		System.out.println("Called");
+		this.user.addCalendar(e);
+	}
+	
+	public void removeCalendar(Employee e) {
+		System.out.println("Called");
+		this.user.removeCalendar(e);
+	}
+	
+	public ArrayList<Employee> getCalendars() {
+		return this.user.getCalendars();
+	}
+	
+	/*
+	 * Get username
+	 */
+	
+	public String getUsername() {
+		String []tempUsername = this.user.getLogin();
+		if (tempUsername != null && tempUsername.length > 0) {
+			return tempUsername[0];
+		}
+		else {
+			return null;
+		}
+	}
 }

@@ -35,14 +35,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -119,12 +117,12 @@ public class ViewMain extends JFrame {
 	private JLabel addEditDate;
 	private JComboBox<String> addEditFrom;
 	private JComboBox<String> addEditTo;
-	protected JList addEditParticipantsAll;
-	protected JList addEditParticipantsChosen;
+	protected JList<Employee> addEditParticipantsAll;
+	protected JList<Employee> addEditParticipantsChosen;
 	protected JButton addEditParticipantsAllButton;
 	protected JButton addEditParticipantsChosenButton;
-	protected DefaultListModel addEditParticipantsListNotInvited;
-	protected DefaultListModel addEditParticipantsListInvited;
+	protected DefaultListModel<Employee> addEditParticipantsListNotInvited;
+	protected DefaultListModel<Employee> addEditParticipantsListInvited;
 	private JButton addEditSave;
 	
 	// Debugging
@@ -140,8 +138,8 @@ public class ViewMain extends JFrame {
 		this.calendar = c;
 		
 		// ListModel for the participants-lists
-		addEditParticipantsListNotInvited = new DefaultListModel();
-		addEditParticipantsListInvited = new DefaultListModel();
+		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
+		addEditParticipantsListInvited = new DefaultListModel<Employee>();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -741,7 +739,30 @@ public class ViewMain extends JFrame {
 		for (int i = 0; i < employees.size(); i++) {
 			// Create textfield for the name of the employee
 			JLabel employeeNameList = new JLabel(employees.get(i).getName());
-			JCheckBox employeeNameListCheckbox = new JCheckBox("");
+			GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
+			
+			// Set reference to the employee
+			employeeNameListCheckbox.setReference(employees.get(i));
+			employeeNameListCheckbox.addActionListener(new ActionListener () {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// Get the current checkbox being clicked
+					GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
+					
+					// Just doublecheck that we are not NullPointer!
+					if (thisCheckbox != null) {
+						// Check if checked or not
+						if (thisCheckbox.isSelected()) {
+							calendar.addCalendar(thisCheckbox.getReference());
+						}
+						else {
+							calendar.removeCalendar(thisCheckbox.getReference());
+						}
+					}
+				}
+				
+			});
 			
 			// Set the label for the checkbox (not really sure if this does anything at all?)
 			employeeNameList.setLabelFor(employeeNameListCheckbox);

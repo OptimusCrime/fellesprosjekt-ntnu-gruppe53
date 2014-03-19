@@ -23,6 +23,7 @@ public class User implements CalendarObjects {
 	private String password;
 	private ArrayList<Appointment> appointments;
 	private ArrayList<Notification> notifications;
+	private ArrayList<Employee> calendars;
 	
 	/*
 	 * Constructor
@@ -41,6 +42,7 @@ public class User implements CalendarObjects {
 		// Init arrayLists
 		this.appointments = new ArrayList<Appointment>();
 		this.notifications = new ArrayList<Notification>();
+		this.calendars = new ArrayList<Employee>();
 	}
 	
 	/*
@@ -99,5 +101,21 @@ public class User implements CalendarObjects {
 	
 	public void setLoggedIn(boolean l) {
 		this.isLoggedIn = l;
+	}
+	
+	/*
+	 * Calendar-stuff
+	 */
+	
+	public void addCalendar(Employee e) {
+		this.calendars.add(e);
+	}
+	
+	public void removeCalendar(Employee e) {
+		this.calendars.remove(e);
+	}
+	
+	public ArrayList<Employee> getCalendars() {
+		return this.calendars;
 	}
 }
