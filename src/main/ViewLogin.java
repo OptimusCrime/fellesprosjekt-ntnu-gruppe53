@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,10 +36,10 @@ public class ViewLogin extends JFrame {
 	protected Gui gui;
 	protected Cal calendar;
 	private static final long serialVersionUID = 1L;
-	protected JTextField textField1;
-	protected JTextField textField2;
-	protected JTextField textField3;
-	protected JPasswordField textField4;
+	protected JTextField serverTextField;
+	protected JTextField portTextField;
+	protected JTextField emailTextField;
+	protected JPasswordField passwordField;
 	protected JButton send;
 	
 	/*
@@ -56,7 +58,7 @@ public class ViewLogin extends JFrame {
 		super.setTitle("NTNU Calendar - Login");
 		
 		// Set size
-		int x = 500; int y = 200;
+		int x = 500; int y = 207;
 		super.setPreferredSize(new Dimension(x, y));
 		
 		// Set location to center
@@ -100,32 +102,32 @@ public class ViewLogin extends JFrame {
 		KeyLoginListener enterListener = new KeyLoginListener();
 		
 		// Add all textfields
-		textField1 = new JTextField("localhost");
-		super.getContentPane().add(textField1, "6, 4, fill, default");
-		textField1.setColumns(10);
-		textField2 = new JTextField("9000");
-		super.getContentPane().add(textField2, "6, 6, fill, default");
-		textField2.setColumns(10);
-		textField3 = new JTextField();
-		super.getContentPane().add(textField3, "6, 10, fill, default");
-		textField3.setColumns(10);
-		textField4 = new JPasswordField();
-		super.getContentPane().add(textField4, "6, 12, fill, default");
-		textField4.setColumns(10);
+		serverTextField = new JTextField("localhost");
+		super.getContentPane().add(serverTextField, "6, 4, fill, default");
+		serverTextField.setColumns(10);
+		portTextField = new JTextField("9000");
+		super.getContentPane().add(portTextField, "6, 6, fill, default");
+		portTextField.setColumns(10);
+		emailTextField = new JTextField();
+		super.getContentPane().add(emailTextField, "6, 10, fill, default");
+		emailTextField.setColumns(10);
+		passwordField = new JPasswordField();
+		super.getContentPane().add(passwordField, "6, 12, fill, default");
+		passwordField.setColumns(10);
 		
 		// Add all events
-		textField1.addKeyListener(enterListener);
-		textField2.addKeyListener(enterListener);
-		textField3.addKeyListener(enterListener);
-		textField4.addKeyListener(enterListener);
+		serverTextField.addKeyListener(enterListener);
+		portTextField.addKeyListener(enterListener);
+		emailTextField.addKeyListener(enterListener);
+		passwordField.addKeyListener(enterListener);
 		
 		// Set focus to E-post textField
 		super.addWindowListener(new WindowAdapter(){ 
 			  public void windowOpened( WindowEvent e){ 
-			    textField3.requestFocus();
+			    emailTextField.requestFocus();
 			  } 
-		}); 
-	
+			}); 
+		
 		// Tweak textfields
 		
 		// Add button
@@ -137,16 +139,16 @@ public class ViewLogin extends JFrame {
 				// Button was clicked, check input
 				String errors = "";
 				
-				if (textField1.getText().length() == 0) {
+				if (serverTextField.getText().length() == 0) {
 					errors += "- Server\n";
 				}
-				if (textField2.getText().length() == 0) {
+				if (portTextField.getText().length() == 0) {
 					errors += "- Port\n";
 				}
-				if (textField3.getText().length() == 0) {
+				if (emailTextField.getText().length() == 0) {
 					errors += "- E-post\n";
 				}
-				if (textField4.getPassword().length == 0) {
+				if (passwordField.getPassword().length == 0) {
 					errors += "- Passord\n";
 				}
 				
@@ -156,8 +158,8 @@ public class ViewLogin extends JFrame {
 				}
 				else {
 					// Let's try to connect to the database
-					if (calendar.testConnection(textField1.getText(), Integer.parseInt(textField2.getText()))) {
-						calendar.setLogin(textField3.getText(), new String(textField4.getPassword()));
+					if (calendar.testConnection(serverTextField.getText(), Integer.parseInt(portTextField.getText()))) {
+						calendar.setLogin(emailTextField.getText(), new String(passwordField.getPassword()));
 						
 						// Send the login-info
 						calendar.doLogin();
