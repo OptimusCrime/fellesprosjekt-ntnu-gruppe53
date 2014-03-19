@@ -868,16 +868,24 @@ public class ViewMain extends JFrame {
 		JLabel lblNewLabel_4 = new JLabel("14. mars 2014");
 		innerAddEditPanel.add(lblNewLabel_4, "3, 12");
 		
+		ArrayList<String> houuuursss = new ArrayList<String>();
+		String hoursInner[] = new String[] {"00", "15", "30", "45"};
+		for (int i = 8; i < 17; i++) {
+			for (int j = 0; j < 3; j++) {
+				houuuursss.add(((i < 10) ? "0" : "") + i + ":" + hoursInner[j]);
+			}	
+		}
+		
 		JLabel lblNewLabel_2 = new JLabel("Til:");
 		innerAddEditPanel.add(lblNewLabel_2, "1, 14, left, default");
 		
-		JComboBox comboBox = new JComboBox();
+		JComboBox comboBox = new JComboBox(houuuursss.toArray());
 		innerAddEditPanel.add(comboBox, "3, 14, fill, default");
 		
 		JLabel lblNewLabel_5 = new JLabel("Fra:");
 		innerAddEditPanel.add(lblNewLabel_5, "1, 16, left, default");
 		
-		JComboBox comboBox_1 = new JComboBox();
+		JComboBox comboBox_1 = new JComboBox(houuuursss.toArray());
 		innerAddEditPanel.add(comboBox_1, "3, 16, fill, default");
 		
 		JSeparator separator3 = new JSeparator();
@@ -886,7 +894,12 @@ public class ViewMain extends JFrame {
 		JLabel lblNewLabel_99 = new JLabel("Deltakere:");
 		innerAddEditPanel.add(lblNewLabel_99, "1, 18, left, default");
 		
-		JComboBox comboBo222x = new JComboBox();
+		ArrayList<Integer> participatntList = new ArrayList<Integer>();
+		for (int i = 0; i < 201; i++) {
+			participatntList.add(i);
+		}
+		
+		JComboBox comboBo222x = new JComboBox(participatntList.toArray());
 		innerAddEditPanel.add(comboBo222x, "3, 18, fill, default");
 		
 		JLabel lblNewLabel_3453455 = new JLabel("Rom:");
