@@ -167,13 +167,13 @@ public class Cal {
 					if (code == 200) {
 						// Login sucessful
 						this.user.setLoggedIn(true);
+						this.user.setId(new BigDecimal((long) requestObj.get("id")).intValueExact()); 
 						this.user.create();
 						
 						// Show home
 						this.gui.showHome();
 						
 						// Load all stuff the user needs
-						this.loadAppointments();
 						this.loadEmployees();
 					}
 					else {
@@ -199,12 +199,20 @@ public class Cal {
 									(String) thisAppointment.get("email"),
 									(String) thisAppointment.get("name"));
 							
+							// Set self init calendar
+							if (e.getId() == this.user.getId()) {
+								this.user.addCalendar(e);
+							}
+							
 							// Add appointment to user
 							this.employees.add(e);
 						}
 						
 						// Send reflect to the gui from this class
 						this.gui.reflectChange("employees", "create", null);
+						
+						// Load appointments
+						this.loadAppointments();
 					}
 				}
 			}
@@ -218,8 +226,17 @@ public class Cal {
 	 * Delegate for loading all appointments
 	 */
 	
-	private void loadAppointments () {
+	private void loadAppointments() {
 		JSONObject appointmentObj = this.initJSONObject("appointments", "get");
+		
+		// Add ids for the users we should load
+		ArrayList<Employee> cakendarsList = this.user.getCalendars();
+		JSONArray calendarsArr = new JSONArray();
+		for (int i = 0; i < cakendarsList.size(); i++) {
+			calendarsArr.add((int) cakendarsList.get(i).getId());
+		}
+		
+		appointmentObj.put("data", calendarsArr);
 		String appointmentObjString = appointmentObj.toJSONString();
 		
 		sh.sendMessage(appointmentObjString);
@@ -257,13 +274,19 @@ public class Cal {
 	 */
 	
 	public void addCalendar(Employee e) {
-		System.out.println("Called");
+		// Add employee
 		this.user.addCalendar(e);
+		
+		// Update appointments
+		this.loadAppointments();
 	}
 	
 	public void removeCalendar(Employee e) {
-		System.out.println("Called");
+		// Remove employee
 		this.user.removeCalendar(e);
+		
+		// Update appointments
+		this.loadAppointments();
 	}
 	
 	public ArrayList<Employee> getCalendars() {

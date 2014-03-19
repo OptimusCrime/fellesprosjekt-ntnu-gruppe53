@@ -19,6 +19,7 @@ public class User implements CalendarObjects {
 	private boolean created;
 	
 	private boolean isLoggedIn;
+	private int id;
 	private String username;
 	private String password;
 	private ArrayList<Appointment> appointments;
@@ -36,6 +37,7 @@ public class User implements CalendarObjects {
 		this.isLoggedIn = false;
 		
 		// Set initial data
+		this.id = 0;
 		this.username = "";
 		this.password = "";
 		
@@ -117,5 +119,17 @@ public class User implements CalendarObjects {
 	
 	public ArrayList<Employee> getCalendars() {
 		return this.calendars;
+	}
+	
+	/*
+	 * ID
+	 */
+	
+	public void setId (int i) {
+		this.id = i;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }
