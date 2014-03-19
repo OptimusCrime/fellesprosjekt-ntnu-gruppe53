@@ -43,6 +43,8 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -116,13 +118,13 @@ public class ViewMain extends JFrame {
 	private JLabel addEditDate;
 	private JComboBox<String> addEditFrom;
 	private JComboBox<String> addEditTo;
-	private JList addEditParticipantsAll;
-	private JList addEditParticipantsChosen;
-	private JButton addEditParticipantsAllButton;
-	private JButton addEditParticipantsChosenButton;
+	protected JList addEditParticipantsAll;
+	protected JList addEditParticipantsChosen;
+	protected JButton addEditParticipantsAllButton;
+	protected JButton addEditParticipantsChosenButton;
+	protected DefaultListModel addEditParticipantsListNotInvited;
+	protected DefaultListModel addEditParticipantsListInvited;
 	private JButton addEditSave;
-	private DefaultListModel addEditParticipantsListNotInvited;
-	private DefaultListModel addEditParticipantsListInvited;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -963,6 +965,13 @@ public class ViewMain extends JFrame {
 		addEditParticipantsAll = new JList();
 		addEditParticipantsAll.setModel(addEditParticipantsListNotInvited);
 		addEditParticipantsAll.setBorder(border);
+		addEditParticipantsAll.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				addEditParticipantsAllButton.setEnabled(true);
+			}
+		});
 		addEditParticipantsAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsAllScrollPane = new JScrollPane(addEditParticipantsAll);
 		innerAddEditPanel.add(addEditParticipantsAllScrollPane, "1, 22, 3, 1");
@@ -970,12 +979,43 @@ public class ViewMain extends JFrame {
 		// Add button for participants not invited
 		addEditParticipantsAllButton = new JButton("Legg til");
 		addEditParticipantsAllButton.setEnabled(false);
+		addEditParticipantsAllButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Check if anything is selected
+				if (!addEditParticipantsAll.isSelectionEmpty()) {
+					// Get selected employee
+					Employee chosenEmployee = (Employee) addEditParticipantsAll.getSelectedValue();
+					
+					// Remove from not invited
+					addEditParticipantsListNotInvited.removeElement(chosenEmployee);
+					
+					// Include in invited
+					addEditParticipantsListInvited.addElement(chosenEmployee);
+					
+					// Set buttons not active
+					addEditParticipantsAllButton.setEnabled(false);
+					addEditParticipantsChosenButton.setEnabled(false);
+					
+					// Remove selection from list
+					addEditParticipantsAll.clearSelection();
+				}
+			}
+		});
 		innerAddEditPanel.add(addEditParticipantsAllButton, "3, 23, right, default");
 		
 		// Create List for the participants invited
 		addEditParticipantsChosen = new JList();
 		addEditParticipantsChosen.setModel(addEditParticipantsListInvited);
 		addEditParticipantsChosen.setBorder(border);
+		addEditParticipantsChosen.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				addEditParticipantsChosenButton.setEnabled(true);
+			}
+		});
 		addEditParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsChosenScrollPane = new JScrollPane(addEditParticipantsChosen);
 		innerAddEditPanel.add(addEditParticipantsChosenScrollPane, "1, 24, 3, 1");
@@ -983,6 +1023,30 @@ public class ViewMain extends JFrame {
 		// Add button for participants invited
 		addEditParticipantsChosenButton = new JButton("Fjern");
 		addEditParticipantsChosenButton.setEnabled(false);
+		addEditParticipantsChosenButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Check if anything is selected
+				if (!addEditParticipantsChosen.isSelectionEmpty()) {
+					// Get selected employee
+					Employee chosenEmployee = (Employee) addEditParticipantsChosen.getSelectedValue();
+					
+					// Remove from not invited
+					addEditParticipantsListInvited.removeElement(chosenEmployee);
+					
+					// Include in invited
+					addEditParticipantsListNotInvited.addElement(chosenEmployee);
+					
+					// Set buttons not active
+					addEditParticipantsAllButton.setEnabled(false);
+					addEditParticipantsChosenButton.setEnabled(false);
+					
+					// Remove selection from list
+					addEditParticipantsChosen.clearSelection();
+				}
+			}
+		});
 		innerAddEditPanel.add(addEditParticipantsChosenButton, "3, 25, right, default");
 		
 		// Create the save-button
