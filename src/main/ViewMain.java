@@ -22,21 +22,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import com.jgoodies.forms.factories.FormFactory;
@@ -824,6 +829,13 @@ public class ViewMain extends JFrame {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				}));
 		
 		JLabel lblEdit = new JLabel("Legg til");
@@ -885,6 +897,41 @@ public class ViewMain extends JFrame {
 		
 		JSeparator separator4 = new JSeparator();
 		innerAddEditPanel.add(separator4, "1, 20, 3, 1");
+		
+		JLabel sdfsdfsdf = new JLabel("Deltakere");
+		innerAddEditPanel.add(sdfsdfsdf, "1, 21, 3, 1");
+		
+		DefaultListModel list = new DefaultListModel();
+		
+		//Draws a black border around an area
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		
+		JList participantList = new JList();
+		participantList.setModel(list);
+		participantList.setBorder(border);
+		participantList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane sdfasdasdsdfsdf = new JScrollPane(participantList);
+		innerAddEditPanel.add(sdfasdasdsdfsdf, "1, 22, 3, 1");
+		
+		JButton ddsfsdfsdf = new JButton("Legg til");
+		innerAddEditPanel.add(ddsfsdfsdf, "3, 23, right, default");
+		
+		
+		JList participantList2 = new JList();
+		participantList2.setModel(list);
+		participantList2.setBorder(border);
+		participantList2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane sdfasdasdsdfsd2f = new JScrollPane(participantList2);
+		innerAddEditPanel.add(sdfasdasdsdfsd2f, "1, 24, 3, 1");
+		
+		JButton ddsfsdfsdf2 = new JButton("Fjern");
+		innerAddEditPanel.add(ddsfsdfsdf2, "3, 25, right, default");
+		
+		JSeparator separator5 = new JSeparator();
+		innerAddEditPanel.add(separator5, "1, 26, 3, 1");
+		
+		JButton ddsfsdfsdf3 = new JButton("Lagre");
+		innerAddEditPanel.add(ddsfsdfsdf3, "3, 27, right, default");
 		
 		addEditScrollPane = new JScrollPane(innerAddEditPanel);
 		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
