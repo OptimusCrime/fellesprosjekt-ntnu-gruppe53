@@ -22,18 +22,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -93,12 +104,28 @@ public class ViewMain extends JFrame {
 	private Date weekDateEnd;
 	private long tsOffset;
 	private String[] calendarText;
+	private int calendarYear;
 	private Map<String, String> calendarReplaces;
 	
 	// The different squares
 	private GraphicSquare[] squareArr;
 	private int column_width;
 	private int row_height;
+	
+	// Add/Edit
+	private JLabel addEditHeaderLabel;
+	private JTextField addEditTitle;
+	private JTextField addEditDesc;
+	private JLabel addEditDate;
+	private JComboBox<String> addEditFrom;
+	private JComboBox<String> addEditTo;
+	protected JList addEditParticipantsAll;
+	protected JList addEditParticipantsChosen;
+	protected JButton addEditParticipantsAllButton;
+	protected JButton addEditParticipantsChosenButton;
+	protected DefaultListModel addEditParticipantsListNotInvited;
+	protected DefaultListModel addEditParticipantsListInvited;
+	private JButton addEditSave;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -111,6 +138,10 @@ public class ViewMain extends JFrame {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// ListModel for the participants-lists
+		addEditParticipantsListNotInvited = new DefaultListModel();
+		addEditParticipantsListInvited = new DefaultListModel();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -175,7 +206,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("home");
 			}
-			
 		});
 		notificationsBtn.addActionListener(new ActionListener() {
 
@@ -183,7 +213,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("notifications");
 			}
-			
 		});
 		employeesBtn.addActionListener(new ActionListener() {
 
@@ -191,7 +220,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("employees");
 			}
-			
 		});
 		
 		// Add header-right panel
@@ -361,6 +389,12 @@ public class ViewMain extends JFrame {
 	
 	private void recalculateTime() {
 		this.ts = new Timestamp(System.currentTimeMillis() + this.tsOffset);
+		
+		// Set current year
+		Date d = new Date(ts.getTime());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		calendarYear = cal.get(Calendar.YEAR);
 	}
 	
 	/*
@@ -539,8 +573,7 @@ public class ViewMain extends JFrame {
 					// This appointment should be painted to the calendar, get what weekday
 					Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 					c.setTime(thisAppointment.getStart());
-
-					System.out.println(c.get(Calendar.HOUR_OF_DAY));
+					
 					int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 					
 					// Retarded US has sunday as first day of week...
@@ -612,7 +645,9 @@ public class ViewMain extends JFrame {
 		int numRows = 10;
 		this.column_width = (int) width / 8;
 		this.row_height = (int) (splitRightInner.getHeight() - 23) / numRows;
-				
+		
+		String plussSymbolesHours[] = new String[]{"08", "09", "10", "11", "12", "13", "14", "15", "16", "17"};
+		
 		// Loop all the squares
 		for (int i = 1; i < squareArr.length; i++) {
 			// Get the current square
@@ -624,8 +659,8 @@ public class ViewMain extends JFrame {
 				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height * j) + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				plusSignLabel.setTime(j + "");
-				plusSignLabel.setDate(j + "");
+				plusSignLabel.setTime(plussSymbolesHours[j - 1] + ":00");
+				plusSignLabel.setDate(calendarText[i - 1]);
 				plusSignLabel.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {  
@@ -653,7 +688,7 @@ public class ViewMain extends JFrame {
 	 * Adds all the employees to the list
 	 */
 	
-	public void drawEmployees(ArrayList<Employee> employees) {			
+	public void drawEmployees(ArrayList<Employee> employees) {		
 		//
 		// Employee - Panel
 		//
@@ -735,6 +770,14 @@ public class ViewMain extends JFrame {
 		
 		// Update changes
 		this.setSizesLeftPanel();
+		
+		//
+		// Add/Edit
+		//
+		
+		for (int i = 0; i < employees.size(); i++) {
+			addEditParticipantsListNotInvited.addElement(employees.get(i));
+		}
 	}
 	
 	/*
@@ -742,7 +785,13 @@ public class ViewMain extends JFrame {
 	 */
 	
 	protected void showNewAppointment(String t, String d) {
-		System.out.println(t + " - " + d);
+		// Set hours
+		this.addEditFrom.setSelectedItem(t);
+		this.addEditTo.setSelectedItem(t.replace("00", "45"));
+		
+		// Set date
+		String []dateSplit = d.split(" ");
+		this.addEditDate.setText(dateSplit[1] + "." + this.calendarYear);
 		
 		// Display the right left-panel
 		this.displayLeftPanel("addedit");
@@ -794,10 +843,232 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerAddEditPanel = new JPanel();
 		
-		// Add dummy
-		JLabel dummy5 = new JLabel("Add/Edit goes here");
-		innerAddEditPanel.add(dummy5);
+		// Helmer start
+		innerAddEditPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("left:default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("left:default:grow"),},
+			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				}));
 		
+		 // Header
+		addEditHeaderLabel = new JLabel("Legg til");
+		addEditHeaderLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerAddEditPanel.add(addEditHeaderLabel, "1, 2, 3, 1");
+		
+		// Add all seperators
+		JSeparator addEditSeperator1 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator1, "1, 4, 3, 1");
+		JSeparator addEditSeperator2 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator2, "1, 11, 3, 1");
+		JSeparator addEditSeperator3 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator3, "1, 17, 3, 1");
+		JSeparator addEditSeperator4 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator4, "1, 20, 3, 1");
+		JSeparator addEditSeperator5 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator5, "1, 26, 3, 1");
+		
+		// Label for title
+		JLabel addEditTitleLabel = new JLabel("Tittel");
+		innerAddEditPanel.add(addEditTitleLabel, "1, 6, 3, 1");
+		
+		// TextField for the title
+		addEditTitle = new JTextField();
+		innerAddEditPanel.add(addEditTitle, "1, 7, 3, 1, fill, default");
+		addEditTitle.setColumns(10);
+		
+		// Label for description
+		JLabel addEditDescLabel = new JLabel("Beskrivelse");
+		innerAddEditPanel.add(addEditDescLabel, "1, 9, 3, 1");
+		
+		// TextField for the description
+		addEditDesc = new JTextField();
+		innerAddEditPanel.add(addEditDesc, "1, 10, 3, 1, fill, default");
+		addEditDesc.setColumns(10);
+		
+		// Label for the date (not containing the actual date)
+		JLabel addEditDateLabel = new JLabel("Dato:");
+		innerAddEditPanel.add(addEditDateLabel, "1, 12");
+		
+		// Label for the date (the date itself)
+		addEditDate = new JLabel("Laster");
+		innerAddEditPanel.add(addEditDate, "3, 12");
+		
+		// Creating list with the hours
+		ArrayList<String> addEditHours = new ArrayList<String>();
+		String hoursInner[] = new String[] {"00", "15", "30", "45"};
+		for (int i = 8; i < 17; i++) {
+			for (int j = 0; j < 4; j++) {
+				addEditHours.add(((i < 10) ? "0" : "") + i + ":" + hoursInner[j]);
+			}	
+		}
+		addEditHours.add("17:00");
+		
+		// Label for from-time
+		JLabel addEditFromLabel = new JLabel("Fra:");
+		innerAddEditPanel.add(addEditFromLabel, "1, 14, left, default");
+		
+		// From combobox
+		addEditFrom = new JComboBox(addEditHours.toArray());
+		innerAddEditPanel.add(addEditFrom, "3, 14, fill, default");
+		
+		// Label for to-time
+		JLabel addEditToLabel = new JLabel("Til:");
+		innerAddEditPanel.add(addEditToLabel, "1, 16, left, default");
+		
+		// To combobox
+		addEditTo = new JComboBox(addEditHours.toArray());
+		innerAddEditPanel.add(addEditTo, "3, 16, fill, default");
+		
+		// Label for participants
+		JLabel addEditParticipantsLabel = new JLabel("Deltakere:");
+		innerAddEditPanel.add(addEditParticipantsLabel, "1, 18, left, default");
+		
+		// Create array with number of participants
+		ArrayList<Integer> participatntList = new ArrayList<Integer>();
+		for (int i = 0; i < 201; i++) {
+			participatntList.add(i);
+		}
+		
+		// Combobox with participants
+		JComboBox addEditParticipants = new JComboBox(participatntList.toArray());
+		innerAddEditPanel.add(addEditParticipants, "3, 18, fill, default");
+		
+		// Label for rom
+		JLabel addEditRoomLabel = new JLabel("Rom:");
+		innerAddEditPanel.add(addEditRoomLabel, "1, 19, left, default");
+		
+		// Combobox with rooms (TODO)
+		JComboBox addEditRoom = new JComboBox();
+		innerAddEditPanel.add(addEditRoom, "3, 19, fill, default");
+		
+		// Label for participants (lists)
+		JLabel addEditParticipantsLabel2 = new JLabel("Deltakere:");
+		innerAddEditPanel.add(addEditParticipantsLabel2, "1, 21, 3, 1");
+		
+		// Create border for the JList
+		Border border = BorderFactory.createLineBorder(Color.BLACK);
+		
+		// Create List for the participants not invited
+		addEditParticipantsAll = new JList();
+		addEditParticipantsAll.setModel(addEditParticipantsListNotInvited);
+		addEditParticipantsAll.setBorder(border);
+		addEditParticipantsAll.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				addEditParticipantsAllButton.setEnabled(true);
+			}
+		});
+		addEditParticipantsAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane addEditParticipantsAllScrollPane = new JScrollPane(addEditParticipantsAll);
+		innerAddEditPanel.add(addEditParticipantsAllScrollPane, "1, 22, 3, 1");
+		
+		// Add button for participants not invited
+		addEditParticipantsAllButton = new JButton("Legg til");
+		addEditParticipantsAllButton.setEnabled(false);
+		addEditParticipantsAllButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Check if anything is selected
+				if (!addEditParticipantsAll.isSelectionEmpty()) {
+					// Get selected employee
+					Employee chosenEmployee = (Employee) addEditParticipantsAll.getSelectedValue();
+					
+					// Remove from not invited
+					addEditParticipantsListNotInvited.removeElement(chosenEmployee);
+					
+					// Include in invited
+					addEditParticipantsListInvited.addElement(chosenEmployee);
+					
+					// Set buttons not active
+					addEditParticipantsAllButton.setEnabled(false);
+					addEditParticipantsChosenButton.setEnabled(false);
+					
+					// Remove selection from list
+					addEditParticipantsAll.clearSelection();
+				}
+			}
+		});
+		innerAddEditPanel.add(addEditParticipantsAllButton, "3, 23, right, default");
+		
+		// Create List for the participants invited
+		addEditParticipantsChosen = new JList();
+		addEditParticipantsChosen.setModel(addEditParticipantsListInvited);
+		addEditParticipantsChosen.setBorder(border);
+		addEditParticipantsChosen.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				addEditParticipantsChosenButton.setEnabled(true);
+			}
+		});
+		addEditParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane addEditParticipantsChosenScrollPane = new JScrollPane(addEditParticipantsChosen);
+		innerAddEditPanel.add(addEditParticipantsChosenScrollPane, "1, 24, 3, 1");
+		
+		// Add button for participants invited
+		addEditParticipantsChosenButton = new JButton("Fjern");
+		addEditParticipantsChosenButton.setEnabled(false);
+		addEditParticipantsChosenButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Check if anything is selected
+				if (!addEditParticipantsChosen.isSelectionEmpty()) {
+					// Get selected employee
+					Employee chosenEmployee = (Employee) addEditParticipantsChosen.getSelectedValue();
+					
+					// Remove from not invited
+					addEditParticipantsListInvited.removeElement(chosenEmployee);
+					
+					// Include in invited
+					addEditParticipantsListNotInvited.addElement(chosenEmployee);
+					
+					// Set buttons not active
+					addEditParticipantsAllButton.setEnabled(false);
+					addEditParticipantsChosenButton.setEnabled(false);
+					
+					// Remove selection from list
+					addEditParticipantsChosen.clearSelection();
+				}
+			}
+		});
+		innerAddEditPanel.add(addEditParticipantsChosenButton, "3, 25, right, default");
+		
+		// Create the save-button
+		addEditSave = new JButton("Lagre");
+		innerAddEditPanel.add(addEditSave, "3, 27, right, default");
+		
+		// Add the panel itself
 		addEditScrollPane = new JScrollPane(innerAddEditPanel);
 		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
