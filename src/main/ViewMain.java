@@ -109,6 +109,30 @@ public class ViewMain extends JFrame {
 	private int column_width;
 	private int row_height;
 	
+	// Add/Edit
+	private JLabel addEditHeaderLabel;
+	private JTextField addEditTitle;
+	private JTextField addEditDesc;
+	private JLabel addEditDate;
+	private JComboBox<String> addEditFrom;
+	private JComboBox<String> addEditTo;
+	private JList addEditParticipantsAll;
+	private JList addEditParticipantsChosen;
+	private JButton addEditParticipantsAllButton;
+	private JButton addEditParticipantsChosenButton;
+	private JButton addEditSave;
+	
+	/*
+	 * addEditHeaderLabel
+	 * addEditTitle
+	 * addEditDesc
+	 * addEditDate
+	 * addEditFrom
+	 * addEditTo
+	 * addEditRoom
+	 * addEditParticipants
+	 */
+	
 	// Debugging
 	private JLabel innerInfoTestLabel;
 	
@@ -838,114 +862,135 @@ public class ViewMain extends JFrame {
 				FormFactory.DEFAULT_ROWSPEC,
 				}));
 		
-		JLabel lblEdit = new JLabel("Legg til");
-		lblEdit.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		innerAddEditPanel.add(lblEdit, "1, 2, 3, 1");
+		 // Header
+		addEditHeaderLabel = new JLabel("Legg til");
+		addEditHeaderLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerAddEditPanel.add(addEditHeaderLabel, "1, 2, 3, 1");
 		
-		JSeparator separator = new JSeparator();
-		innerAddEditPanel.add(separator, "1, 4, 3, 1");
+		// Add all seperators
+		JSeparator addEditSeperator1 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator1, "1, 4, 3, 1");
+		JSeparator addEditSeperator2 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator2, "1, 11, 3, 1");
+		JSeparator addEditSeperator3 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator3, "1, 17, 3, 1");
+		JSeparator addEditSeperator4 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator4, "1, 20, 3, 1");
+		JSeparator addEditSeperator5 = new JSeparator();
+		innerAddEditPanel.add(addEditSeperator5, "1, 26, 3, 1");
 		
-		JLabel lblNewLabel = new JLabel("Tittel");
-		innerAddEditPanel.add(lblNewLabel, "1, 6, 3, 1");
+		// Label for title
+		JLabel addEditTitleLabel = new JLabel("Tittel");
+		innerAddEditPanel.add(addEditTitleLabel, "1, 6, 3, 1");
 		
-		JTextField textField = new JTextField();
-		innerAddEditPanel.add(textField, "1, 7, 3, 1, fill, default");
-		textField.setColumns(10);
+		// TextField for the title
+		addEditTitle = new JTextField();
+		innerAddEditPanel.add(addEditTitle, "1, 7, 3, 1, fill, default");
+		addEditTitle.setColumns(10);
 		
-		JLabel lblNewLabel_1 = new JLabel("Beskrivelse");
-		innerAddEditPanel.add(lblNewLabel_1, "1, 9, 3, 1");
+		// Label for description
+		JLabel addEditDescLabel = new JLabel("Beskrivelse");
+		innerAddEditPanel.add(addEditDescLabel, "1, 9, 3, 1");
 		
-		JTextField textField_1 = new JTextField();
-		innerAddEditPanel.add(textField_1, "1, 10, 3, 1, fill, default");
-		textField_1.setColumns(10);
+		// TextField for the description
+		addEditDesc = new JTextField();
+		innerAddEditPanel.add(addEditDesc, "1, 10, 3, 1, fill, default");
+		addEditDesc.setColumns(10);
 		
-		JSeparator separator2 = new JSeparator();
-		innerAddEditPanel.add(separator2, "1, 11, 3, 1");
+		// Label for the date (not containing the actual date)
+		JLabel addEditDateLabel = new JLabel("Dato:");
+		innerAddEditPanel.add(addEditDateLabel, "1, 12, left, default");
 		
-		JLabel lblNewLabel_3 = new JLabel("Dato:");
-		innerAddEditPanel.add(lblNewLabel_3, "1, 12, left, default");
+		// Label for the date (the date itself)
+		addEditDate = new JLabel("14. mars 2014");
+		innerAddEditPanel.add(addEditDateLabel, "3, 12");
 		
-		JLabel lblNewLabel_4 = new JLabel("14. mars 2014");
-		innerAddEditPanel.add(lblNewLabel_4, "3, 12");
-		
-		ArrayList<String> houuuursss = new ArrayList<String>();
+		// Creating list with the hours
+		ArrayList<String> addEditHours = new ArrayList<String>();
 		String hoursInner[] = new String[] {"00", "15", "30", "45"};
 		for (int i = 8; i < 17; i++) {
 			for (int j = 0; j < 3; j++) {
-				houuuursss.add(((i < 10) ? "0" : "") + i + ":" + hoursInner[j]);
+				addEditHours.add(((i < 10) ? "0" : "") + i + ":" + hoursInner[j]);
 			}	
 		}
 		
-		JLabel lblNewLabel_2 = new JLabel("Til:");
-		innerAddEditPanel.add(lblNewLabel_2, "1, 14, left, default");
+		// Label for from-time
+		JLabel addEditFromLabel = new JLabel("Fra:");
+		innerAddEditPanel.add(addEditFromLabel, "1, 14, left, default");
 		
-		JComboBox comboBox = new JComboBox(houuuursss.toArray());
-		innerAddEditPanel.add(comboBox, "3, 14, fill, default");
+		// From combobox
+		JComboBox addEditFrom = new JComboBox(addEditHours.toArray());
+		innerAddEditPanel.add(addEditFrom, "3, 14, fill, default");
 		
-		JLabel lblNewLabel_5 = new JLabel("Fra:");
-		innerAddEditPanel.add(lblNewLabel_5, "1, 16, left, default");
+		// Label for to-time
+		JLabel addEditToLabel = new JLabel("Til:");
+		innerAddEditPanel.add(addEditToLabel, "1, 16, left, default");
 		
-		JComboBox comboBox_1 = new JComboBox(houuuursss.toArray());
-		innerAddEditPanel.add(comboBox_1, "3, 16, fill, default");
+		// To combobox
+		addEditTo = new JComboBox(addEditHours.toArray());
+		innerAddEditPanel.add(addEditTo, "3, 16, fill, default");
 		
-		JSeparator separator3 = new JSeparator();
-		innerAddEditPanel.add(separator3, "1, 17, 3, 1");
+		// Label for participants
+		JLabel addEditParticipantsLabel = new JLabel("Deltakere:");
+		innerAddEditPanel.add(addEditParticipantsLabel, "1, 18, left, default");
 		
-		JLabel lblNewLabel_99 = new JLabel("Deltakere:");
-		innerAddEditPanel.add(lblNewLabel_99, "1, 18, left, default");
-		
+		// Create array with number of participants
 		ArrayList<Integer> participatntList = new ArrayList<Integer>();
 		for (int i = 0; i < 201; i++) {
 			participatntList.add(i);
 		}
 		
-		JComboBox comboBo222x = new JComboBox(participatntList.toArray());
-		innerAddEditPanel.add(comboBo222x, "3, 18, fill, default");
+		// Combobox with participants
+		JComboBox addEditParticipants = new JComboBox(participatntList.toArray());
+		innerAddEditPanel.add(addEditParticipants, "3, 18, fill, default");
 		
-		JLabel lblNewLabel_3453455 = new JLabel("Rom:");
-		innerAddEditPanel.add(lblNewLabel_3453455, "1, 19, left, default");
+		// Label for rom
+		JLabel addEditRoomLabel = new JLabel("Rom:");
+		innerAddEditPanel.add(addEditRoomLabel, "1, 19, left, default");
 		
-		JComboBox comboBo345345x_1 = new JComboBox();
-		innerAddEditPanel.add(comboBo345345x_1, "3, 19, fill, default");
+		// Combobox with rooms (TODO)
+		JComboBox addEditRoom = new JComboBox();
+		innerAddEditPanel.add(addEditRoom, "3, 19, fill, default");
 		
-		JSeparator separator4 = new JSeparator();
-		innerAddEditPanel.add(separator4, "1, 20, 3, 1");
+		// Label for participants (lists)
+		JLabel addEditParticipantsLabel2 = new JLabel("Deltakere:");
+		innerAddEditPanel.add(addEditParticipantsLabel2, "1, 21, 3, 1");
 		
-		JLabel sdfsdfsdf = new JLabel("Deltakere");
-		innerAddEditPanel.add(sdfsdfsdf, "1, 21, 3, 1");
-		
+		// ListModel for the participants-lists
 		DefaultListModel list = new DefaultListModel();
 		
-		//Draws a black border around an area
+		// Create border for the JList
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		
-		JList participantList = new JList();
-		participantList.setModel(list);
-		participantList.setBorder(border);
-		participantList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane sdfasdasdsdfsdf = new JScrollPane(participantList);
-		innerAddEditPanel.add(sdfasdasdsdfsdf, "1, 22, 3, 1");
+		// Create List for the participants not invited
+		addEditParticipantsAll = new JList();
+		addEditParticipantsAll.setModel(list);
+		addEditParticipantsAll.setBorder(border);
+		addEditParticipantsAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane addEditParticipantsAllScrollPane = new JScrollPane(addEditParticipantsAll);
+		innerAddEditPanel.add(addEditParticipantsAllScrollPane, "1, 22, 3, 1");
 		
-		JButton ddsfsdfsdf = new JButton("Legg til");
-		innerAddEditPanel.add(ddsfsdfsdf, "3, 23, right, default");
+		// Add button for participants not invited
+		addEditParticipantsAllButton = new JButton("Legg til");
+		innerAddEditPanel.add(addEditParticipantsAllButton, "3, 23, right, default");
 		
+		// Create List for the participants invited
+		addEditParticipantsChosen = new JList();
+		addEditParticipantsChosen.setModel(list);
+		addEditParticipantsChosen.setBorder(border);
+		addEditParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane addEditParticipantsChosenScrollPane = new JScrollPane(addEditParticipantsChosen);
+		innerAddEditPanel.add(addEditParticipantsChosenScrollPane, "1, 24, 3, 1");
 		
-		JList participantList2 = new JList();
-		participantList2.setModel(list);
-		participantList2.setBorder(border);
-		participantList2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane sdfasdasdsdfsd2f = new JScrollPane(participantList2);
-		innerAddEditPanel.add(sdfasdasdsdfsd2f, "1, 24, 3, 1");
+		// Add button for participants invited
+		addEditParticipantsChosenButton = new JButton("Fjern");
+		innerAddEditPanel.add(addEditParticipantsChosenButton, "3, 25, right, default");
 		
-		JButton ddsfsdfsdf2 = new JButton("Fjern");
-		innerAddEditPanel.add(ddsfsdfsdf2, "3, 25, right, default");
+		// Create the save-button
+		addEditSave = new JButton("Lagre");
+		innerAddEditPanel.add(addEditSave, "3, 27, right, default");
 		
-		JSeparator separator5 = new JSeparator();
-		innerAddEditPanel.add(separator5, "1, 26, 3, 1");
-		
-		JButton ddsfsdfsdf3 = new JButton("Lagre");
-		innerAddEditPanel.add(ddsfsdfsdf3, "3, 27, right, default");
-		
+		// Add the panel itself
 		addEditScrollPane = new JScrollPane(innerAddEditPanel);
 		addEditScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		addEditScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
