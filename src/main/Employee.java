@@ -68,4 +68,12 @@ public class Employee {
 	public boolean isChecked() {
 		return this.isChecked;
 	}
+	
+	/*
+	 * toString
+	 */
+	
+	public String toString() {
+		return this.name;
+	}
 }

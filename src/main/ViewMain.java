@@ -121,8 +121,8 @@ public class ViewMain extends JFrame {
 	private JButton addEditParticipantsAllButton;
 	private JButton addEditParticipantsChosenButton;
 	private JButton addEditSave;
-	private DefaultListModel participantsListNotInvited;
-	private DefaultListModel participantsListInvited;
+	private DefaultListModel addEditParticipantsListNotInvited;
+	private DefaultListModel addEditParticipantsListInvited;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -137,8 +137,8 @@ public class ViewMain extends JFrame {
 		this.calendar = c;
 		
 		// ListModel for the participants-lists
-		participantsListNotInvited = new DefaultListModel();
-		participantsListInvited = new DefaultListModel();
+		addEditParticipantsListNotInvited = new DefaultListModel();
+		addEditParticipantsListInvited = new DefaultListModel();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -203,7 +203,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("home");
 			}
-			
 		});
 		notificationsBtn.addActionListener(new ActionListener() {
 
@@ -211,7 +210,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("notifications");
 			}
-			
 		});
 		employeesBtn.addActionListener(new ActionListener() {
 
@@ -219,7 +217,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				displayLeftPanel("employees");
 			}
-			
 		});
 		
 		// Add header-right panel
@@ -681,7 +678,7 @@ public class ViewMain extends JFrame {
 	 * Adds all the employees to the list
 	 */
 	
-	public void drawEmployees(ArrayList<Employee> employees) {			
+	public void drawEmployees(ArrayList<Employee> employees) {		
 		//
 		// Employee - Panel
 		//
@@ -763,6 +760,14 @@ public class ViewMain extends JFrame {
 		
 		// Update changes
 		this.setSizesLeftPanel();
+		
+		//
+		// Add/Edit
+		//
+		
+		for (int i = 0; i < employees.size(); i++) {
+			addEditParticipantsListNotInvited.addElement(employees.get(i));
+		}
 	}
 	
 	/*
@@ -956,7 +961,7 @@ public class ViewMain extends JFrame {
 		
 		// Create List for the participants not invited
 		addEditParticipantsAll = new JList();
-		addEditParticipantsAll.setModel(participantsListNotInvited);
+		addEditParticipantsAll.setModel(addEditParticipantsListNotInvited);
 		addEditParticipantsAll.setBorder(border);
 		addEditParticipantsAll.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsAllScrollPane = new JScrollPane(addEditParticipantsAll);
@@ -968,7 +973,7 @@ public class ViewMain extends JFrame {
 		
 		// Create List for the participants invited
 		addEditParticipantsChosen = new JList();
-		addEditParticipantsChosen.setModel(participantsListInvited);
+		addEditParticipantsChosen.setModel(addEditParticipantsListInvited);
 		addEditParticipantsChosen.setBorder(border);
 		addEditParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane addEditParticipantsChosenScrollPane = new JScrollPane(addEditParticipantsChosen);
