@@ -28,6 +28,7 @@ public class Appointment implements CalendarObjects {
 	private Date end;
 	private String place;
 	private Room room;
+	private int user;
 	
 	private boolean participates;
 	private boolean hide;
@@ -165,6 +166,14 @@ public class Appointment implements CalendarObjects {
 	public void setAlarmTime(Date alarmTime) {
 		this.alarmTime = alarmTime;
 		this.gui.reflectChange("appointment", "alarmtime", this);
+	}
+	
+	public void setUser(int i) {
+		this.user = i;
+	}
+	
+	public int getUser() {
+		return this.user;
 	}
 	
 	/*

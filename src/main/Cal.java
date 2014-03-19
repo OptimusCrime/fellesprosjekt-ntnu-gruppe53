@@ -124,32 +124,58 @@ public class Cal {
 					
 					// Check that we actually got someting back
 					if (appointments != null) {
+						ArrayList<Appointment> tempAppointmentsList = new ArrayList<Appointment>();
 						// Loop all the appointments
 						for (int i = 0; i < appointments.size(); i++) {
 							JSONObject thisAppointment = (JSONObject) appointments.get(i);
 							
-							// Create new appointment
-							Appointment a = new Appointment(this.gui);
+							// Check if appointment already exists
+							int appointmentId = new BigDecimal((long) thisAppointment.get("id")).intValueExact();
+							int appointmentUser =  new BigDecimal((long) thisAppointment.get("user")).intValueExact();
 							
-							// Set each field
-							a.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
-							a.setTitle((String) thisAppointment.get("title"));
-							a.setDescription((String) thisAppointment.get("description"));
+							boolean canAdd = true;
+							for (int j = 0; j < tempAppointmentsList.size(); j++) {
+								if (tempAppointmentsList.get(j).getId() == appointmentId) {
+									// Should not be added
+									canAdd = false;
+									
+									// Check if owned by the current user, in that case, update ownage
+									if (appointmentUser == this.user.getId()) {
+										tempAppointmentsList.get(j).setUser(this.user.getId());
+									}
+									
+									break;
+								}
+							}
 							
-							a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
-							a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
-							
-							a.setPlace((String) thisAppointment.get("place"));
-							a.setParticipates((boolean) thisAppointment.get("participate"));
-							a.setHide((boolean) thisAppointment.get("hide"));
-							a.setAlarm((boolean) thisAppointment.get("alarm"));
-							a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
-							
-							// Create the object
-							a.create();
-							
-							// Add appointment to user
-							this.user.addAppointment(a);
+							if (canAdd) {
+								// Create new appointment
+								Appointment a = new Appointment(this.gui);
+								
+								// Set each field
+								a.setId(appointmentId);
+								a.setUser(appointmentUser);
+								a.setTitle((String) thisAppointment.get("title"));
+								a.setDescription((String) thisAppointment.get("description"));
+								
+								a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
+								a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
+								
+								a.setPlace((String) thisAppointment.get("place"));
+								a.setParticipates((boolean) thisAppointment.get("participate"));
+								a.setHide((boolean) thisAppointment.get("hide"));
+								a.setAlarm((boolean) thisAppointment.get("alarm"));
+								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
+								
+								// Create the object
+								a.create();
+								
+								// Add appointment to user
+								this.user.addAppointment(a);
+								
+								// For searching
+								tempAppointmentsList.add(a);
+							}
 						}
 						
 						// Send reflect to the gui from the user-class

@@ -109,6 +109,7 @@ public class ViewMain extends JFrame {
 	private GraphicSquare[] squareArr;
 	private int column_width;
 	private int row_height;
+	private Map<Integer, Color> appointmentColors;
 	
 	// Add/Edit
 	private JLabel addEditHeaderLabel;
@@ -140,6 +141,9 @@ public class ViewMain extends JFrame {
 		// ListModel for the participants-lists
 		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
 		addEditParticipantsListInvited = new DefaultListModel<Employee>();
+		
+		// Setting up hashmap for colors
+		appointmentColors = new HashMap<Integer, Color>();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -596,8 +600,18 @@ public class ViewMain extends JFrame {
 					int endValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
 					double heightValue = (this.row_height/60.0)*endValue - startPos;
 					
+					// Get color
+					Color thisAppointmentColor;
+					if (appointmentColors.containsKey(thisAppointment.getUser())) {
+						thisAppointmentColor = appointmentColors.get(thisAppointment.getUser());
+					}
+					else {
+						thisAppointmentColor = new Color(this.generateRandomColorInt(), this.generateRandomColorInt(), this.generateRandomColorInt());
+						appointmentColors.put(thisAppointment.getUser(), thisAppointmentColor);
+					}
+					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
 					appointmentSquare.setId(thisAppointment.getId());
 					
 					// Reset layout
@@ -1225,5 +1239,13 @@ public class ViewMain extends JFrame {
 			// Redraw super to show the changes!
 			super.revalidate();
 		}
+	}
+	
+	/*
+	 * Generate random number between 0, 225
+	 */
+	
+	private int generateRandomColorInt() {
+		return (int) (Math.random() * (225 + 1));
 	}
 }
