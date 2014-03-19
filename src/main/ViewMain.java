@@ -413,7 +413,7 @@ public class ViewMain extends JFrame {
 		int week = cal.get(Calendar.WEEK_OF_YEAR);
 		
 		// Set week in the label
-		navWeek.setText("Uke " + Integer.toString(week));
+		navWeek.setText("Uke " + Integer.toString(week) + ", " + this.calendarYear);
 		
 		// Store dates for the beginning and end of the week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
