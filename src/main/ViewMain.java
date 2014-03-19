@@ -969,6 +969,7 @@ public class ViewMain extends JFrame {
 		
 		// Add button for participants not invited
 		addEditParticipantsAllButton = new JButton("Legg til");
+		addEditParticipantsAllButton.setEnabled(false);
 		innerAddEditPanel.add(addEditParticipantsAllButton, "3, 23, right, default");
 		
 		// Create List for the participants invited
@@ -981,6 +982,7 @@ public class ViewMain extends JFrame {
 		
 		// Add button for participants invited
 		addEditParticipantsChosenButton = new JButton("Fjern");
+		addEditParticipantsChosenButton.setEnabled(false);
 		innerAddEditPanel.add(addEditParticipantsChosenButton, "3, 25, right, default");
 		
 		// Create the save-button
