@@ -785,7 +785,13 @@ public class ViewMain extends JFrame {
 	 */
 	
 	protected void showNewAppointment(String t, String d) {
-		System.out.println(t + " - " + d);
+		// Set hours
+		this.addEditFrom.setSelectedItem(t);
+		this.addEditTo.setSelectedItem(t.replace("00", "45"));
+		
+		// Set date
+		String []dateSplit = d.split(" ");
+		this.addEditDate.setText(dateSplit[1] + "." + this.calendarYear);
 		
 		// Display the right left-panel
 		this.displayLeftPanel("addedit");
@@ -909,27 +915,28 @@ public class ViewMain extends JFrame {
 		
 		// Label for the date (not containing the actual date)
 		JLabel addEditDateLabel = new JLabel("Dato:");
-		innerAddEditPanel.add(addEditDateLabel, "1, 12, left, default");
+		innerAddEditPanel.add(addEditDateLabel, "1, 12");
 		
 		// Label for the date (the date itself)
-		addEditDate = new JLabel("14. mars 2014");
-		innerAddEditPanel.add(addEditDateLabel, "3, 12");
+		addEditDate = new JLabel("Laster");
+		innerAddEditPanel.add(addEditDate, "3, 12");
 		
 		// Creating list with the hours
 		ArrayList<String> addEditHours = new ArrayList<String>();
 		String hoursInner[] = new String[] {"00", "15", "30", "45"};
 		for (int i = 8; i < 17; i++) {
-			for (int j = 0; j < 3; j++) {
+			for (int j = 0; j < 4; j++) {
 				addEditHours.add(((i < 10) ? "0" : "") + i + ":" + hoursInner[j]);
 			}	
 		}
+		addEditHours.add("17:00");
 		
 		// Label for from-time
 		JLabel addEditFromLabel = new JLabel("Fra:");
 		innerAddEditPanel.add(addEditFromLabel, "1, 14, left, default");
 		
 		// From combobox
-		JComboBox addEditFrom = new JComboBox(addEditHours.toArray());
+		addEditFrom = new JComboBox(addEditHours.toArray());
 		innerAddEditPanel.add(addEditFrom, "3, 14, fill, default");
 		
 		// Label for to-time
