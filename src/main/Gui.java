@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 /*
  * Gui
  * 
@@ -57,7 +59,35 @@ public class Gui {
 	 */
 	
 	public void reflectChange(String t, String f, Object o) {
+		// Check what changes to reflect over :)
 		if (t.equals("employees")) {
+			// Get self id
+			String username = this.calendar.getUsername();
+			
+			// Check if the user was returned
+			if (username != null) {
+				// Remove self
+				ArrayList<Employee> tempEmployeeList = calendar.getEmployees();
+				
+				// Loop all employees
+				for (int i = 0; i < tempEmployeeList.size(); i++) {
+					// Check if the current user is the one being looped
+					if (tempEmployeeList.get(i).getEmail().equals(username)) {
+						// Get the current user
+						Employee employeeThisUser = tempEmployeeList.get(i);
+						
+						// Set checked to true
+						employeeThisUser.setChecked(true);
+						
+						// Remove from the list
+						tempEmployeeList.remove(i);
+						
+						// Break the loop
+						break;
+					}
+				}
+			}
+			
 			// Special case, this is not a part of the CalendarObjects-family
 			main.drawEmployees(calendar.getEmployees());
 		}

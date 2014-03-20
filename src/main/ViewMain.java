@@ -35,14 +35,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -111,6 +109,7 @@ public class ViewMain extends JFrame {
 	private GraphicSquare[] squareArr;
 	private int column_width;
 	private int row_height;
+	private Map<Integer, Color> appointmentColors;
 	
 	// Add/Edit
 	private JLabel addEditHeaderLabel;
@@ -119,13 +118,23 @@ public class ViewMain extends JFrame {
 	private JLabel addEditDate;
 	private JComboBox<String> addEditFrom;
 	private JComboBox<String> addEditTo;
-	protected JList addEditParticipantsAll;
-	protected JList addEditParticipantsChosen;
+	protected JList<Employee> addEditParticipantsAll;
+	protected JList<Employee> addEditParticipantsChosen;
 	protected JButton addEditParticipantsAllButton;
 	protected JButton addEditParticipantsChosenButton;
-	protected DefaultListModel addEditParticipantsListNotInvited;
-	protected DefaultListModel addEditParticipantsListInvited;
+	protected DefaultListModel<Employee> addEditParticipantsListNotInvited;
+	protected DefaultListModel<Employee> addEditParticipantsListInvited;
 	private JButton addEditSave;
+	
+	// Info
+	private JLabel infoHeaderLabel;
+	private JLabel infoDescLabel;
+	private JLabel infoDate;
+	private JLabel infoFrom;
+	private JLabel infoTo;
+	private JLabel infoParticipants;
+	private JLabel infoRoom;
+	private JList infoParticipantsChosen;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -140,8 +149,11 @@ public class ViewMain extends JFrame {
 		this.calendar = c;
 		
 		// ListModel for the participants-lists
-		addEditParticipantsListNotInvited = new DefaultListModel();
-		addEditParticipantsListInvited = new DefaultListModel();
+		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
+		addEditParticipantsListInvited = new DefaultListModel<Employee>();
+		
+		// Setting up hashmap for colors
+		appointmentColors = new HashMap<Integer, Color>();
 		
 		// Setting up array for replacing english weekdays to norwegian ones
 		calendarReplaces = new HashMap<String, String>();
@@ -413,7 +425,7 @@ public class ViewMain extends JFrame {
 		int week = cal.get(Calendar.WEEK_OF_YEAR);
 		
 		// Set week in the label
-		navWeek.setText("Uke " + Integer.toString(week));
+		navWeek.setText("Uke " + Integer.toString(week) + ", " + this.calendarYear);
 		
 		// Store dates for the beginning and end of the week
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -598,8 +610,21 @@ public class ViewMain extends JFrame {
 					int endValue = (c.get(Calendar.HOUR_OF_DAY) * 60) + c.get(Calendar.MINUTE) - (7 * 60); // Remove hours before 0800, but adding one hour for the legends
 					double heightValue = (this.row_height/60.0)*endValue - startPos;
 					
+					// Get color
+					Color thisAppointmentColor;
+					if (appointmentColors.containsKey(thisAppointment.getUser())) {
+						thisAppointmentColor = appointmentColors.get(thisAppointment.getUser());
+					}
+					else {
+						thisAppointmentColor = new Color(this.generateRandomColorInt(), this.generateRandomColorInt(), this.generateRandomColorInt());
+						appointmentColors.put(thisAppointment.getUser(), thisAppointmentColor);
+					}
+					
+					// Create text for the appointment
+					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
+					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), Color.pink, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
 					appointmentSquare.setId(thisAppointment.getId());
 					
 					// Reset layout
@@ -741,7 +766,30 @@ public class ViewMain extends JFrame {
 		for (int i = 0; i < employees.size(); i++) {
 			// Create textfield for the name of the employee
 			JLabel employeeNameList = new JLabel(employees.get(i).getName());
-			JCheckBox employeeNameListCheckbox = new JCheckBox("");
+			GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
+			
+			// Set reference to the employee
+			employeeNameListCheckbox.setReference(employees.get(i));
+			employeeNameListCheckbox.addActionListener(new ActionListener () {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// Get the current checkbox being clicked
+					GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
+					
+					// Just doublecheck that we are not NullPointer!
+					if (thisCheckbox != null) {
+						// Check if checked or not
+						if (thisCheckbox.isSelected()) {
+							calendar.addCalendar(thisCheckbox.getReference());
+						}
+						else {
+							calendar.removeCalendar(thisCheckbox.getReference());
+						}
+					}
+				}
+				
+			});
 			
 			// Set the label for the checkbox (not really sure if this does anything at all?)
 			employeeNameList.setLabelFor(employeeNameListCheckbox);
@@ -805,8 +853,7 @@ public class ViewMain extends JFrame {
 		// Display the correct sidepanel
 		this.displayLeftPanel("info");
 		
-		// TODO, just set id for now
-		innerInfoTestLabel.setText("Showing info for " + id);
+		// TODO
 	}
 	
 	/*
@@ -843,7 +890,6 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerAddEditPanel = new JPanel();
 		
-		// Helmer start
 		innerAddEditPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("left:default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -1111,10 +1157,117 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerInfoPanel = new JPanel();
 		
-		// Add dummy
-		innerInfoTestLabel = new JLabel("Info goes here");
-		innerInfoPanel.add(innerInfoTestLabel);
+		innerInfoPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("left:default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("left:default:grow"),},
+			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				}));
 		
+		 // Header
+		infoHeaderLabel = new JLabel("[Tittel her]");
+		infoHeaderLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerInfoPanel.add(infoHeaderLabel, "1, 2, 3, 1");
+		
+		// Add all seperators
+		JSeparator infoSeperator1 = new JSeparator();
+		innerInfoPanel.add(infoSeperator1, "1, 4, 3, 1");
+		JSeparator infoSeperator2 = new JSeparator();
+		innerInfoPanel.add(infoSeperator2, "1, 11, 3, 1");
+		JSeparator infoSeperator3 = new JSeparator();
+		innerInfoPanel.add(infoSeperator3, "1, 17, 3, 1");
+		JSeparator infoSeperator4 = new JSeparator();
+		innerInfoPanel.add(infoSeperator4, "1, 20, 3, 1");
+		JSeparator infoSeperator5 = new JSeparator();
+		innerInfoPanel.add(infoSeperator5, "1, 26, 3, 1");
+		
+		// Label for description
+		infoDescLabel = new JLabel("Beskrivelse");
+		innerInfoPanel.add(infoDescLabel, "1, 9, 3, 1");
+		
+		// Label for the date (not containing the actual date)
+		JLabel infoDateLabel = new JLabel("Dato:");
+		innerInfoPanel.add(infoDateLabel, "1, 12");
+		
+		// Label for the date (the date itself)
+		infoDate = new JLabel("Laster");
+		innerInfoPanel.add(infoDate, "3, 12");
+		
+		// Label for from-time
+		JLabel infoFromLabel = new JLabel("Fra:");
+		innerInfoPanel.add(infoFromLabel, "1, 14, left, default");
+		
+		// From label
+		infoFrom = new JLabel("16:00");
+		innerInfoPanel.add(infoFrom, "3, 14, fill, default");
+		
+		// Label for to-time
+		JLabel infoToLabel = new JLabel("Til:");
+		innerInfoPanel.add(infoToLabel, "1, 16, left, default");
+		
+		// To label
+		infoTo = new JLabel("");
+		innerInfoPanel.add(infoTo, "3, 16, fill, default");
+		
+		// Label for participants
+		JLabel infoParticipantsLabel = new JLabel("Deltakere:");
+		innerInfoPanel.add(infoParticipantsLabel, "1, 18, left, default");
+		
+		// Combobox with participants
+		infoParticipants = new JLabel("");
+		innerInfoPanel.add(infoParticipants, "3, 18, fill, default");
+		
+		// Label for rom
+		JLabel infoRoomLabel = new JLabel("Rom:");
+		innerInfoPanel.add(infoRoomLabel, "1, 19, left, default");
+		
+		// Label with room
+		infoRoom = new JLabel("");
+		innerInfoPanel.add(infoRoom, "3, 19, fill, default");
+		
+		// Label for participants (lists)
+		JLabel infoParticipantsLabel2 = new JLabel("Deltakere:");
+		innerInfoPanel.add(infoParticipantsLabel2, "1, 21, 3, 1");
+		
+		// Create border for the JList
+		Border infoBorder = BorderFactory.createLineBorder(Color.BLACK);
+		
+		// Create List for the participants that are invited
+		infoParticipantsChosen = new JList();
+		//infoParticipantsChosen.setModel(addEditParticipantsListNotInvited);
+		infoParticipantsChosen.setBorder(infoBorder);
+		infoParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane infoParticipantsChosenScrollPane = new JScrollPane(infoParticipantsChosen);
+		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 22, 3, 1");
+		
+		// Add to scrollpane
 		infoScrollPane = new JScrollPane(innerInfoPanel);
 		infoScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		infoScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1204,5 +1357,13 @@ public class ViewMain extends JFrame {
 			// Redraw super to show the changes!
 			super.revalidate();
 		}
+	}
+	
+	/*
+	 * Generate random number between 0, 225
+	 */
+	
+	private int generateRandomColorInt() {
+		return (int) (Math.random() * (225 + 1));
 	}
 }
