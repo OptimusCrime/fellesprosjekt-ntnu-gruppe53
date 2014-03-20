@@ -132,6 +132,7 @@ public class ViewMain extends JFrame {
 	private JButton addEditSave;
 	private JComboBox addEditRoom;
 	private DefaultComboBoxModel<Room> addEditRoomModel;
+	private JLabel addEditRoomLabel;
 	
 	// Info
 	private JLabel infoHeaderLabel;
@@ -895,6 +896,9 @@ public class ViewMain extends JFrame {
 		String []dateSplit = d.split(" ");
 		this.addEditDate.setText(dateSplit[1] + "." + this.calendarYear);
 		
+		// Load rooms
+		this.calculateAvailableRooms();
+		
 		// Display the right left-panel
 		this.displayLeftPanel("addedit");
 	}
@@ -1124,7 +1128,7 @@ public class ViewMain extends JFrame {
 		innerAddEditPanel.add(addEditParticipants, "3, 18, fill, default");
 		
 		// Label for rom
-		JLabel addEditRoomLabel = new JLabel("Rom:");
+		addEditRoomLabel = new JLabel("Rom:");
 		innerAddEditPanel.add(addEditRoomLabel, "1, 19, left, default");
 		
 		// Combobox with rooms
@@ -1537,7 +1541,10 @@ public class ViewMain extends JFrame {
 			cal.set(Calendar.MINUTE, Integer.parseInt(toTime[1]));
 			Date toTimeAsDate = cal.getTime();
 			
-			this.calendar.calculateTime(fromTimeAsDate, toTimeAsDate, num);
+			// Set loadingtime
+			addEditRoomLabel.setText("Laster rom...");
+			
+			this.calendar.calculateAvailabelRooms(fromTimeAsDate, toTimeAsDate, num);
 		}
 	}
 	
@@ -1552,6 +1559,9 @@ public class ViewMain extends JFrame {
 			addEditRoomModel.addElement(rooms.get(i));
 		}
 		addEditRoom.setSelectedIndex(0);
+		
+		// Reset loading
+		addEditRoomLabel.setText("Rom:");
 	}
 	
 }

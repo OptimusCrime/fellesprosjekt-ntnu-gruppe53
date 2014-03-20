@@ -442,7 +442,7 @@ public class Cal {
 	 * Fetch rooms from database
 	 */
 	
-	public void calculateTime(Date from, Date to, int num) {
+	public void calculateAvailabelRooms(Date from, Date to, int num) {
 		// Format
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
