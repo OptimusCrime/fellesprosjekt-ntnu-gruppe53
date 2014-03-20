@@ -283,9 +283,9 @@ public class ViewMain extends JFrame {
 		splitRightNav.setLayout(new BorderLayout(0, 0));
 		
 		// Add nav-buttons to the right-split nav-panel
-		navLeft = new JButton("«");
+		navLeft = new JButton("<");
 		splitRightNav.add(navLeft, BorderLayout.WEST);
-		navRight = new JButton("»");
+		navRight = new JButton(">");
 		splitRightNav.add(navRight, BorderLayout.EAST);
 		
 		// Add actionListeners for the nav-buttons
