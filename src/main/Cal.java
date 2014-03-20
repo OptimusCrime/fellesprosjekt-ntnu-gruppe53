@@ -211,6 +211,10 @@ public class Cal {
 					}
 				}
 			}
+			else if (action.equals("logout")) {
+				this.user.setLoggedIn(false);
+				sh.killConnection();
+			}
 			else if (action.equals("employees")) {
 				// We're dealing with the list of employees
 				if (type.equals("get")) {
