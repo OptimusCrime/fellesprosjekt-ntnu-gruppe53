@@ -29,6 +29,9 @@ public class Cal {
 	
 	private ArrayList<Employee> employees;
 	
+	private boolean loadedAppointments;
+	private boolean loadedRooms;
+	
 	/*
 	 * Constructor
 	 */
@@ -36,6 +39,10 @@ public class Cal {
 	public Cal() {
 		// Create new instance of the Gui-class
 		this.gui = new Gui(this);
+		
+		// Set not loaded
+		loadedAppointments = false;
+		loadedRooms = false;
 		
 		// User
 		this.user = new User(this.gui);
@@ -186,6 +193,19 @@ public class Cal {
 					}
 				}
 			}
+			else if (action.equals("rooms")) {
+				// Rooms
+				if (type.equals("get")) {
+					// TODO
+					
+					// Check if we can load the appointments
+					this.loadedRooms = true;
+					if (this.loadedAppointments) {
+						// We have loaded all dependencies, now load appointments
+						this.loadAppointments();
+					}
+				}
+			}
 			else if (action.equals("login")) {
 				// Login
 				if (type.equals("put")) {
@@ -204,6 +224,7 @@ public class Cal {
 						
 						// Load all stuff the user needs
 						this.loadEmployees();
+						this.loadRooms();
 					}
 					else {
 						// Send error-message
@@ -244,8 +265,12 @@ public class Cal {
 						// Send reflect to the gui from this class
 						this.gui.reflectChange("employees", "create", null);
 						
-						// Load appointments
-						this.loadAppointments();
+						// Check if we can load the appointments
+						this.loadedAppointments = true;
+						if (this.loadedRooms) {
+							// We have loaded all dependencies, now load appointments
+							this.loadAppointments();
+						}
 					}
 				}
 			}
@@ -281,6 +306,17 @@ public class Cal {
 	
 	private void loadEmployees() {
 		JSONObject employeeObj = this.initJSONObject("employees", "get");
+		String employeeObjString = employeeObj.toJSONString();
+		
+		sh.sendMessage(employeeObjString);
+	}
+	
+	/*
+	 * Delegate for loading all the rooms in the system
+	 */
+	
+	private void loadRooms() {
+		JSONObject employeeObj = this.initJSONObject("rooms", "get");
 		String employeeObjString = employeeObj.toJSONString();
 		
 		sh.sendMessage(employeeObjString);
