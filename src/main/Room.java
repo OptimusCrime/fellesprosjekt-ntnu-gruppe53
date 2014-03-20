@@ -79,6 +79,6 @@ public class Room implements CalendarObjects {
 	 */
 	
 	public String toString() {
-		return this.name + "[" + this.capacity + "]";
+		return this.name + " [" + this.capacity + "]";
 	}
 }

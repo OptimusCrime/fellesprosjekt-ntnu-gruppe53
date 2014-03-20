@@ -51,8 +51,9 @@ public class Cal {
 		// Sockets
 		this.sh = new SocketHandler(this);
 		
-		// Init list of employees
+		// Init lists
 		this.employees = new ArrayList<Employee>();
+		this.rooms = new ArrayList<Room>();
 	}
 	
 	/*
@@ -171,12 +172,21 @@ public class Cal {
 								
 								a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
 								a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
-								
+
 								a.setPlace((String) thisAppointment.get("place"));
 								a.setParticipates((boolean) thisAppointment.get("participate"));
 								a.setHide((boolean) thisAppointment.get("hide"));
 								a.setAlarm((boolean) thisAppointment.get("alarm"));
 								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
+								
+								// Room
+								int appointmentRoom = new BigDecimal((long) thisAppointment.get("room")).intValueExact();
+								for (int j = 0; j < this.rooms.size(); j++) {
+									if (this.rooms.get(j).getId() == appointmentRoom) {
+										a.setRoom(this.rooms.get(j));
+										break;
+									}
+								}
 								
 								// Create the object
 								a.create();
@@ -381,6 +391,14 @@ public class Cal {
 	
 	public ArrayList<Employee> getCalendars() {
 		return this.user.getCalendars();
+	}
+	
+	/*
+	 * Rooms
+	 */
+	
+	public ArrayList<Room> getRooms() {
+		return this.rooms;
 	}
 	
 	/*

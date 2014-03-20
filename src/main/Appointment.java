@@ -38,6 +38,7 @@ public class Appointment implements CalendarObjects {
 	public Appointment (Gui g) {
 		this.gui = g;
 		this.created = false;
+		this.room = null;
 	}
 	
 	/*
@@ -113,6 +114,14 @@ public class Appointment implements CalendarObjects {
 
 	public Room getRoom() {
 		return room;
+	}
+	
+	public String getRoomString() {
+		if (room == null) {
+			return null;
+		}
+		
+		return room.toString();
 	}
 
 	public void setRoom(Room room) {

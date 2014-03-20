@@ -748,12 +748,11 @@ public class ViewMain extends JFrame {
 				Employee tempThisUserAsEmployee = null;
 				String tempCurrentUsername = calendar.getUsername();
 				for (int i = 0; i < tempEmployeeList.size(); i++) {
-					System.out.println(tempEmployeeList.get(i).getEmail() + " - " + tempCurrentUsername);
 					if (tempEmployeeList.get(i).getEmail().equals(tempCurrentUsername)) {
 						tempThisUserAsEmployee = tempEmployeeList.get(i);
 					}
 				}
-				System.out.println(tempThisUserAsEmployee);
+				
 				if (tempThisUserAsEmployee != null) {
 					// Get the current checkbox being clicked
 					JCheckBox thisCheckbox = (JCheckBox) e.getSource();
@@ -910,6 +909,8 @@ public class ViewMain extends JFrame {
 			cal.setTime(thisAppointment.getEnd());
 			infoTo.setText(((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":" + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE));
 			
+			// Room
+			infoRoom.setText(thisAppointment.getRoomString()); 
 			
 			/*private JLabel infoHeaderLabel;
 			private JLabel infoDescLabel;
