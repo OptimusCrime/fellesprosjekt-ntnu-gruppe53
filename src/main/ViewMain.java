@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -109,6 +111,7 @@ public class ViewMain extends JFrame {
 	private int column_width;
 	private int row_height;
 	private Map<Integer, Color> appointmentColors;
+	private GraphicSquare lastHoovered;
 	
 	// Add/Edit
 	private JLabel addEditHeaderLabel;
@@ -146,6 +149,9 @@ public class ViewMain extends JFrame {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// For effect
+		this.lastHoovered = null;
 		
 		// ListModel for the participants-lists
 		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
@@ -462,10 +468,33 @@ public class ViewMain extends JFrame {
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
 		for (int i = 0; i < 8; i++) {
 			// Create new square
-			GraphicSquare square = new GraphicSquare(0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height, ((i == 0)? false : true));
+			GraphicSquare square = new GraphicSquare(this, 0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height, ((i == 0)? false : true));
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
+			square.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// Cast the square
+					GraphicSquare thisSquare = (GraphicSquare) e.getSource();
+					thisSquare.sendClearAllPreviousHoovered();
+					thisSquare.registerHoover();
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {}
+
+				@Override
+				public void mousePressed(MouseEvent e) {}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {}
+				
+			});
 			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
@@ -912,15 +941,6 @@ public class ViewMain extends JFrame {
 			// Room
 			infoRoom.setText(thisAppointment.getRoomString()); 
 			
-			/*private JLabel infoHeaderLabel;
-			private JLabel infoDescLabel;
-			private JLabel infoDate;
-			private JLabel infoFrom;
-			private JLabel infoTo;
-			private JLabel infoParticipants;
-			private JLabel infoRoom;
-			private JList infoParticipantsChosen;*/
-			
 			// Display the correct sidepanel
 			this.displayLeftPanel("info");
 		}
@@ -1182,6 +1202,33 @@ public class ViewMain extends JFrame {
 		
 		// Create the save-button
 		addEditSave = new JButton("Lagre");
+		addEditSave.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean error = false;
+				String errorMsg = "";
+				if (addEditTitle.getText().length() == 0) {
+					error = true;
+					errorMsg += "- Tittel\n";
+				}
+				if (addEditDesc.getText().length() == 0) {
+					error = true;
+					errorMsg += "- Beskrivelse\n";
+				}
+				if (addEditFrom.getSelectedItem().equals(addEditTo.getSelectedItem())) {
+					error = true;
+					errorMsg += "- Tidene må være forskjellige\n";
+				}
+				
+				if (error) {
+					JOptionPane.showMessageDialog(null, "Vennligst fyll ut manglende informasjon:\n\n" + errorMsg, "Feil", JOptionPane.PLAIN_MESSAGE);
+				}
+				else {
+					System.out.println("Oppretter her");
+				}
+			}
+		});
 		innerAddEditPanel.add(addEditSave, "3, 27, right, default");
 		
 		// Add the panel itself
@@ -1428,4 +1475,18 @@ public class ViewMain extends JFrame {
 	private int generateRandomColorInt() {
 		return (int) (Math.random() * (225 + 1));
 	}
+	
+	/*
+	 * Hoovered
+	 */
+	
+	public void setLastHoovered(GraphicSquare g) {
+		this.lastHoovered = g;
+	}
+	
+	public GraphicSquare getLastHoovered() {
+		return this.lastHoovered;
+	}
+	
+	
 }

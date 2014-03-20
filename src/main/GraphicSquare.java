@@ -33,15 +33,17 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	private ArrayList<GraphicsLabel> labelsOnHover;
 	private ArrayList<GraphicAppointment> appointments;
 	private boolean shouldDrawHorizontal;
+	private ViewMain vm;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public GraphicSquare(int x, int y, int width, int height, int spaceHeight, boolean s) {
+	public GraphicSquare(ViewMain vm, int x, int y, int width, int height, int spaceHeight, boolean s) {
 		super();
 		
 		// Set some variables we need
+		this.vm = vm;
 		this.space = spaceHeight;
 		this.width = width;
 		this.shouldDrawHorizontal = s;
@@ -136,6 +138,27 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 					labelsOnHover.get(i).setVisible(false);
 				}
 			}
+		}
+	}
+	
+	/*
+	 * Hovering hack
+	 */
+	
+	public void registerHoover() {
+		this.vm.setLastHoovered(this);
+	}
+	
+	public void sendClearAllPreviousHoovered() {
+		GraphicSquare lastHoovered = this.vm.getLastHoovered();
+		if (lastHoovered != null) {
+			lastHoovered.removeAllLabels();
+		}
+	}
+	
+	public void removeAllLabels() {
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			labelsOnHover.get(i).setVisible(false);
 		}
 	}
 	
