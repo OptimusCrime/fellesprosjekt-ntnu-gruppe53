@@ -126,6 +126,16 @@ public class ViewMain extends JFrame {
 	protected DefaultListModel<Employee> addEditParticipantsListInvited;
 	private JButton addEditSave;
 	
+	// Info
+	private JLabel infoHeaderLabel;
+	private JLabel infoDescLabel;
+	private JLabel infoDate;
+	private JLabel infoFrom;
+	private JLabel infoTo;
+	private JLabel infoParticipants;
+	private JLabel infoRoom;
+	private JList infoParticipantsChosen;
+	
 	// Debugging
 	private JLabel innerInfoTestLabel;
 	
@@ -610,8 +620,11 @@ public class ViewMain extends JFrame {
 						appointmentColors.put(thisAppointment.getUser(), thisAppointmentColor);
 					}
 					
+					// Create text for the appointment
+					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
+					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle() + ": " + thisAppointment.getDescription());
+					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
 					appointmentSquare.setId(thisAppointment.getId());
 					
 					// Reset layout
@@ -840,8 +853,7 @@ public class ViewMain extends JFrame {
 		// Display the correct sidepanel
 		this.displayLeftPanel("info");
 		
-		// TODO, just set id for now
-		innerInfoTestLabel.setText("Showing info for " + id);
+		// TODO
 	}
 	
 	/*
@@ -878,7 +890,6 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerAddEditPanel = new JPanel();
 		
-		// Helmer start
 		innerAddEditPanel.setLayout(new FormLayout(new ColumnSpec[] {
 				ColumnSpec.decode("left:default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -1146,10 +1157,117 @@ public class ViewMain extends JFrame {
 		
 		JPanel innerInfoPanel = new JPanel();
 		
-		// Add dummy
-		innerInfoTestLabel = new JLabel("Info goes here");
-		innerInfoPanel.add(innerInfoTestLabel);
+		innerInfoPanel.setLayout(new FormLayout(new ColumnSpec[] {
+				ColumnSpec.decode("left:default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("left:default:grow"),},
+			new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				}));
 		
+		 // Header
+		infoHeaderLabel = new JLabel("[Tittel her]");
+		infoHeaderLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		innerInfoPanel.add(infoHeaderLabel, "1, 2, 3, 1");
+		
+		// Add all seperators
+		JSeparator infoSeperator1 = new JSeparator();
+		innerInfoPanel.add(infoSeperator1, "1, 4, 3, 1");
+		JSeparator infoSeperator2 = new JSeparator();
+		innerInfoPanel.add(infoSeperator2, "1, 11, 3, 1");
+		JSeparator infoSeperator3 = new JSeparator();
+		innerInfoPanel.add(infoSeperator3, "1, 17, 3, 1");
+		JSeparator infoSeperator4 = new JSeparator();
+		innerInfoPanel.add(infoSeperator4, "1, 20, 3, 1");
+		JSeparator infoSeperator5 = new JSeparator();
+		innerInfoPanel.add(infoSeperator5, "1, 26, 3, 1");
+		
+		// Label for description
+		infoDescLabel = new JLabel("Beskrivelse");
+		innerInfoPanel.add(infoDescLabel, "1, 9, 3, 1");
+		
+		// Label for the date (not containing the actual date)
+		JLabel infoDateLabel = new JLabel("Dato:");
+		innerInfoPanel.add(infoDateLabel, "1, 12");
+		
+		// Label for the date (the date itself)
+		infoDate = new JLabel("Laster");
+		innerInfoPanel.add(infoDate, "3, 12");
+		
+		// Label for from-time
+		JLabel infoFromLabel = new JLabel("Fra:");
+		innerInfoPanel.add(infoFromLabel, "1, 14, left, default");
+		
+		// From label
+		infoFrom = new JLabel("16:00");
+		innerInfoPanel.add(infoFrom, "3, 14, fill, default");
+		
+		// Label for to-time
+		JLabel infoToLabel = new JLabel("Til:");
+		innerInfoPanel.add(infoToLabel, "1, 16, left, default");
+		
+		// To label
+		infoTo = new JLabel("");
+		innerInfoPanel.add(infoTo, "3, 16, fill, default");
+		
+		// Label for participants
+		JLabel infoParticipantsLabel = new JLabel("Deltakere:");
+		innerInfoPanel.add(infoParticipantsLabel, "1, 18, left, default");
+		
+		// Combobox with participants
+		infoParticipants = new JLabel("");
+		innerInfoPanel.add(infoParticipants, "3, 18, fill, default");
+		
+		// Label for rom
+		JLabel infoRoomLabel = new JLabel("Rom:");
+		innerInfoPanel.add(infoRoomLabel, "1, 19, left, default");
+		
+		// Label with room
+		infoRoom = new JLabel("");
+		innerInfoPanel.add(infoRoom, "3, 19, fill, default");
+		
+		// Label for participants (lists)
+		JLabel infoParticipantsLabel2 = new JLabel("Deltakere:");
+		innerInfoPanel.add(infoParticipantsLabel2, "1, 21, 3, 1");
+		
+		// Create border for the JList
+		Border infoBorder = BorderFactory.createLineBorder(Color.BLACK);
+		
+		// Create List for the participants that are invited
+		infoParticipantsChosen = new JList();
+		//infoParticipantsChosen.setModel(addEditParticipantsListNotInvited);
+		infoParticipantsChosen.setBorder(infoBorder);
+		infoParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane infoParticipantsChosenScrollPane = new JScrollPane(infoParticipantsChosen);
+		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 22, 3, 1");
+		
+		// Add to scrollpane
 		infoScrollPane = new JScrollPane(innerInfoPanel);
 		infoScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		infoScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
