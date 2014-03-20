@@ -118,6 +118,7 @@ public class ViewMain extends JFrame {
 	private JTextField addEditTitle;
 	private JTextField addEditDesc;
 	private JLabel addEditDate;
+	private JComboBox addEditParticipants;
 	private JComboBox<String> addEditFrom;
 	private JComboBox<String> addEditTo;
 	protected JList<Employee> addEditParticipantsAll;
@@ -1073,6 +1074,13 @@ public class ViewMain extends JFrame {
 		
 		// From combobox
 		addEditFrom = new JComboBox(addEditHours.toArray());
+		addEditFrom.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditFrom, "3, 14, fill, default");
 		
 		// Label for to-time
@@ -1081,6 +1089,13 @@ public class ViewMain extends JFrame {
 		
 		// To combobox
 		addEditTo = new JComboBox(addEditHours.toArray());
+		addEditTo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditTo, "3, 16, fill, default");
 		
 		// Label for participants
@@ -1094,7 +1109,14 @@ public class ViewMain extends JFrame {
 		}
 		
 		// Combobox with participants
-		JComboBox addEditParticipants = new JComboBox(participatntList.toArray());
+		addEditParticipants = new JComboBox(participatntList.toArray());
+		addEditParticipants.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditParticipants, "3, 18, fill, default");
 		
 		// Label for rom
@@ -1486,6 +1508,32 @@ public class ViewMain extends JFrame {
 	
 	public GraphicSquare getLastHoovered() {
 		return this.lastHoovered;
+	}
+	
+	/*
+	 * Calculate available rooms
+	 */
+	
+	protected void calculateAvailableRooms() {
+		// Get info
+		String []fromTime = ((String) addEditFrom.getSelectedItem()).split(":");
+		String []toTime = ((String) addEditTo.getSelectedItem()).split(":");
+		int num = (int) addEditParticipants.getSelectedItem();
+		String []date = this.addEditDate.getText().split("\\.");
+		
+		if (date.length > 1) {
+			// From
+			Calendar cal = Calendar.getInstance();
+			cal.set(this.calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+			Date fromTimeAsDate = cal.getTime();
+			
+			// To
+			cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(toTime[0]));
+			cal.set(Calendar.MINUTE, Integer.parseInt(toTime[1]));
+			Date toTimeAsDate = cal.getTime();
+			
+			this.calendar.calculateTime(fromTimeAsDate, toTimeAsDate, num);
+		}
 	}
 	
 	

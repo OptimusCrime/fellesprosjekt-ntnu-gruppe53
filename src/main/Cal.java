@@ -414,4 +414,23 @@ public class Cal {
 			return null;
 		}
 	}
+	
+	/*
+	 * Fetch rooms from database
+	 */
+	
+	public void calculateTime(Date from, Date to, int num) {
+		// Format
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		// Obj
+		JSONObject roomObj = this.initJSONObject("room", "gets");
+		JSONObject innerRoomObj = new JSONObject();
+		innerRoomObj.put("from", sdf.format(from));
+		innerRoomObj.put("to", sdf.format(to));
+		innerRoomObj.put("num", num);
+		roomObj.put("data", innerRoomObj);
+		String roomObjString = roomObj.toJSONString();
+		sh.sendMessage(roomObjString);
+	}
 }
