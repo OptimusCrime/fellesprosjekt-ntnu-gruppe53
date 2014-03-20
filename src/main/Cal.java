@@ -124,6 +124,9 @@ public class Cal {
 					
 					// Check that we actually got someting back
 					if (appointments != null) {
+						// Clear all appointments
+						this.user.clearAppointments();
+						
 						ArrayList<Appointment> tempAppointmentsList = new ArrayList<Appointment>();
 						// Loop all the appointments
 						for (int i = 0; i < appointments.size(); i++) {

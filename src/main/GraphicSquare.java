@@ -31,6 +31,7 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	private int space;
 	private int width;
 	private ArrayList<GraphicsLabel> labelsOnHover;
+	private ArrayList<GraphicAppointment> appointments;
 	private boolean shouldDrawHorizontal;
 	
 	/*
@@ -45,8 +46,9 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 		this.width = width;
 		this.shouldDrawHorizontal = s;
 		
-		// Initialize list of labels
+		// Initialize list of labels & appointments
 		labelsOnHover = new ArrayList<GraphicsLabel>();
+		appointments = new ArrayList<GraphicAppointment>();
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
@@ -93,6 +95,22 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 		}
 	}
 	
+	/*
+	 * For storing all the appointments
+	 */
+	
+	public void addObj(GraphicAppointment a) {
+		appointments.add(a);
+	}
+	
+	public void clearAllObjs() {
+		for (int i = 0; i < appointments.size(); i++) {
+			remove(appointments.get(i));
+		}
+		
+		appointments.clear();
+	}
+	 
 	/*
 	 * When the mouse is moved, toggle show/hide on the different labels based on the height of the squares
 	 */

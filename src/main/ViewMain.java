@@ -295,7 +295,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				updateTime(false);
 			}
-			
 		});
 		navRight.addActionListener(new ActionListener() {
 
@@ -303,7 +302,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				updateTime(true);
 			}
-			
 		});
 		
 		// Add label which identifies what week we're currently in
@@ -332,15 +330,8 @@ public class ViewMain extends JFrame {
 	    // Draw calendar (HAX)
 	    this.drawCalendar();
 	    
-	    // Redraw the calendar
- 		this.clearCalendar();
- 		this.drawCalendar();
- 		
- 		// Add appointments
- 		this.drawAppointments();
- 		
- 		// Add plusses
- 		this.drawPlusSymboles();
+	    // Add appointments
+	  	this.drawAppointments();
 	}
 	
 	/*
@@ -362,15 +353,8 @@ public class ViewMain extends JFrame {
 		this.recalculateTime();
 		this.calculateCalendar();
 		
-		// Redraw the calendar
-		this.clearCalendar();
-		this.drawCalendar();
-		
 		// Add appointments
 		this.drawAppointments();
-		
-		// Add plusses
-		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -561,6 +545,9 @@ public class ViewMain extends JFrame {
 	 */
 	
 	public void drawAppointments() {
+		this.clearCalendar();
+		this.drawCalendar();
+		
 		// Get all appointments from the user
 		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
 		
@@ -589,6 +576,9 @@ public class ViewMain extends JFrame {
 					// Get the correct square
 					GraphicSquare thisSquare = squareArr[dayOfWeek];
 					
+					// Clear all objects from this graphic
+					thisSquare.clearAllObjs();
+					
 					// Get start-point offset
 					c = Calendar.getInstance();
 					c.setTime(thisAppointment.getStart());
@@ -612,6 +602,8 @@ public class ViewMain extends JFrame {
 					
 					// Create text for the appointment
 					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
+					
+					System.out.println("Adding this = " + thisAppointment.getTitle());
 					
 					// Create new square for this appointment
 					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
@@ -637,17 +629,19 @@ public class ViewMain extends JFrame {
 						}
 					});
 					
-					// Mouseevents
-					//appointmentSquare.addMouseMotionListener(appointmentSquare);
-					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
+					thisSquare.addObj(appointmentSquare);
 					
 					// Repaint
 					thisSquare.repaint();
+					thisSquare.revalidate();
 				}
 			}
 		}
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
