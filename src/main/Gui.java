@@ -116,4 +116,13 @@ public class Gui {
 	public void sendLoginFailedMessage() {
 		login.sendLoginFailedMessage();
 	}
+	
+	/*
+	 * Delegate for updating available rooms
+	 */
+	
+	public void updateAvailableRooms (ArrayList<Room> r) {
+		System.out.println("Her2");
+		this.main.updateAvailableRooms(r);
+	}
 }

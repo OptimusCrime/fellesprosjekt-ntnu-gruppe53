@@ -204,7 +204,7 @@ public class Cal {
 					}
 				}
 			}
-			else if (action.equals("rooms")) {
+			else if (action.equals("room")) {
 				// Rooms
 				if (type.equals("get")) {
 					JSONArray requestedRooms = (JSONArray) requestObj.get("data");
@@ -234,6 +234,29 @@ public class Cal {
 					if (this.loadedAppointments) {
 						// We have loaded all dependencies, now load appointments
 						this.loadAppointments();
+					}
+				}
+				else if (type.equals("gets")) {
+					// (
+					JSONArray availableRoomsObj = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (availableRoomsObj != null) {
+						
+						ArrayList<Room> availableRooms = new ArrayList<Room>();
+						// Loop all the appointments
+						for (int i = 0; i < availableRoomsObj.size(); i++) {
+							// Get the current id
+							int thisRequestedRoomId = new BigDecimal((long) availableRoomsObj.get(i)).intValueExact();
+							for (int j = 0; j < this.getRooms().size(); j++) {
+								if (thisRequestedRoomId == this.getRooms().get(j).getId()) {
+									availableRooms.add(this.getRooms().get(j));
+									break;
+								}
+							}
+						}
+						System.out.println("Her1");
+						this.gui.updateAvailableRooms(availableRooms);
 					}
 				}
 			}
@@ -347,7 +370,7 @@ public class Cal {
 	 */
 	
 	private void loadRooms() {
-		JSONObject employeeObj = this.initJSONObject("rooms", "get");
+		JSONObject employeeObj = this.initJSONObject("room", "get");
 		String employeeObjString = employeeObj.toJSONString();
 		
 		sh.sendMessage(employeeObjString);

@@ -25,6 +25,8 @@ import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -128,6 +130,8 @@ public class ViewMain extends JFrame {
 	protected DefaultListModel<Employee> addEditParticipantsListNotInvited;
 	protected DefaultListModel<Employee> addEditParticipantsListInvited;
 	private JButton addEditSave;
+	private JComboBox addEditRoom;
+	private DefaultComboBoxModel<Room> addEditRoomModel;
 	
 	// Info
 	private JLabel infoHeaderLabel;
@@ -1123,8 +1127,9 @@ public class ViewMain extends JFrame {
 		JLabel addEditRoomLabel = new JLabel("Rom:");
 		innerAddEditPanel.add(addEditRoomLabel, "1, 19, left, default");
 		
-		// Combobox with rooms (TODO)
-		JComboBox addEditRoom = new JComboBox();
+		// Combobox with rooms
+		addEditRoomModel = new DefaultComboBoxModel<Room>();
+		addEditRoom = new JComboBox(addEditRoomModel);
 		innerAddEditPanel.add(addEditRoom, "3, 19, fill, default");
 		
 		// Label for participants (lists)
@@ -1536,5 +1541,17 @@ public class ViewMain extends JFrame {
 		}
 	}
 	
+	/*
+	 * Update combobox with rooms
+	 */
+	
+	public void updateAvailableRooms (ArrayList<Room> rooms) {
+		addEditRoomModel.removeAllElements();
+		System.out.println("Here");
+		for (int i = 0; i < rooms.size(); i++) {
+			addEditRoomModel.addElement(rooms.get(i));
+		}
+		addEditRoom.setSelectedIndex(0);
+	}
 	
 }
