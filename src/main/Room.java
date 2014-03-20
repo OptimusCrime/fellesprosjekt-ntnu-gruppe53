@@ -73,4 +73,12 @@ public class Room implements CalendarObjects {
 		this.capacity = capacity;
 		this.gui.reflectChange("room", "capacity", this);
 	}
+	
+	/*
+	 * ToString
+	 */
+	
+	public String toString() {
+		return this.name + "[" + this.capacity + "]";
+	}
 }

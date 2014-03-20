@@ -28,6 +28,7 @@ public class Cal {
 	private SocketHandler sh;
 	
 	private ArrayList<Employee> employees;
+	private ArrayList<Room> rooms;
 	
 	private boolean loadedAppointments;
 	private boolean loadedRooms;
@@ -196,7 +197,27 @@ public class Cal {
 			else if (action.equals("rooms")) {
 				// Rooms
 				if (type.equals("get")) {
-					// TODO
+					JSONArray requestedRooms = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (requestedRooms != null) {
+						// Clear all appointments
+						this.user.clearAppointments();
+						
+						ArrayList<Appointment> tempAppointmentsList = new ArrayList<Appointment>();
+						// Loop all the appointments
+						for (int i = 0; i < requestedRooms.size(); i++) {
+							JSONObject thisAppointment = (JSONObject) requestedRooms.get(i);
+							
+							Room createNewRoom = new Room(this.gui);
+							
+							createNewRoom.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
+							createNewRoom.setName((String) thisAppointment.get("name"));
+							createNewRoom.setCapacity(new BigDecimal((long) thisAppointment.get("capacity")).intValueExact());
+							createNewRoom.create();
+							rooms.add(createNewRoom);
+						}
+					}
 					
 					// Check if we can load the appointments
 					this.loadedRooms = true;
