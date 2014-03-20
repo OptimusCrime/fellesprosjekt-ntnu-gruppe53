@@ -86,7 +86,6 @@ public class ViewMain extends JFrame {
 	private JScrollPane addEditScrollPane;
 	
 	// Buttons
-	private JButton homeBtn;
 	private JButton notificationsBtn;
 	private JButton employeesBtn;
 	private JButton logoutBtn;
@@ -204,21 +203,12 @@ public class ViewMain extends JFrame {
 		header.add(headerLeft, BorderLayout.WEST);
 		
 		// Add all buttons in the header-left panel
-		homeBtn = new JButton("Hjem");
-		headerLeft.add(homeBtn);
 		notificationsBtn = new JButton("Varsler");
 		headerLeft.add(notificationsBtn);
 		employeesBtn = new JButton("Ansatte");
 		headerLeft.add(employeesBtn);
 		
 		// Add events for all the header-left-buttons
-		homeBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				displayLeftPanel("home");
-			}
-		});
 		notificationsBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -810,7 +800,8 @@ public class ViewMain extends JFrame {
 		employeeScrollPane.setBackground(null);
 		employeeScrollPane.setOpaque(true);
 		employeeScrollPane.setBorder(null);
-		employeeScrollPane.setVisible(false);
+		homeScrollPane.setVisible(false);
+		employeeScrollPane.setVisible(true);
 		
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
@@ -1330,10 +1321,6 @@ public class ViewMain extends JFrame {
 		//
 		
 		JPanel innerHomePanel = new JPanel();
-		
-		// Add dummy
-		JLabel dummy2 = new JLabel("Home goes here");
-		innerHomePanel.add(dummy2);
 		
 		homeScrollPane = new JScrollPane(innerHomePanel);
 		homeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
