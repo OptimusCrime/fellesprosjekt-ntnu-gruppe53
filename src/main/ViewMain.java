@@ -86,7 +86,6 @@ public class ViewMain extends JFrame {
 	private JScrollPane addEditScrollPane;
 	
 	// Buttons
-	private JButton homeBtn;
 	private JButton notificationsBtn;
 	private JButton employeesBtn;
 	private JButton logoutBtn;
@@ -204,21 +203,12 @@ public class ViewMain extends JFrame {
 		header.add(headerLeft, BorderLayout.WEST);
 		
 		// Add all buttons in the header-left panel
-		homeBtn = new JButton("Hjem");
-		headerLeft.add(homeBtn);
 		notificationsBtn = new JButton("Varsler");
 		headerLeft.add(notificationsBtn);
 		employeesBtn = new JButton("Ansatte");
 		headerLeft.add(employeesBtn);
 		
 		// Add events for all the header-left-buttons
-		homeBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				displayLeftPanel("home");
-			}
-		});
 		notificationsBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -681,7 +671,7 @@ public class ViewMain extends JFrame {
 			// Loop all nine hours to display + - sign for
 			for (int j = 1; j <= 9; j++) {
 				GraphicsLabel plusSignLabel = new GraphicsLabel("+");
-        plusSignLabel.setBounds(this.column_width - 14, ((this.row_height+1) * j + 2), 14, 14);
+				plusSignLabel.setBounds(this.column_width - 14, ((this.row_height+1) * j + 2), 14, 14);
 				plusSignLabel.setVisible(false);
 				plusSignLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 				plusSignLabel.setTime(plussSymbolesHours[j - 1] + ":00");
@@ -810,7 +800,8 @@ public class ViewMain extends JFrame {
 		employeeScrollPane.setBackground(null);
 		employeeScrollPane.setOpaque(true);
 		employeeScrollPane.setBorder(null);
-		employeeScrollPane.setVisible(false);
+		homeScrollPane.setVisible(false);
+		employeeScrollPane.setVisible(true);
 		
 		// Add the panel
 		splitLeftInner.add(employeeScrollPane, BorderLayout.WEST);
@@ -850,10 +841,58 @@ public class ViewMain extends JFrame {
 	 */
 	
 	protected void showAppointment(int id) {
-		// Display the correct sidepanel
-		this.displayLeftPanel("info");
+		// Find appointment
+		Appointment thisAppointment = null;
+		ArrayList<Appointment> tempAppointmentList = this.calendar.getAppointments();
+		for (int i = 0; i < tempAppointmentList.size(); i++) {
+			if (tempAppointmentList.get(i).getId() == id) {
+				thisAppointment = tempAppointmentList.get(i);
+				break;
+			}
+		}
 		
-		// TODO
+		// Check if any appointment was returned
+		if (thisAppointment != null) {
+			// Set the different fields
+			infoHeaderLabel.setText(thisAppointment.getTitle());
+			infoDescLabel.setText(thisAppointment.getDescription());
+			//infoParticipants.setText(thisAppointment.ge);
+			
+			// Date
+			SimpleDateFormat formatEngToNor = new SimpleDateFormat("E");
+			SimpleDateFormat formatDate = new SimpleDateFormat("dd.MM");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(thisAppointment.getStart());
+			
+			String tempDate;
+			if (calendarReplaces.get(formatEngToNor.format(cal.getTime())) != null) {
+				tempDate = calendarReplaces.get(formatEngToNor.format(cal.getTime()));
+			}
+			else {
+				tempDate = formatEngToNor.format(cal.getTime());
+			}
+			tempDate += " " + formatDate.format(cal.getTime());
+			infoDate.setText(tempDate);
+			
+			// Hours
+			infoFrom.setText(((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":" + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE));
+			
+			cal.setTime(thisAppointment.getEnd());
+			infoTo.setText(((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":" + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE));
+			
+			
+			/*private JLabel infoHeaderLabel;
+			private JLabel infoDescLabel;
+			private JLabel infoDate;
+			private JLabel infoFrom;
+			private JLabel infoTo;
+			private JLabel infoParticipants;
+			private JLabel infoRoom;
+			private JList infoParticipantsChosen;*/
+			
+			// Display the correct sidepanel
+			this.displayLeftPanel("info");
+		}
 	}
 	
 	/*
@@ -1166,10 +1205,6 @@ public class ViewMain extends JFrame {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.RELATED_GAP_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
@@ -1200,61 +1235,61 @@ public class ViewMain extends JFrame {
 		JSeparator infoSeperator1 = new JSeparator();
 		innerInfoPanel.add(infoSeperator1, "1, 4, 3, 1");
 		JSeparator infoSeperator2 = new JSeparator();
-		innerInfoPanel.add(infoSeperator2, "1, 11, 3, 1");
+		innerInfoPanel.add(infoSeperator2, "1, 7, 3, 1");
 		JSeparator infoSeperator3 = new JSeparator();
-		innerInfoPanel.add(infoSeperator3, "1, 17, 3, 1");
+		innerInfoPanel.add(infoSeperator3, "1, 13, 3, 1");
 		JSeparator infoSeperator4 = new JSeparator();
-		innerInfoPanel.add(infoSeperator4, "1, 20, 3, 1");
+		innerInfoPanel.add(infoSeperator4, "1, 16, 3, 1");
 		JSeparator infoSeperator5 = new JSeparator();
-		innerInfoPanel.add(infoSeperator5, "1, 26, 3, 1");
+		innerInfoPanel.add(infoSeperator5, "1, 22, 3, 1");
 		
 		// Label for description
 		infoDescLabel = new JLabel("Beskrivelse");
-		innerInfoPanel.add(infoDescLabel, "1, 9, 3, 1");
+		innerInfoPanel.add(infoDescLabel, "1, 5, 3, 1");
 		
 		// Label for the date (not containing the actual date)
 		JLabel infoDateLabel = new JLabel("Dato:");
-		innerInfoPanel.add(infoDateLabel, "1, 12");
+		innerInfoPanel.add(infoDateLabel, "1, 8");
 		
 		// Label for the date (the date itself)
-		infoDate = new JLabel("Laster");
-		innerInfoPanel.add(infoDate, "3, 12");
+		infoDate = new JLabel("");
+		innerInfoPanel.add(infoDate, "3, 8");
 		
 		// Label for from-time
 		JLabel infoFromLabel = new JLabel("Fra:");
-		innerInfoPanel.add(infoFromLabel, "1, 14, left, default");
+		innerInfoPanel.add(infoFromLabel, "1, 10, left, default");
 		
 		// From label
 		infoFrom = new JLabel("16:00");
-		innerInfoPanel.add(infoFrom, "3, 14, fill, default");
+		innerInfoPanel.add(infoFrom, "3, 10, fill, default");
 		
 		// Label for to-time
 		JLabel infoToLabel = new JLabel("Til:");
-		innerInfoPanel.add(infoToLabel, "1, 16, left, default");
+		innerInfoPanel.add(infoToLabel, "1, 12, left, default");
 		
 		// To label
 		infoTo = new JLabel("");
-		innerInfoPanel.add(infoTo, "3, 16, fill, default");
+		innerInfoPanel.add(infoTo, "3, 12, fill, default");
 		
 		// Label for participants
 		JLabel infoParticipantsLabel = new JLabel("Deltakere:");
-		innerInfoPanel.add(infoParticipantsLabel, "1, 18, left, default");
+		innerInfoPanel.add(infoParticipantsLabel, "1, 14, left, default");
 		
 		// Combobox with participants
 		infoParticipants = new JLabel("");
-		innerInfoPanel.add(infoParticipants, "3, 18, fill, default");
+		innerInfoPanel.add(infoParticipants, "3, 14, fill, default");
 		
 		// Label for rom
 		JLabel infoRoomLabel = new JLabel("Rom:");
-		innerInfoPanel.add(infoRoomLabel, "1, 19, left, default");
+		innerInfoPanel.add(infoRoomLabel, "1, 15, left, default");
 		
 		// Label with room
 		infoRoom = new JLabel("");
-		innerInfoPanel.add(infoRoom, "3, 19, fill, default");
+		innerInfoPanel.add(infoRoom, "3, 15, fill, default");
 		
 		// Label for participants (lists)
 		JLabel infoParticipantsLabel2 = new JLabel("Deltakere:");
-		innerInfoPanel.add(infoParticipantsLabel2, "1, 21, 3, 1");
+		innerInfoPanel.add(infoParticipantsLabel2, "1, 17, 3, 1");
 		
 		// Create border for the JList
 		Border infoBorder = BorderFactory.createLineBorder(Color.BLACK);
@@ -1265,7 +1300,7 @@ public class ViewMain extends JFrame {
 		infoParticipantsChosen.setBorder(infoBorder);
 		infoParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane infoParticipantsChosenScrollPane = new JScrollPane(infoParticipantsChosen);
-		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 22, 3, 1");
+		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 18, 3, 1");
 		
 		// Add to scrollpane
 		infoScrollPane = new JScrollPane(innerInfoPanel);
@@ -1286,10 +1321,6 @@ public class ViewMain extends JFrame {
 		//
 		
 		JPanel innerHomePanel = new JPanel();
-		
-		// Add dummy
-		JLabel dummy2 = new JLabel("Home goes here");
-		innerHomePanel.add(dummy2);
 		
 		homeScrollPane = new JScrollPane(innerHomePanel);
 		homeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
