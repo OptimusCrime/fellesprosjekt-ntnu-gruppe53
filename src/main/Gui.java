@@ -80,7 +80,7 @@ public class Gui {
 						employeeThisUser.setChecked(true);
 						
 						// Remove from the list
-						tempEmployeeList.remove(i);
+						employeeThisUser.setIsCurrentUser(true);
 						
 						// Break the loop
 						break;

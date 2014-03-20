@@ -705,7 +705,7 @@ public class ViewMain extends JFrame {
 		JPanel innerEmployeePanel = new JPanel();
 		
 		// Create dynamic RowSpec
-		int rowSpecSize = 9 + (employees.size() * 2);
+		int rowSpecSize = 9 + ((employees.size() - 1) * 2);
 		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
 		for (int i = 0; i < rowSpecSize; i++) {
 			if (i % 2 == 0) {
@@ -736,9 +736,42 @@ public class ViewMain extends JFrame {
 		JLabel employeeMyCalendar = new JLabel("Min kalender");
 		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
 		
-		// Checkbox for Mt calendar that is already selected
+		// Checkbox for My calendar that is already selected
 		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
 		employeeMyCalendarCheckbox.setSelected(true);
+		employeeMyCalendarCheckbox.addActionListener(new ActionListener () {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Get current user as an employee
+				ArrayList<Employee> tempEmployeeList = calendar.getEmployees();
+				Employee tempThisUserAsEmployee = null;
+				String tempCurrentUsername = calendar.getUsername();
+				for (int i = 0; i < tempEmployeeList.size(); i++) {
+					System.out.println(tempEmployeeList.get(i).getEmail() + " - " + tempCurrentUsername);
+					if (tempEmployeeList.get(i).getEmail().equals(tempCurrentUsername)) {
+						tempThisUserAsEmployee = tempEmployeeList.get(i);
+					}
+				}
+				System.out.println(tempThisUserAsEmployee);
+				if (tempThisUserAsEmployee != null) {
+					// Get the current checkbox being clicked
+					JCheckBox thisCheckbox = (JCheckBox) e.getSource();
+					
+					// Just doublecheck that we are not NullPointer!
+					if (thisCheckbox != null) {
+						// Check if checked or not
+						if (thisCheckbox.isSelected()) {
+							calendar.addCalendar(tempThisUserAsEmployee);
+						}
+						else {
+							calendar.removeCalendar(tempThisUserAsEmployee);
+						}
+					}
+				}
+			}
+			
+		});
 		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
 		
 		// Second seperator
@@ -748,42 +781,45 @@ public class ViewMain extends JFrame {
 		// Begin dynamic fill in names in the list
 		int ansatteBaseIndex = 10;
 		for (int i = 0; i < employees.size(); i++) {
-			// Create textfield for the name of the employee
-			JLabel employeeNameList = new JLabel(employees.get(i).getName());
-			GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
-			
-			// Set reference to the employee
-			employeeNameListCheckbox.setReference(employees.get(i));
-			employeeNameListCheckbox.addActionListener(new ActionListener () {
+			// Check if self
+			if (!employees.get(i).isCurrentUser()) {
+				// Create textfield for the name of the employee
+				JLabel employeeNameList = new JLabel(employees.get(i).getName());
+				GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
+				
+				// Set reference to the employee
+				employeeNameListCheckbox.setReference(employees.get(i));
+				employeeNameListCheckbox.addActionListener(new ActionListener () {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// Get the current checkbox being clicked
-					GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
-					
-					// Just doublecheck that we are not NullPointer!
-					if (thisCheckbox != null) {
-						// Check if checked or not
-						if (thisCheckbox.isSelected()) {
-							calendar.addCalendar(thisCheckbox.getReference());
-						}
-						else {
-							calendar.removeCalendar(thisCheckbox.getReference());
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// Get the current checkbox being clicked
+						GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
+						
+						// Just doublecheck that we are not NullPointer!
+						if (thisCheckbox != null) {
+							// Check if checked or not
+							if (thisCheckbox.isSelected()) {
+								calendar.addCalendar(thisCheckbox.getReference());
+							}
+							else {
+								calendar.removeCalendar(thisCheckbox.getReference());
+							}
 						}
 					}
-				}
+					
+				});
 				
-			});
-			
-			// Set the label for the checkbox (not really sure if this does anything at all?)
-			employeeNameList.setLabelFor(employeeNameListCheckbox);
-			
-			// Add the items
-			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
-			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
-			
-			// Increase the base by two
-			ansatteBaseIndex += 2;
+				// Set the label for the checkbox (not really sure if this does anything at all?)
+				employeeNameList.setLabelFor(employeeNameListCheckbox);
+				
+				// Add the items
+				innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
+				innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
+				
+				// Increase the base by two
+				ansatteBaseIndex += 2;
+			}
 		}
 		
 		// Create new scrollpanel and set the inner content

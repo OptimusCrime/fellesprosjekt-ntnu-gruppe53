@@ -17,6 +17,7 @@ public class Employee {
 	private String email;
 	private String name;
 	private boolean isChecked;
+	private boolean isCurrentUser;
 	
 	/*
 	 * Constructor
@@ -27,6 +28,7 @@ public class Employee {
 		this.email = e;
 		this.name = n;
 		this.isChecked = false;
+		this.isCurrentUser = false;
 	}
 	
 	/*
@@ -49,6 +51,10 @@ public class Employee {
 		this.isChecked = c;
 	}
 	
+	public void setIsCurrentUser(boolean b) {
+		this.isCurrentUser = b;
+	}
+	
 	/*
 	 * Getters
 	 */
@@ -67,6 +73,10 @@ public class Employee {
 	
 	public boolean isChecked() {
 		return this.isChecked;
+	}
+	
+	public boolean isCurrentUser() {
+		return this.isCurrentUser;
 	}
 	
 	/*
