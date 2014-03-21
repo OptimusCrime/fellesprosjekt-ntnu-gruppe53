@@ -122,7 +122,6 @@ public class Gui {
 	 */
 	
 	public void updateAvailableRooms (ArrayList<Room> r) {
-		System.out.println("Her2");
 		this.main.updateAvailableRooms(r);
 	}
 }

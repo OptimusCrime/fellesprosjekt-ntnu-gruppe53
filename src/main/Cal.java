@@ -113,9 +113,6 @@ public class Cal {
 	 */
 	
 	public void handleIncoming(String r) {
-		// DEBUG TODO
-		System.out.println("Got this = " + r);
-		
 		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
 		
@@ -255,7 +252,6 @@ public class Cal {
 								}
 							}
 						}
-						System.out.println("Her1");
 						this.gui.updateAvailableRooms(availableRooms);
 					}
 				}
@@ -329,9 +325,7 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		catch (Exception e) {}
 	}
 	
 	/*
