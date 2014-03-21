@@ -1267,7 +1267,7 @@ public class ViewMain extends JFrame {
 					
 					// From
 					Calendar cal = Calendar.getInstance();
-					cal.set(calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+					cal.set(calendarYear, Integer.parseInt(date[1]), (Integer.parseInt(date[0]) - 1), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
 					Date fromTimeAsDate = cal.getTime();
 					
 					// To
