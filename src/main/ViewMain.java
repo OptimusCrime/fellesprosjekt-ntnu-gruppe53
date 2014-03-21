@@ -879,12 +879,14 @@ public class ViewMain extends JFrame {
 		//
 		
 		for (int i = 0; i < employees.size(); i++) {
-			addEditParticipantsListNotInvited.addElement(employees.get(i));
+			if (!employees.get(i).getEmail().equals(this.calendar.getUsername())) {
+				addEditParticipantsListNotInvited.addElement(employees.get(i));
+			}
 		}
 	}
 	
 	/*
-	 * Display screen for creating new appointment (TODO)
+	 * Display screen for creating new appointment
 	 */
 	
 	protected void showNewAppointment(String t, String d) {
