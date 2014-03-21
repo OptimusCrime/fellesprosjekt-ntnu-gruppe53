@@ -583,6 +583,11 @@ public class ViewMain extends JFrame {
 		this.clearCalendar();
 		this.drawCalendar();
 		
+		// Clear all objects from all graphics
+		for (int i = 0; i < squareArr.length; i++) {
+			squareArr[i].clearAllObjs();
+		}
+		
 		// Get all appointments from the user
 		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
 		
@@ -611,9 +616,6 @@ public class ViewMain extends JFrame {
 					// Get the correct square
 					GraphicSquare thisSquare = squareArr[dayOfWeek];
 					
-					// Clear all objects from this graphic
-					thisSquare.clearAllObjs();
-					
 					// Get start-point offset
 					c = Calendar.getInstance();
 					c.setTime(thisAppointment.getStart());
@@ -641,17 +643,17 @@ public class ViewMain extends JFrame {
 					System.out.println("Adding this = " + thisAppointment.getTitle());
 					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
-					appointmentSquare.setId(thisAppointment.getId());
+					thisSquare.addObj(new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip));
+					thisSquare.getLastObj().setId(thisAppointment.getId());
 					
 					// Reset layout
-					appointmentSquare.setLayout(null);
+					thisSquare.getLastObj().setLayout(null);
 					
 					// Setting bounds (not really sure what does that, but this works)
-					appointmentSquare.setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
+					thisSquare.getLastObj().setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
 					
 					// Click
-					appointmentSquare.addMouseListener(new MouseAdapter () {
+					thisSquare.getLastObj().addMouseListener(new MouseAdapter () {
 						public void mousePressed(MouseEvent e) {
 							// Get object
 							GraphicAppointment clickedAppointment = (GraphicAppointment)e.getSource();
@@ -665,8 +667,8 @@ public class ViewMain extends JFrame {
 					});
 					
 					// Add the block to the square
-					thisSquare.add(appointmentSquare);
-					thisSquare.addObj(appointmentSquare);
+					thisSquare.add(thisSquare.getLastObj());
+					
 					
 					// Repaint
 					thisSquare.repaint();
