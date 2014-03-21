@@ -64,7 +64,7 @@ public class ViewLogin extends JFrame {
 		// Set location to center
 		super.setLocation(683-x/2, 364-y/2);
 		
-		// Set layout TODO
+		// Set layout
 		super.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				FormFactory.DEFAULT_COLSPEC,
