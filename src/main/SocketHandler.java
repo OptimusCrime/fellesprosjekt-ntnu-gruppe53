@@ -99,8 +99,6 @@ public class SocketHandler extends Thread {
 	
 	public void sendMessage(String s) {
 		try {
-			// TODO
-			System.out.println("Sending this = " + s);
 			this.out.writeUTF(s);
 		} catch (IOException e) {}
 	}

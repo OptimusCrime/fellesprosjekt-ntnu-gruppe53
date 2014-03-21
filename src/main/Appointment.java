@@ -196,4 +196,13 @@ public class Appointment implements CalendarObjects {
 	public ArrayList<String> getParticipatesStatus() {
 		return this.participatesStatus;
 	}
+	
+	public void updateParticipateStatus(Employee e, String s) {
+		for (int i = 0; i < this.participatesList.size(); i++) {
+			if (this.participatesList.get(i).equals(e)) {
+				this.participatesStatus.set(i, s);
+				break;
+			}
+		}
+	}
 }

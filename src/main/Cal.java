@@ -113,9 +113,6 @@ public class Cal {
 	 */
 	
 	public void handleIncoming(String r) {
-		// TODO
-		System.out.println("Got this = " + r);
-		
 		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
 		
@@ -237,7 +234,7 @@ public class Cal {
 											tempStatus = "Kommer";
 										}
 										else {
-											if (participateHide == 0) {
+											if (participateStatus == 0) {
 												tempStatus = "Ikke svart";
 											}
 											else {
@@ -382,10 +379,7 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {
-			// TODO
-			e.printStackTrace();
-		}
+		catch (Exception e) {}
 	}
 	
 	/*
@@ -569,5 +563,18 @@ public class Cal {
 		appointmentObj.put("id", appointment);
 		String appointmentObjString = appointmentObj.toJSONString();
 		sh.sendMessage(appointmentObjString);
+	}
+	
+	/*
+	 * Set participates
+	 */
+	
+	public void updateThisUserDoesParticipate(int i, String s) {
+		JSONObject appointmentObj = this.initJSONObject("appointments", "sub-post");
+		appointmentObj.put("id", i);
+		appointmentObj.put("status", (s.equals("Kommer") ? 1 : 0));
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
+		
 	}
 }
