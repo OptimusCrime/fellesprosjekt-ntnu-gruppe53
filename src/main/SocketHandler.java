@@ -45,8 +45,6 @@ public class SocketHandler extends Thread {
 		this.out = null;
 		this.in = null;
 		this.doesRun = false;
-		
-		this.requestQueue = new HashMap<String, String>();
 	}
 	
 	/*
@@ -88,6 +86,18 @@ public class SocketHandler extends Thread {
 		
 		// If we did not get any expcetions so far, everyhing is sweet as gold
 		return true;
+	}
+	
+	/*
+	 * Kill connection
+	 */
+	
+	public void killConnection () {
+		try {
+			// Setting up socket-connection here
+			this.client.close();
+		}
+		catch (Exception e) {}
 	}
 	
 	/*

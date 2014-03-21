@@ -31,22 +31,26 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	private int space;
 	private int width;
 	private ArrayList<GraphicsLabel> labelsOnHover;
+	private ArrayList<GraphicAppointment> appointments;
 	private boolean shouldDrawHorizontal;
+	private ViewMain vm;
 	
 	/*
 	 * Constructor
 	 */
 	
-	public GraphicSquare(int x, int y, int width, int height, int spaceHeight, boolean s) {
+	public GraphicSquare(ViewMain vm, int x, int y, int width, int height, int spaceHeight, boolean s) {
 		super();
 		
 		// Set some variables we need
+		this.vm = vm;
 		this.space = spaceHeight;
 		this.width = width;
 		this.shouldDrawHorizontal = s;
 		
-		// Initialize list of labels
+		// Initialize list of labels & appointments
 		labelsOnHover = new ArrayList<GraphicsLabel>();
+		appointments = new ArrayList<GraphicAppointment>();
 		
 		// Create new Rect from Swing
 		rect = new Rectangle(x, y, width, height);
@@ -94,6 +98,22 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 	}
 	
 	/*
+	 * For storing all the appointments
+	 */
+	
+	public void addObj(GraphicAppointment a) {
+		appointments.add(a);
+	}
+	
+	public void clearAllObjs() {
+		for (int i = 0; i < appointments.size(); i++) {
+			remove(appointments.get(i));
+		}
+		
+		appointments.clear();
+	}
+	 
+	/*
 	 * When the mouse is moved, toggle show/hide on the different labels based on the height of the squares
 	 */
 	
@@ -118,6 +138,27 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 					labelsOnHover.get(i).setVisible(false);
 				}
 			}
+		}
+	}
+	
+	/*
+	 * Hovering hack
+	 */
+	
+	public void registerHoover() {
+		this.vm.setLastHoovered(this);
+	}
+	
+	public void sendClearAllPreviousHoovered() {
+		GraphicSquare lastHoovered = this.vm.getLastHoovered();
+		if (lastHoovered != null) {
+			lastHoovered.removeAllLabels();
+		}
+	}
+	
+	public void removeAllLabels() {
+		for (int i = 0; i < labelsOnHover.size(); i++) {
+			labelsOnHover.get(i).setVisible(false);
 		}
 	}
 	

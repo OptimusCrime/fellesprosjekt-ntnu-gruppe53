@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -31,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -109,12 +113,14 @@ public class ViewMain extends JFrame {
 	private int column_width;
 	private int row_height;
 	private Map<Integer, Color> appointmentColors;
+	private GraphicSquare lastHoovered;
 	
 	// Add/Edit
 	private JLabel addEditHeaderLabel;
 	private JTextField addEditTitle;
 	private JTextField addEditDesc;
 	private JLabel addEditDate;
+	private JComboBox addEditParticipants;
 	private JComboBox<String> addEditFrom;
 	private JComboBox<String> addEditTo;
 	protected JList<Employee> addEditParticipantsAll;
@@ -124,6 +130,9 @@ public class ViewMain extends JFrame {
 	protected DefaultListModel<Employee> addEditParticipantsListNotInvited;
 	protected DefaultListModel<Employee> addEditParticipantsListInvited;
 	private JButton addEditSave;
+	private JComboBox addEditRoom;
+	private DefaultComboBoxModel<Room> addEditRoomModel;
+	private JLabel addEditRoomLabel;
 	
 	// Info
 	private JLabel infoHeaderLabel;
@@ -146,6 +155,9 @@ public class ViewMain extends JFrame {
 		// Set gui
 		this.gui = g;
 		this.calendar = c;
+		
+		// For effect
+		this.lastHoovered = null;
 		
 		// ListModel for the participants-lists
 		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
@@ -295,7 +307,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				updateTime(false);
 			}
-			
 		});
 		navRight.addActionListener(new ActionListener() {
 
@@ -303,7 +314,6 @@ public class ViewMain extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				updateTime(true);
 			}
-			
 		});
 		
 		// Add label which identifies what week we're currently in
@@ -332,15 +342,8 @@ public class ViewMain extends JFrame {
 	    // Draw calendar (HAX)
 	    this.drawCalendar();
 	    
-	    // Redraw the calendar
- 		this.clearCalendar();
- 		this.drawCalendar();
- 		
- 		// Add appointments
- 		this.drawAppointments();
- 		
- 		// Add plusses
- 		this.drawPlusSymboles();
+	    // Add appointments
+	  	this.drawAppointments();
 	}
 	
 	/*
@@ -362,15 +365,8 @@ public class ViewMain extends JFrame {
 		this.recalculateTime();
 		this.calculateCalendar();
 		
-		// Redraw the calendar
-		this.clearCalendar();
-		this.drawCalendar();
-		
 		// Add appointments
 		this.drawAppointments();
-		
-		// Add plusses
-		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -478,10 +474,33 @@ public class ViewMain extends JFrame {
 		// Loop over each of the squares (one for each day in the week + one for holding the time)
 		for (int i = 0; i < 8; i++) {
 			// Create new square
-			GraphicSquare square = new GraphicSquare(0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height, ((i == 0)? false : true));
+			GraphicSquare square = new GraphicSquare(this, 0, 0, ((i == 7) ? (column_width - 1) : column_width), height, row_height, ((i == 0)? false : true));
 			
 			// Add listeners
 			square.addMouseMotionListener(square);
+			square.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// Cast the square
+					GraphicSquare thisSquare = (GraphicSquare) e.getSource();
+					thisSquare.sendClearAllPreviousHoovered();
+					thisSquare.registerHoover();
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {}
+
+				@Override
+				public void mousePressed(MouseEvent e) {}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {}
+				
+			});
 			
 			// Reset layoutManager to null to be able to use absolute positions
 			square.setLayout(null);
@@ -561,6 +580,9 @@ public class ViewMain extends JFrame {
 	 */
 	
 	public void drawAppointments() {
+		this.clearCalendar();
+		this.drawCalendar();
+		
 		// Get all appointments from the user
 		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
 		
@@ -589,6 +611,9 @@ public class ViewMain extends JFrame {
 					// Get the correct square
 					GraphicSquare thisSquare = squareArr[dayOfWeek];
 					
+					// Clear all objects from this graphic
+					thisSquare.clearAllObjs();
+					
 					// Get start-point offset
 					c = Calendar.getInstance();
 					c.setTime(thisAppointment.getStart());
@@ -612,6 +637,8 @@ public class ViewMain extends JFrame {
 					
 					// Create text for the appointment
 					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
+					
+					System.out.println("Adding this = " + thisAppointment.getTitle());
 					
 					// Create new square for this appointment
 					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
@@ -637,17 +664,19 @@ public class ViewMain extends JFrame {
 						}
 					});
 					
-					// Mouseevents
-					//appointmentSquare.addMouseMotionListener(appointmentSquare);
-					
 					// Add the block to the square
 					thisSquare.add(appointmentSquare);
+					thisSquare.addObj(appointmentSquare);
 					
 					// Repaint
 					thisSquare.repaint();
+					thisSquare.revalidate();
 				}
 			}
 		}
+		
+		// Add plusses
+		this.drawPlusSymboles();
 	}
 	
 	/*
@@ -711,7 +740,7 @@ public class ViewMain extends JFrame {
 		JPanel innerEmployeePanel = new JPanel();
 		
 		// Create dynamic RowSpec
-		int rowSpecSize = 9 + (employees.size() * 2);
+		int rowSpecSize = 9 + ((employees.size() - 1) * 2);
 		RowSpec []ansatteRowSpec = new RowSpec[rowSpecSize];
 		for (int i = 0; i < rowSpecSize; i++) {
 			if (i % 2 == 0) {
@@ -742,9 +771,41 @@ public class ViewMain extends JFrame {
 		JLabel employeeMyCalendar = new JLabel("Min kalender");
 		innerEmployeePanel.add(employeeMyCalendar, "2, 6");
 		
-		// Checkbox for Mt calendar that is already selected
+		// Checkbox for My calendar that is already selected
 		JCheckBox employeeMyCalendarCheckbox = new JCheckBox("");
 		employeeMyCalendarCheckbox.setSelected(true);
+		employeeMyCalendarCheckbox.addActionListener(new ActionListener () {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Get current user as an employee
+				ArrayList<Employee> tempEmployeeList = calendar.getEmployees();
+				Employee tempThisUserAsEmployee = null;
+				String tempCurrentUsername = calendar.getUsername();
+				for (int i = 0; i < tempEmployeeList.size(); i++) {
+					if (tempEmployeeList.get(i).getEmail().equals(tempCurrentUsername)) {
+						tempThisUserAsEmployee = tempEmployeeList.get(i);
+					}
+				}
+				
+				if (tempThisUserAsEmployee != null) {
+					// Get the current checkbox being clicked
+					JCheckBox thisCheckbox = (JCheckBox) e.getSource();
+					
+					// Just doublecheck that we are not NullPointer!
+					if (thisCheckbox != null) {
+						// Check if checked or not
+						if (thisCheckbox.isSelected()) {
+							calendar.addCalendar(tempThisUserAsEmployee);
+						}
+						else {
+							calendar.removeCalendar(tempThisUserAsEmployee);
+						}
+					}
+				}
+			}
+			
+		});
 		innerEmployeePanel.add(employeeMyCalendarCheckbox, "4, 6");
 		
 		// Second seperator
@@ -754,42 +815,45 @@ public class ViewMain extends JFrame {
 		// Begin dynamic fill in names in the list
 		int ansatteBaseIndex = 10;
 		for (int i = 0; i < employees.size(); i++) {
-			// Create textfield for the name of the employee
-			JLabel employeeNameList = new JLabel(employees.get(i).getName());
-			GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
-			
-			// Set reference to the employee
-			employeeNameListCheckbox.setReference(employees.get(i));
-			employeeNameListCheckbox.addActionListener(new ActionListener () {
+			// Check if self
+			if (!employees.get(i).isCurrentUser()) {
+				// Create textfield for the name of the employee
+				JLabel employeeNameList = new JLabel(employees.get(i).getName());
+				GraphicCheckbox employeeNameListCheckbox = new GraphicCheckbox("");
+				
+				// Set reference to the employee
+				employeeNameListCheckbox.setReference(employees.get(i));
+				employeeNameListCheckbox.addActionListener(new ActionListener () {
 
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// Get the current checkbox being clicked
-					GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
-					
-					// Just doublecheck that we are not NullPointer!
-					if (thisCheckbox != null) {
-						// Check if checked or not
-						if (thisCheckbox.isSelected()) {
-							calendar.addCalendar(thisCheckbox.getReference());
-						}
-						else {
-							calendar.removeCalendar(thisCheckbox.getReference());
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// Get the current checkbox being clicked
+						GraphicCheckbox thisCheckbox = (GraphicCheckbox) e.getSource();
+						
+						// Just doublecheck that we are not NullPointer!
+						if (thisCheckbox != null) {
+							// Check if checked or not
+							if (thisCheckbox.isSelected()) {
+								calendar.addCalendar(thisCheckbox.getReference());
+							}
+							else {
+								calendar.removeCalendar(thisCheckbox.getReference());
+							}
 						}
 					}
-				}
+					
+				});
 				
-			});
-			
-			// Set the label for the checkbox (not really sure if this does anything at all?)
-			employeeNameList.setLabelFor(employeeNameListCheckbox);
-			
-			// Add the items
-			innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
-			innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
-			
-			// Increase the base by two
-			ansatteBaseIndex += 2;
+				// Set the label for the checkbox (not really sure if this does anything at all?)
+				employeeNameList.setLabelFor(employeeNameListCheckbox);
+				
+				// Add the items
+				innerEmployeePanel.add(employeeNameListCheckbox, "4, " + ansatteBaseIndex);
+				innerEmployeePanel.add(employeeNameList, "2, " + ansatteBaseIndex + ", fill, default");
+				
+				// Increase the base by two
+				ansatteBaseIndex += 2;
+			}
 		}
 		
 		// Create new scrollpanel and set the inner content
@@ -832,6 +896,9 @@ public class ViewMain extends JFrame {
 		String []dateSplit = d.split(" ");
 		this.addEditDate.setText(dateSplit[1] + "." + this.calendarYear);
 		
+		// Load rooms
+		this.calculateAvailableRooms();
+		
 		// Display the right left-panel
 		this.displayLeftPanel("addedit");
 	}
@@ -856,7 +923,6 @@ public class ViewMain extends JFrame {
 			// Set the different fields
 			infoHeaderLabel.setText(thisAppointment.getTitle());
 			infoDescLabel.setText(thisAppointment.getDescription());
-			//infoParticipants.setText(thisAppointment.ge);
 			
 			// Date
 			SimpleDateFormat formatEngToNor = new SimpleDateFormat("E");
@@ -880,15 +946,8 @@ public class ViewMain extends JFrame {
 			cal.setTime(thisAppointment.getEnd());
 			infoTo.setText(((cal.get(Calendar.HOUR_OF_DAY) < 10) ? "0" : "") + cal.get(Calendar.HOUR_OF_DAY) + ":" + ((cal.get(Calendar.MINUTE) < 10) ? "0" : "") + cal.get(Calendar.MINUTE));
 			
-			
-			/*private JLabel infoHeaderLabel;
-			private JLabel infoDescLabel;
-			private JLabel infoDate;
-			private JLabel infoFrom;
-			private JLabel infoTo;
-			private JLabel infoParticipants;
-			private JLabel infoRoom;
-			private JList infoParticipantsChosen;*/
+			// Room
+			infoRoom.setText(thisAppointment.getRoomString()); 
 			
 			// Display the correct sidepanel
 			this.displayLeftPanel("info");
@@ -1022,6 +1081,13 @@ public class ViewMain extends JFrame {
 		
 		// From combobox
 		addEditFrom = new JComboBox(addEditHours.toArray());
+		addEditFrom.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditFrom, "3, 14, fill, default");
 		
 		// Label for to-time
@@ -1030,6 +1096,13 @@ public class ViewMain extends JFrame {
 		
 		// To combobox
 		addEditTo = new JComboBox(addEditHours.toArray());
+		addEditTo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditTo, "3, 16, fill, default");
 		
 		// Label for participants
@@ -1043,15 +1116,23 @@ public class ViewMain extends JFrame {
 		}
 		
 		// Combobox with participants
-		JComboBox addEditParticipants = new JComboBox(participatntList.toArray());
+		addEditParticipants = new JComboBox(participatntList.toArray());
+		addEditParticipants.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				calculateAvailableRooms();
+			}
+		});
 		innerAddEditPanel.add(addEditParticipants, "3, 18, fill, default");
 		
 		// Label for rom
-		JLabel addEditRoomLabel = new JLabel("Rom:");
+		addEditRoomLabel = new JLabel("Rom:");
 		innerAddEditPanel.add(addEditRoomLabel, "1, 19, left, default");
 		
-		// Combobox with rooms (TODO)
-		JComboBox addEditRoom = new JComboBox();
+		// Combobox with rooms
+		addEditRoomModel = new DefaultComboBoxModel<Room>();
+		addEditRoom = new JComboBox(addEditRoomModel);
 		innerAddEditPanel.add(addEditRoom, "3, 19, fill, default");
 		
 		// Label for participants (lists)
@@ -1151,6 +1232,67 @@ public class ViewMain extends JFrame {
 		
 		// Create the save-button
 		addEditSave = new JButton("Lagre");
+		addEditSave.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean error = false;
+				String errorMsg = "";
+				if (addEditTitle.getText().length() == 0) {
+					error = true;
+					errorMsg += "- Tittel\n";
+				}
+				if (addEditDesc.getText().length() == 0) {
+					error = true;
+					errorMsg += "- Beskrivelse\n";
+				}
+				if (addEditFrom.getSelectedItem().equals(addEditTo.getSelectedItem())) {
+					error = true;
+					errorMsg += "- Tidene må være forskjellige\n";
+				}
+				
+				if (error) {
+					JOptionPane.showMessageDialog(null, "Vennligst fyll ut manglende informasjon:\n\n" + errorMsg, "Feil", JOptionPane.PLAIN_MESSAGE);
+				}
+				else {
+					// Get all info
+					String title = addEditTitle.getText();
+					String description = addEditDesc.getText();
+					
+					// From, to
+					String []fromTime = ((String) addEditFrom.getSelectedItem()).split(":");
+					String []toTime = ((String) addEditTo.getSelectedItem()).split(":");
+					int num = (int) addEditParticipants.getSelectedItem();
+					String []date = addEditDate.getText().split("\\.");
+					
+					// From
+					Calendar cal = Calendar.getInstance();
+					cal.set(calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+					Date fromTimeAsDate = cal.getTime();
+					
+					// To
+					cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(toTime[0]));
+					cal.set(Calendar.MINUTE, Integer.parseInt(toTime[1]));
+					Date toTimeAsDate = cal.getTime();
+					
+					int participants = (int) addEditParticipants.getSelectedItem();
+					Room room = (Room) addEditRoom.getSelectedItem();
+					
+					// Participants
+					ArrayList<Employee> participantsArr = new ArrayList<Employee>();
+					for (int i = 0; i < addEditParticipantsListInvited.size(); i++) {
+						participantsArr.add(addEditParticipantsListInvited.get(i));
+					}
+					
+					// Send info
+					calendar.createAppointment(
+							title, description,
+							fromTimeAsDate, toTimeAsDate,
+							participants, room,
+							participantsArr);
+				}
+			}
+		});
 		innerAddEditPanel.add(addEditSave, "3, 27, right, default");
 		
 		// Add the panel itself
@@ -1397,4 +1539,62 @@ public class ViewMain extends JFrame {
 	private int generateRandomColorInt() {
 		return (int) (Math.random() * (225 + 1));
 	}
+	
+	/*
+	 * Hoovered
+	 */
+	
+	public void setLastHoovered(GraphicSquare g) {
+		this.lastHoovered = g;
+	}
+	
+	public GraphicSquare getLastHoovered() {
+		return this.lastHoovered;
+	}
+	
+	/*
+	 * Calculate available rooms
+	 */
+	
+	protected void calculateAvailableRooms() {
+		// Get info
+		String []fromTime = ((String) addEditFrom.getSelectedItem()).split(":");
+		String []toTime = ((String) addEditTo.getSelectedItem()).split(":");
+		int num = (int) addEditParticipants.getSelectedItem();
+		String []date = this.addEditDate.getText().split("\\.");
+		
+		if (date.length > 1) {
+			// From
+			Calendar cal = Calendar.getInstance();
+			cal.set(this.calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+			Date fromTimeAsDate = cal.getTime();
+			
+			// To
+			cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(toTime[0]));
+			cal.set(Calendar.MINUTE, Integer.parseInt(toTime[1]));
+			Date toTimeAsDate = cal.getTime();
+			
+			// Set loadingtime
+			addEditRoomLabel.setText("Laster rom...");
+			
+			this.calendar.calculateAvailabelRooms(fromTimeAsDate, toTimeAsDate, num);
+		}
+	}
+	
+	/*
+	 * Update combobox with rooms
+	 */
+	
+	public void updateAvailableRooms (ArrayList<Room> rooms) {
+		addEditRoomModel.removeAllElements();
+		System.out.println("Here");
+		for (int i = 0; i < rooms.size(); i++) {
+			addEditRoomModel.addElement(rooms.get(i));
+		}
+		addEditRoom.setSelectedIndex(0);
+		
+		// Reset loading
+		addEditRoomLabel.setText("Rom:");
+	}
+	
 }

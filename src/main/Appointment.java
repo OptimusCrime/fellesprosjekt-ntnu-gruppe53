@@ -35,28 +35,10 @@ public class Appointment implements CalendarObjects {
 	private boolean alarm;
 	private Date alarmTime;
 	
-	/*
-	 * List of users and a status for each user which tells if they havent responded, have declined or have confirmed
-	 */
-	private HashMap<User, Status> users; 
-	
-	/*
-	 * Same as users, just with groups
-	 */
-	private HashMap<Group, Status> groups;
-	
-	/*
-	 * List of all rooms 
-	 */
-	private ArrayList<Room> roomList;
-	
-	/*
-	 * Constructor
-	 */
-	
 	public Appointment (Gui g) {
 		this.gui = g;
 		this.created = false;
+		this.room = null;
 	}
 	
 	/*
@@ -133,10 +115,17 @@ public class Appointment implements CalendarObjects {
 	public Room getRoom() {
 		return room;
 	}
+	
+	public String getRoomString() {
+		if (room == null) {
+			return null;
+		}
+		
+		return room.toString();
+	}
 
 	public void setRoom(Room room) {
 		this.room = room;
-		this.room.reserve(this.start, this.end); //reserves room in the appointments time
 		this.gui.reflectChange("appointment", "room", this);
 	}
 
@@ -174,42 +163,5 @@ public class Appointment implements CalendarObjects {
 	
 	public int getUser() {
 		return this.user;
-	}
-	
-	/*
-	 * Invite and remove methods
-	 */
-	public void inviteUser(User user) { 
-		if (!users.containsKey(user)) {
-			users.put(user, Status.NOT_RESPONDED);
-		}
-	}
-	public void removeUser(User user) {
-		if (users.containsKey(user)) {
-			users.remove(user);
-		}
-	}
-	public void inviteGroup(Group group) {  
-		if (!groups.containsKey(group)) {
-			groups.put(group, Status.NOT_RESPONDED);
-		}
-	}
-	public void removeGroup(Group group) {
-		if (groups.containsKey(group)) {
-			groups.remove(group);
-		}
-	}
-	
-	/*
-	 * returns a list of all rooms that is available at given time, and has capacity bigger or equal to given one
-	 */
-	public ArrayList<Room> findRoom(Date startDate, Date endDate, int capacity) {
-		ArrayList<Room> availableRooms = new ArrayList<Room>();
-		for (int i = 0; i < roomList.size(); i++) {
-			if (roomList.get(i).isAvailable(startDate, endDate) && roomList.get(i).getCapacity() >= capacity) {
-				availableRooms.add(roomList.get(i));
-			}
-		}
-		return availableRooms;
 	}
 }

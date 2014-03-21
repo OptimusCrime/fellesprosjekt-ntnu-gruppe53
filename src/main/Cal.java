@@ -28,6 +28,10 @@ public class Cal {
 	private SocketHandler sh;
 	
 	private ArrayList<Employee> employees;
+	private ArrayList<Room> rooms;
+	
+	private boolean loadedAppointments;
+	private boolean loadedRooms;
 	
 	/*
 	 * Constructor
@@ -37,14 +41,19 @@ public class Cal {
 		// Create new instance of the Gui-class
 		this.gui = new Gui(this);
 		
+		// Set not loaded
+		loadedAppointments = false;
+		loadedRooms = false;
+		
 		// User
 		this.user = new User(this.gui);
 		
 		// Sockets
 		this.sh = new SocketHandler(this);
 		
-		// Init list of employees
+		// Init lists
 		this.employees = new ArrayList<Employee>();
+		this.rooms = new ArrayList<Room>();
 	}
 	
 	/*
@@ -124,6 +133,9 @@ public class Cal {
 					
 					// Check that we actually got someting back
 					if (appointments != null) {
+						// Clear all appointments
+						this.user.clearAppointments();
+						
 						ArrayList<Appointment> tempAppointmentsList = new ArrayList<Appointment>();
 						// Loop all the appointments
 						for (int i = 0; i < appointments.size(); i++) {
@@ -160,12 +172,22 @@ public class Cal {
 								
 								a.setStart(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("start")));
 								a.setEnd(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("end")));
-								
+
 								a.setPlace((String) thisAppointment.get("place"));
 								a.setParticipates((boolean) thisAppointment.get("participate"));
 								a.setHide((boolean) thisAppointment.get("hide"));
 								a.setAlarm((boolean) thisAppointment.get("alarm"));
 								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
+								
+								
+								// Room
+								int appointmentRoom = new BigDecimal((long) thisAppointment.get("room")).intValueExact();
+								for (int j = 0; j < this.rooms.size(); j++) {
+									if (this.rooms.get(j).getId() == appointmentRoom) {
+										a.setRoom(this.rooms.get(j));
+										break;
+									}
+								}
 								
 								// Create the object
 								a.create();
@@ -180,6 +202,62 @@ public class Cal {
 						
 						// Send reflect to the gui from the user-class
 						this.user.sendReflect("loaded-appointments");
+					}
+				}
+			}
+			else if (action.equals("room")) {
+				// Rooms
+				if (type.equals("get")) {
+					JSONArray requestedRooms = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (requestedRooms != null) {
+						// Clear all appointments
+						this.user.clearAppointments();
+						
+						ArrayList<Appointment> tempAppointmentsList = new ArrayList<Appointment>();
+						// Loop all the appointments
+						for (int i = 0; i < requestedRooms.size(); i++) {
+							JSONObject thisAppointment = (JSONObject) requestedRooms.get(i);
+							
+							Room createNewRoom = new Room(this.gui);
+							
+							createNewRoom.setId(new BigDecimal((long) thisAppointment.get("id")).intValueExact());
+							createNewRoom.setName((String) thisAppointment.get("name"));
+							createNewRoom.setCapacity(new BigDecimal((long) thisAppointment.get("capacity")).intValueExact());
+							createNewRoom.create();
+							rooms.add(createNewRoom);
+						}
+					}
+					
+					// Check if we can load the appointments
+					this.loadedRooms = true;
+					if (this.loadedAppointments) {
+						// We have loaded all dependencies, now load appointments
+						this.loadAppointments();
+					}
+				}
+				else if (type.equals("gets")) {
+					// (
+					JSONArray availableRoomsObj = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (availableRoomsObj != null) {
+						
+						ArrayList<Room> availableRooms = new ArrayList<Room>();
+						// Loop all the appointments
+						for (int i = 0; i < availableRoomsObj.size(); i++) {
+							// Get the current id
+							int thisRequestedRoomId = new BigDecimal((long) availableRoomsObj.get(i)).intValueExact();
+							for (int j = 0; j < this.getRooms().size(); j++) {
+								if (thisRequestedRoomId == this.getRooms().get(j).getId()) {
+									availableRooms.add(this.getRooms().get(j));
+									break;
+								}
+							}
+						}
+						System.out.println("Her1");
+						this.gui.updateAvailableRooms(availableRooms);
 					}
 				}
 			}
@@ -201,12 +279,17 @@ public class Cal {
 						
 						// Load all stuff the user needs
 						this.loadEmployees();
+						this.loadRooms();
 					}
 					else {
 						// Send error-message
 						this.gui.sendLoginFailedMessage();
 					}
 				}
+			}
+			else if (action.equals("logout")) {
+				this.user.setLoggedIn(false);
+				sh.killConnection();
 			}
 			else if (action.equals("employees")) {
 				// We're dealing with the list of employees
@@ -237,8 +320,12 @@ public class Cal {
 						// Send reflect to the gui from this class
 						this.gui.reflectChange("employees", "create", null);
 						
-						// Load appointments
-						this.loadAppointments();
+						// Check if we can load the appointments
+						this.loadedAppointments = true;
+						if (this.loadedRooms) {
+							// We have loaded all dependencies, now load appointments
+							this.loadAppointments();
+						}
 					}
 				}
 			}
@@ -274,6 +361,17 @@ public class Cal {
 	
 	private void loadEmployees() {
 		JSONObject employeeObj = this.initJSONObject("employees", "get");
+		String employeeObjString = employeeObj.toJSONString();
+		
+		sh.sendMessage(employeeObjString);
+	}
+	
+	/*
+	 * Delegate for loading all the rooms in the system
+	 */
+	
+	private void loadRooms() {
+		JSONObject employeeObj = this.initJSONObject("room", "get");
 		String employeeObjString = employeeObj.toJSONString();
 		
 		sh.sendMessage(employeeObjString);
@@ -320,6 +418,14 @@ public class Cal {
 	}
 	
 	/*
+	 * Rooms
+	 */
+	
+	public ArrayList<Room> getRooms() {
+		return this.rooms;
+	}
+	
+	/*
 	 * Get username
 	 */
 	
@@ -331,5 +437,64 @@ public class Cal {
 		else {
 			return null;
 		}
+	}
+	
+	/*
+	 * Fetch rooms from database
+	 */
+	
+	public void calculateAvailabelRooms(Date from, Date to, int num) {
+		// Format
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		// Obj
+		JSONObject roomObj = this.initJSONObject("room", "gets");
+		JSONObject innerRoomObj = new JSONObject();
+		innerRoomObj.put("from", sdf.format(from));
+		innerRoomObj.put("to", sdf.format(to));
+		innerRoomObj.put("num", num);
+		roomObj.put("data", innerRoomObj);
+		String roomObjString = roomObj.toJSONString();
+		sh.sendMessage(roomObjString);
+	}
+	
+	/*
+	 * Delegate for creating a new appointment
+	 */
+	
+	public void createAppointment(String title, String description, Date fromTimeAsDate, Date toTimeAsDate, int participants, Room room, ArrayList<Employee> participantsArr) {
+		// Format
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		// Obj
+		JSONObject appointmentObj = this.initJSONObject("appointments", "post");
+		JSONObject innerAppointmentObj = new JSONObject();
+		innerAppointmentObj.put("title", title);
+		innerAppointmentObj.put("desc", description);
+		
+		innerAppointmentObj.put("from", sdf.format(fromTimeAsDate));
+		innerAppointmentObj.put("to", sdf.format(toTimeAsDate));
+		
+		innerAppointmentObj.put("participants", participants);
+		
+		if (room == null) {
+			innerAppointmentObj.put("room", "");
+		}
+		else {
+			innerAppointmentObj.put("room", room.getId());
+		}
+		
+		// Participants
+		JSONArray innerInnerAppointmentArray = new JSONArray();
+		for (int i = 0; i < participantsArr.size(); i++) {
+			innerInnerAppointmentArray.add(participantsArr.get(i).getId());
+		}
+		innerAppointmentObj.put("participants_list_num", participantsArr.size());
+		innerAppointmentObj.put("participants_list", innerInnerAppointmentArray);
+		
+		appointmentObj.put("data", innerAppointmentObj);
+		
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
 	}
 }

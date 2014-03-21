@@ -82,19 +82,19 @@ public class User implements CalendarObjects {
 	}
 	
 	/*
-	 * Get all appointments this user has
+	 * Appointments
 	 */
 	
 	public ArrayList<Appointment> getAppointments() {
 		return this.appointments;
 	}
 	
-	/*
-	 * Add new appointment for this user
-	 */
-	
 	public void addAppointment(Appointment a) {
 		this.appointments.add(a);
+	}
+	
+	public void clearAppointments() {
+		this.appointments.clear();
 	}
 	
 	/*
