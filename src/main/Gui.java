@@ -122,7 +122,14 @@ public class Gui {
 	 */
 	
 	public void updateAvailableRooms (ArrayList<Room> r) {
-		System.out.println("Her2");
 		this.main.updateAvailableRooms(r);
+	}
+	
+	/*
+	 * Deletegate for updating participates
+	 */
+	
+	public void participatesLoaded(ArrayList<Employee> list, ArrayList<String> status) {
+		this.main.participatesLoaded(list, status);
 	}
 }

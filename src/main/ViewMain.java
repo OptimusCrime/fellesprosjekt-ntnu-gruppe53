@@ -25,6 +25,7 @@ import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -36,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -133,6 +135,10 @@ public class ViewMain extends JFrame {
 	private JComboBox addEditRoom;
 	private DefaultComboBoxModel<Room> addEditRoomModel;
 	private JLabel addEditRoomLabel;
+	private JLabel infoAttendingLabel;
+	private JLabel infoNotAttendingLabel;
+	private boolean infoThisUserAttending;
+	private ButtonGroup infoButtonGroup;
 	
 	// Info
 	private JLabel infoHeaderLabel;
@@ -143,6 +149,10 @@ public class ViewMain extends JFrame {
 	private JLabel infoParticipants;
 	private JLabel infoRoom;
 	private JList infoParticipantsChosen;
+	private DefaultListModel<String> infoParticipatesStatus;
+	private JRadioButton infoAttending;
+	private JRadioButton infoNotAttending;
+	private Appointment infoShowThisAppointment;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -159,9 +169,13 @@ public class ViewMain extends JFrame {
 		// For effect
 		this.lastHoovered = null;
 		
+		// Derp
+		this.infoThisUserAttending = false;
+		
 		// ListModel for the participants-lists
 		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
 		addEditParticipantsListInvited = new DefaultListModel<Employee>();
+		infoParticipatesStatus = new DefaultListModel<String>();
 		
 		// Setting up hashmap for colors
 		appointmentColors = new HashMap<Integer, Color>();
@@ -583,6 +597,11 @@ public class ViewMain extends JFrame {
 		this.clearCalendar();
 		this.drawCalendar();
 		
+		// Clear all objects from all graphics
+		for (int i = 0; i < squareArr.length; i++) {
+			squareArr[i].clearAllObjs();
+		}
+		
 		// Get all appointments from the user
 		ArrayList<Appointment> userAppointments = this.calendar.getAppointments();
 		
@@ -611,9 +630,6 @@ public class ViewMain extends JFrame {
 					// Get the correct square
 					GraphicSquare thisSquare = squareArr[dayOfWeek];
 					
-					// Clear all objects from this graphic
-					thisSquare.clearAllObjs();
-					
 					// Get start-point offset
 					c = Calendar.getInstance();
 					c.setTime(thisAppointment.getStart());
@@ -636,22 +652,28 @@ public class ViewMain extends JFrame {
 					}
 					
 					// Create text for the appointment
-					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
-					
-					System.out.println("Adding this = " + thisAppointment.getTitle());
+					String startMin=Integer.toString(thisAppointment.getStart().getMinutes());
+					if (startMin.equals("0"))
+						startMin="00";
+					String endMin=Integer.toString(thisAppointment.getEnd().getMinutes());
+					if (endMin.equals("0"))
+						endMin="00";
+					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />"
+					+ thisAppointment.getStart().getHours()+":"+startMin+" - "
+					+ thisAppointment.getEnd().getHours()+":"+endMin+"</html>";
 					
 					// Create new square for this appointment
-					GraphicAppointment appointmentSquare = new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip);
-					appointmentSquare.setId(thisAppointment.getId());
+					thisSquare.addObj(new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip));
+					thisSquare.getLastObj().setId(thisAppointment.getId());
 					
 					// Reset layout
-					appointmentSquare.setLayout(null);
+					thisSquare.getLastObj().setLayout(null);
 					
 					// Setting bounds (not really sure what does that, but this works)
-					appointmentSquare.setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
+					thisSquare.getLastObj().setBounds(1, ((int) startPos + 1), (this.column_width - 1), ((int) heightValue - 1));
 					
 					// Click
-					appointmentSquare.addMouseListener(new MouseAdapter () {
+					thisSquare.getLastObj().addMouseListener(new MouseAdapter () {
 						public void mousePressed(MouseEvent e) {
 							// Get object
 							GraphicAppointment clickedAppointment = (GraphicAppointment)e.getSource();
@@ -665,8 +687,8 @@ public class ViewMain extends JFrame {
 					});
 					
 					// Add the block to the square
-					thisSquare.add(appointmentSquare);
-					thisSquare.addObj(appointmentSquare);
+					thisSquare.add(thisSquare.getLastObj());
+					
 					
 					// Repaint
 					thisSquare.repaint();
@@ -879,12 +901,14 @@ public class ViewMain extends JFrame {
 		//
 		
 		for (int i = 0; i < employees.size(); i++) {
-			addEditParticipantsListNotInvited.addElement(employees.get(i));
+			if (!employees.get(i).getEmail().equals(this.calendar.getUsername())) {
+				addEditParticipantsListNotInvited.addElement(employees.get(i));
+			}
 		}
 	}
 	
 	/*
-	 * Display screen for creating new appointment (TODO)
+	 * Display screen for creating new appointment
 	 */
 	
 	protected void showNewAppointment(String t, String d) {
@@ -904,7 +928,7 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * Display information about one appointment (TODO)
+	 * Display information about one appointment
 	 */
 	
 	protected void showAppointment(int id) {
@@ -920,6 +944,9 @@ public class ViewMain extends JFrame {
 		
 		// Check if any appointment was returned
 		if (thisAppointment != null) {
+			// Store the current appointment in variable
+			this.infoShowThisAppointment = thisAppointment;
+			
 			// Set the different fields
 			infoHeaderLabel.setText(thisAppointment.getTitle());
 			infoDescLabel.setText(thisAppointment.getDescription());
@@ -948,6 +975,19 @@ public class ViewMain extends JFrame {
 			
 			// Room
 			infoRoom.setText(thisAppointment.getRoomString()); 
+			
+			// Clear the participant-list
+			infoParticipatesStatus.clear();
+			infoParticipatesStatus.add(0, "Laster...");
+			infoParticipantsChosen.repaint();
+			
+			// Check if we should load participates
+			if (!thisAppointment.hasLoadedParticipates()) {
+				this.calendar.loadParticipates(thisAppointment.getId());
+			}
+			else {
+				this.participatesLoaded(thisAppointment.getParticipatesList(), thisAppointment.getParticipatesStatus());
+			}
 			
 			// Display the correct sidepanel
 			this.displayLeftPanel("info");
@@ -1267,7 +1307,7 @@ public class ViewMain extends JFrame {
 					
 					// From
 					Calendar cal = Calendar.getInstance();
-					cal.set(calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+					cal.set(calendarYear, (Integer.parseInt(date[1]) - 1), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
 					Date fromTimeAsDate = cal.getTime();
 					
 					// To
@@ -1290,6 +1330,13 @@ public class ViewMain extends JFrame {
 							fromTimeAsDate, toTimeAsDate,
 							participants, room,
 							participantsArr);
+					
+					// Reset fields
+					addEditTitle.setText("");
+					addEditDesc.setText("");
+					
+					// Switch panel
+					displayLeftPanel("notifications");
 				}
 			}
 		});
@@ -1366,6 +1413,8 @@ public class ViewMain extends JFrame {
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				}));
 		
 		 // Header
@@ -1383,7 +1432,7 @@ public class ViewMain extends JFrame {
 		JSeparator infoSeperator4 = new JSeparator();
 		innerInfoPanel.add(infoSeperator4, "1, 16, 3, 1");
 		JSeparator infoSeperator5 = new JSeparator();
-		innerInfoPanel.add(infoSeperator5, "1, 22, 3, 1");
+		innerInfoPanel.add(infoSeperator5, "1, 19, 3, 1");
 		
 		// Label for description
 		infoDescLabel = new JLabel("Beskrivelse");
@@ -1438,11 +1487,44 @@ public class ViewMain extends JFrame {
 		
 		// Create List for the participants that are invited
 		infoParticipantsChosen = new JList();
-		//infoParticipantsChosen.setModel(addEditParticipantsListNotInvited);
 		infoParticipantsChosen.setBorder(infoBorder);
+		infoParticipantsChosen.setModel(infoParticipatesStatus);
 		infoParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane infoParticipantsChosenScrollPane = new JScrollPane(infoParticipantsChosen);
 		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 18, 3, 1");
+		
+		// Kommer, kommer ikke
+		infoButtonGroup = new ButtonGroup();
+		
+		infoAttending = new JRadioButton("Kommer");
+		infoButtonGroup.add(infoAttending);
+		innerInfoPanel.add(infoAttending, "1, 20, left, default");
+		
+		infoNotAttending = new JRadioButton("Kommer ikke");
+		infoButtonGroup.add(infoNotAttending);
+		innerInfoPanel.add(infoNotAttending, "1, 21, left, default");
+		
+		// Hide them all!
+		infoAttending.setVisible(false);
+		infoNotAttending.setVisible(false);
+		
+		// ActionListener
+		infoAttending.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JRadioButton thisRadio = (JRadioButton) e.getSource();
+				updateThisUserDoesParticipate(thisRadio.getText());
+				
+			}
+		});
+		infoNotAttending.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JRadioButton thisRadio = (JRadioButton) e.getSource();
+				updateThisUserDoesParticipate(thisRadio.getText());
+				
+			}
+		});
 		
 		// Add to scrollpane
 		infoScrollPane = new JScrollPane(innerInfoPanel);
@@ -1587,7 +1669,7 @@ public class ViewMain extends JFrame {
 	
 	public void updateAvailableRooms (ArrayList<Room> rooms) {
 		addEditRoomModel.removeAllElements();
-		System.out.println("Here");
+		
 		for (int i = 0; i < rooms.size(); i++) {
 			addEditRoomModel.addElement(rooms.get(i));
 		}
@@ -1597,4 +1679,69 @@ public class ViewMain extends JFrame {
 		addEditRoomLabel.setText("Rom:");
 	}
 	
+	/*
+	 * Update participates-list
+	 */
+	
+	public void participatesLoaded(ArrayList<Employee> list, ArrayList<String> status) {
+		// Clear the list
+		infoParticipatesStatus.clear();
+		
+		// Set to false
+		this.infoThisUserAttending = false;
+		
+		// Derp
+		this.infoButtonGroup.clearSelection();
+		
+		// Look the list
+		for (int i = 0; i < list.size(); i++) {
+			// Check if the current user is in this appointment
+			if (list.get(i).getEmail().equals(this.calendar.getUsername())) {
+				this.infoThisUserAttending = true;
+				
+				infoAttending.setVisible(true);
+				infoNotAttending.setVisible(true);
+				
+				if (status.get(i).equals("Kommer")) {
+					infoAttending.setSelected(true);
+				}
+				else {
+					if (status.get(i).equals("Kommer ikke")) {
+						infoNotAttending.setSelected(true);
+					}
+				}
+			}
+			
+			// Add to list
+			infoParticipatesStatus.add(i, list.get(i).getName() + " [" + status.get(i) + "]");
+		}
+		
+		// Lena
+		if (this.infoThisUserAttending == true) {
+			infoAttending.setVisible(true);
+			infoNotAttending.setVisible(true);
+		}
+		
+		// Repaint
+		infoParticipantsChosen.repaint();
+		infoAttending.repaint();
+		infoNotAttending.repaint();
+	}
+	
+	/*
+	 * Update the status for the current user
+	 */
+	
+	public void updateThisUserDoesParticipate(String s) {
+		// Set does attend locally
+		for (int i = 0; i < infoShowThisAppointment.getParticipatesList().size(); i++) {
+			// Check if the current user is in this appointment
+			if (infoShowThisAppointment.getParticipatesList().get(i).getEmail().equals(this.calendar.getUsername())) {
+				infoShowThisAppointment.updateParticipateStatus(infoShowThisAppointment.getParticipatesList().get(i), s);
+			}
+		}
+		
+		// Send to server
+		this.calendar.updateThisUserDoesParticipate(infoShowThisAppointment.getId(), s);
+	}
 }

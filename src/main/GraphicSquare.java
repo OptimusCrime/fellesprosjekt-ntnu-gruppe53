@@ -105,6 +105,10 @@ public class GraphicSquare extends JPanel implements MouseMotionListener {
 		appointments.add(a);
 	}
 	
+	public GraphicAppointment getLastObj() {
+		return appointments.get(appointments.size() - 1);
+	}
+	
 	public void clearAllObjs() {
 		for (int i = 0; i < appointments.size(); i++) {
 			remove(appointments.get(i));

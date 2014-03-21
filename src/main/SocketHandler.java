@@ -70,17 +70,10 @@ public class SocketHandler extends Thread {
 				start();
 			}
 		} catch (ConnectException e1) {
-			// Could not connect to the server
-			System.out.println("Err1");
 			return false;
 		} catch (UnknownHostException e2) {
-			// Could not connect to the server
-			System.out.println("Err2");
 			return false;
 		} catch (IOException e3) {
-			// Could not connect to the server
-			e3.printStackTrace();
-			System.out.println("Err4");
 			return false;
 		}
 		
@@ -106,11 +99,8 @@ public class SocketHandler extends Thread {
 	
 	public void sendMessage(String s) {
 		try {
-			System.out.println("Sending this:" + s);
 			this.out.writeUTF(s);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (IOException e) {}
 	}
 	
 	/*
@@ -134,9 +124,6 @@ public class SocketHandler extends Thread {
 				
 				// Check if the variable got actual content
 				if (msg.length() > 0) {
-					// Print message
-					System.out.println(msg);
-					
 					// Send incoming to calendar-class to take care of it
 					this.calendar.handleIncoming(msg);
 				}

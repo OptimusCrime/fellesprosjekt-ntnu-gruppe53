@@ -113,9 +113,6 @@ public class Cal {
 	 */
 	
 	public void handleIncoming(String r) {
-		// DEBUG TODO
-		System.out.println("Got this = " + r);
-		
 		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
 		
@@ -179,7 +176,6 @@ public class Cal {
 								a.setAlarm((boolean) thisAppointment.get("alarm"));
 								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
 								
-								
 								// Room
 								int appointmentRoom = new BigDecimal((long) thisAppointment.get("room")).intValueExact();
 								for (int j = 0; j < this.rooms.size(); j++) {
@@ -202,6 +198,60 @@ public class Cal {
 						
 						// Send reflect to the gui from the user-class
 						this.user.sendReflect("loaded-appointments");
+					}
+				}
+				else if (type.equals("sub-get")) {
+					// Get all appointments
+					JSONArray appointments = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (appointments != null) {
+						// Get the correct appointment
+						int appointmentId = new BigDecimal((long) requestObj.get("id")).intValueExact();
+						Appointment thisAppointment = null;
+						for (int i = 0; i < this.getAppointments().size(); i++) {
+							if (this.getAppointments().get(i).getId() == appointmentId) {
+								thisAppointment = this.getAppointments().get(i);
+								break;
+							}
+						}
+						
+						if (thisAppointment != null) {
+							for (int i = 0; i < appointments.size(); i++) {
+								JSONObject thisParticipates = (JSONObject) appointments.get(i);
+								
+								// Check if appointment already exists
+								int participatedUser = new BigDecimal((long) thisParticipates.get("user")).intValueExact();
+								int participateStatus = new BigDecimal((long) thisParticipates.get("participate")).intValueExact();
+								int participateHide = new BigDecimal((long) thisParticipates.get("hide")).intValueExact();
+								
+								// Find corret user
+								for (int j = 0; j < this.getEmployees().size(); j++) {
+									if (this.getEmployees().get(j).getId() == participatedUser) {
+										// Find status
+										String tempStatus;
+										if (participateStatus == 1) {
+											tempStatus = "Kommer";
+										}
+										else {
+											if (participateStatus == 0) {
+												tempStatus = "Ikke svart";
+											}
+											else {
+												tempStatus = "Kommer ikke";
+											}
+										}
+										
+										// Add here
+										thisAppointment.addParticipates(this.getEmployees().get(j), tempStatus);
+									}
+								}
+							}
+							
+							thisAppointment.setHasLoadedParticipates(true);
+							
+							this.gui.participatesLoaded(thisAppointment.getParticipatesList(), thisAppointment.getParticipatesStatus());
+						}
 					}
 				}
 			}
@@ -256,7 +306,6 @@ public class Cal {
 								}
 							}
 						}
-						System.out.println("Her1");
 						this.gui.updateAvailableRooms(availableRooms);
 					}
 				}
@@ -330,9 +379,7 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		catch (Exception e) {}
 	}
 	
 	/*
@@ -489,12 +536,45 @@ public class Cal {
 		for (int i = 0; i < participantsArr.size(); i++) {
 			innerInnerAppointmentArray.add(participantsArr.get(i).getId());
 		}
-		innerAppointmentObj.put("participants_list_num", participantsArr.size());
+		
+		// Add self
+		for (int i = 0; i < this.getEmployees().size(); i++) {
+			if (this.getEmployees().get(i).getEmail().equals(this.getUsername())) {
+				innerInnerAppointmentArray.add(this.getEmployees().get(i).getId());
+			}
+		}
+		
+		innerAppointmentObj.put("participants_list_num", innerInnerAppointmentArray.size());
 		innerAppointmentObj.put("participants_list", innerInnerAppointmentArray);
 		
 		appointmentObj.put("data", innerAppointmentObj);
 		
 		String appointmentObjString = appointmentObj.toJSONString();
 		sh.sendMessage(appointmentObjString);
+	}
+	
+	/*
+	 * Load participates
+	 */
+	
+	public void loadParticipates(int appointment) {
+		JSONObject appointmentObj = this.initJSONObject("appointments", "sub-get");
+		JSONObject innerAppointmentObj = new JSONObject();
+		appointmentObj.put("id", appointment);
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
+	}
+	
+	/*
+	 * Set participates
+	 */
+	
+	public void updateThisUserDoesParticipate(int i, String s) {
+		JSONObject appointmentObj = this.initJSONObject("appointments", "sub-post");
+		appointmentObj.put("id", i);
+		appointmentObj.put("status", (s.equals("Kommer") ? 1 : 0));
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
+		
 	}
 }

@@ -35,10 +35,18 @@ public class Appointment implements CalendarObjects {
 	private boolean alarm;
 	private Date alarmTime;
 	
+	private boolean hasLoadedParticipates;
+	private ArrayList<Employee> participatesList;
+	private ArrayList<String> participatesStatus;
+	
 	public Appointment (Gui g) {
 		this.gui = g;
 		this.created = false;
 		this.room = null;
+		
+		this.hasLoadedParticipates = false;
+		this.participatesList = new ArrayList<Employee>();
+		this.participatesStatus = new ArrayList<String>();
 	}
 	
 	/*
@@ -89,7 +97,6 @@ public class Appointment implements CalendarObjects {
 	}
 
 	public void setStart(Date start) {
-		System.out.println("Nigger = " + start);
 		this.start = start;
 		this.gui.reflectChange("appointment", "start", this);
 	}
@@ -163,5 +170,39 @@ public class Appointment implements CalendarObjects {
 	
 	public int getUser() {
 		return this.user;
+	}
+	
+	/*
+	 * ParticipatesList
+	 */
+	
+	public boolean hasLoadedParticipates() {
+		return this.hasLoadedParticipates;
+	}
+	
+	public void setHasLoadedParticipates(boolean b) {
+		this.hasLoadedParticipates = b;
+	}
+	
+	public void addParticipates(Employee e, String s) {
+		this.participatesList.add(e);
+		this.participatesStatus.add(s);
+	}
+	
+	public ArrayList<Employee> getParticipatesList() {
+		return this.participatesList;
+	}
+	
+	public ArrayList<String> getParticipatesStatus() {
+		return this.participatesStatus;
+	}
+	
+	public void updateParticipateStatus(Employee e, String s) {
+		for (int i = 0; i < this.participatesList.size(); i++) {
+			if (this.participatesList.get(i).equals(e)) {
+				this.participatesStatus.set(i, s);
+				break;
+			}
+		}
 	}
 }
