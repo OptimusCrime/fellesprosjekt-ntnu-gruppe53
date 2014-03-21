@@ -113,6 +113,9 @@ public class Cal {
 	 */
 	
 	public void handleIncoming(String r) {
+		// TODO
+		System.out.println("Got this = " + r);
+		
 		// Decode json
 		JSONObject requestObj = (JSONObject)JSONValue.parse(r);
 		
@@ -198,6 +201,60 @@ public class Cal {
 						
 						// Send reflect to the gui from the user-class
 						this.user.sendReflect("loaded-appointments");
+					}
+				}
+				else if (type.equals("sub-get")) {
+					// Get all appointments
+					JSONArray appointments = (JSONArray) requestObj.get("data");
+					
+					// Check that we actually got someting back
+					if (appointments != null) {
+						// Get the correct appointment
+						int appointmentId = new BigDecimal((long) requestObj.get("id")).intValueExact();
+						Appointment thisAppointment = null;
+						for (int i = 0; i < this.getAppointments().size(); i++) {
+							if (this.getAppointments().get(i).getId() == appointmentId) {
+								thisAppointment = this.getAppointments().get(i);
+								break;
+							}
+						}
+						
+						if (thisAppointment != null) {
+							for (int i = 0; i < appointments.size(); i++) {
+								JSONObject thisParticipates = (JSONObject) appointments.get(i);
+								
+								// Check if appointment already exists
+								int participatedUser = new BigDecimal((long) thisParticipates.get("user")).intValueExact();
+								int participateStatus = new BigDecimal((long) thisParticipates.get("participate")).intValueExact();
+								int participateHide = new BigDecimal((long) thisParticipates.get("hide")).intValueExact();
+								
+								// Find corret user
+								for (int j = 0; j < this.getEmployees().size(); j++) {
+									if (this.getEmployees().get(j).getId() == participatedUser) {
+										// Find status
+										String tempStatus;
+										if (participateStatus == 1) {
+											tempStatus = "Kommer";
+										}
+										else {
+											if (participateHide == 0) {
+												tempStatus = "Ikke svart";
+											}
+											else {
+												tempStatus = "Kommer ikke";
+											}
+										}
+										
+										// Add here
+										thisAppointment.addParticipates(this.getEmployees().get(j), tempStatus);
+									}
+								}
+							}
+							
+							thisAppointment.setHasLoadedParticipates(true);
+							
+							this.gui.participatesLoaded(thisAppointment.getParticipatesList(), thisAppointment.getParticipatesStatus());
+						}
 					}
 				}
 			}
@@ -325,7 +382,10 @@ public class Cal {
 				}
 			}
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+			// TODO
+			e.printStackTrace();
+		}
 	}
 	
 	/*
@@ -495,6 +555,18 @@ public class Cal {
 		
 		appointmentObj.put("data", innerAppointmentObj);
 		
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
+	}
+	
+	/*
+	 * Load participates
+	 */
+	
+	public void loadParticipates(int appointment) {
+		JSONObject appointmentObj = this.initJSONObject("appointments", "sub-get");
+		JSONObject innerAppointmentObj = new JSONObject();
+		appointmentObj.put("id", appointment);
 		String appointmentObjString = appointmentObj.toJSONString();
 		sh.sendMessage(appointmentObjString);
 	}

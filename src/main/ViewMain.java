@@ -143,6 +143,8 @@ public class ViewMain extends JFrame {
 	private JLabel infoParticipants;
 	private JLabel infoRoom;
 	private JList infoParticipantsChosen;
+	private DefaultListModel<String> infoParticipatesStatus;
+	private ArrayList<Employee> participatesInThisAppointment;
 	
 	// Debugging
 	private JLabel innerInfoTestLabel;
@@ -162,6 +164,8 @@ public class ViewMain extends JFrame {
 		// ListModel for the participants-lists
 		addEditParticipantsListNotInvited = new DefaultListModel<Employee>();
 		addEditParticipantsListInvited = new DefaultListModel<Employee>();
+		infoParticipatesStatus = new DefaultListModel<String>();
+		participatesInThisAppointment = new ArrayList<Employee>();
 		
 		// Setting up hashmap for colors
 		appointmentColors = new HashMap<Integer, Color>();
@@ -959,6 +963,11 @@ public class ViewMain extends JFrame {
 			// Room
 			infoRoom.setText(thisAppointment.getRoomString()); 
 			
+			// Check if we should load participates
+			if (!thisAppointment.hasLoadedParticipates()) {
+				this.calendar.loadParticipates(thisAppointment.getId());
+			}
+			
 			// Display the correct sidepanel
 			this.displayLeftPanel("info");
 		}
@@ -1455,8 +1464,8 @@ public class ViewMain extends JFrame {
 		
 		// Create List for the participants that are invited
 		infoParticipantsChosen = new JList();
-		//infoParticipantsChosen.setModel(addEditParticipantsListNotInvited);
 		infoParticipantsChosen.setBorder(infoBorder);
+		infoParticipantsChosen.setModel(infoParticipatesStatus);
 		infoParticipantsChosen.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		JScrollPane infoParticipantsChosenScrollPane = new JScrollPane(infoParticipantsChosen);
 		innerInfoPanel.add(infoParticipantsChosenScrollPane, "1, 18, 3, 1");
@@ -1612,6 +1621,20 @@ public class ViewMain extends JFrame {
 		
 		// Reset loading
 		addEditRoomLabel.setText("Rom:");
+	}
+	
+	/*
+	 * Update participates-list
+	 */
+	
+	public void participatesLoaded(ArrayList<Employee> list, ArrayList<String> status) {
+		System.out.println("Got here");
+		infoParticipatesStatus.clear();
+		for (int i = 0; i < list.size(); i++) {
+			infoParticipatesStatus.add(i, list.get(i).getName() + " [" + status.get(i) + "]");
+		}
+		
+		infoParticipantsChosen.repaint();
 	}
 	
 }
