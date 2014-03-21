@@ -1265,9 +1265,11 @@ public class ViewMain extends JFrame {
 					int num = (int) addEditParticipants.getSelectedItem();
 					String []date = addEditDate.getText().split("\\.");
 					
+					System.out.println(Integer.parseInt(date[1]));
+					
 					// From
 					Calendar cal = Calendar.getInstance();
-					cal.set(calendarYear, Integer.parseInt(date[1]), (Integer.parseInt(date[0]) - 1), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+					cal.set(calendarYear, (Integer.parseInt(date[1]) - 1), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
 					Date fromTimeAsDate = cal.getTime();
 					
 					// To
