@@ -179,6 +179,7 @@ public class Cal {
 								a.setAlarm((boolean) thisAppointment.get("alarm"));
 								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
 								
+								
 								// Room
 								int appointmentRoom = new BigDecimal((long) thisAppointment.get("room")).intValueExact();
 								for (int j = 0; j < this.rooms.size(); j++) {
@@ -455,5 +456,45 @@ public class Cal {
 		roomObj.put("data", innerRoomObj);
 		String roomObjString = roomObj.toJSONString();
 		sh.sendMessage(roomObjString);
+	}
+	
+	/*
+	 * Delegate for creating a new appointment
+	 */
+	
+	public void createAppointment(String title, String description, Date fromTimeAsDate, Date toTimeAsDate, int participants, Room room, ArrayList<Employee> participantsArr) {
+		// Format
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		// Obj
+		JSONObject appointmentObj = this.initJSONObject("appointments", "post");
+		JSONObject innerAppointmentObj = new JSONObject();
+		innerAppointmentObj.put("title", title);
+		innerAppointmentObj.put("desc", description);
+		
+		innerAppointmentObj.put("from", sdf.format(fromTimeAsDate));
+		innerAppointmentObj.put("to", sdf.format(toTimeAsDate));
+		
+		innerAppointmentObj.put("participants", participants);
+		
+		if (room == null) {
+			innerAppointmentObj.put("room", "");
+		}
+		else {
+			innerAppointmentObj.put("room", room.getId());
+		}
+		
+		// Participants
+		JSONArray innerInnerAppointmentArray = new JSONArray();
+		for (int i = 0; i < participantsArr.size(); i++) {
+			innerInnerAppointmentArray.add(participantsArr.get(i).getId());
+		}
+		innerAppointmentObj.put("participants_list_num", participantsArr.size());
+		innerAppointmentObj.put("participants_list", innerInnerAppointmentArray);
+		
+		appointmentObj.put("data", innerAppointmentObj);
+		
+		String appointmentObjString = appointmentObj.toJSONString();
+		sh.sendMessage(appointmentObjString);
 	}
 }

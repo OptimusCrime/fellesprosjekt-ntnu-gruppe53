@@ -923,7 +923,6 @@ public class ViewMain extends JFrame {
 			// Set the different fields
 			infoHeaderLabel.setText(thisAppointment.getTitle());
 			infoDescLabel.setText(thisAppointment.getDescription());
-			//infoParticipants.setText(thisAppointment.ge);
 			
 			// Date
 			SimpleDateFormat formatEngToNor = new SimpleDateFormat("E");
@@ -1256,7 +1255,41 @@ public class ViewMain extends JFrame {
 					JOptionPane.showMessageDialog(null, "Vennligst fyll ut manglende informasjon:\n\n" + errorMsg, "Feil", JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
-					System.out.println("Oppretter her");
+					// Get all info
+					String title = addEditTitle.getText();
+					String description = addEditDesc.getText();
+					
+					// From, to
+					String []fromTime = ((String) addEditFrom.getSelectedItem()).split(":");
+					String []toTime = ((String) addEditTo.getSelectedItem()).split(":");
+					int num = (int) addEditParticipants.getSelectedItem();
+					String []date = addEditDate.getText().split("\\.");
+					
+					// From
+					Calendar cal = Calendar.getInstance();
+					cal.set(calendarYear, Integer.parseInt(date[1]), Integer.parseInt(date[0]), Integer.parseInt(fromTime[0]), Integer.parseInt(fromTime[1]));
+					Date fromTimeAsDate = cal.getTime();
+					
+					// To
+					cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(toTime[0]));
+					cal.set(Calendar.MINUTE, Integer.parseInt(toTime[1]));
+					Date toTimeAsDate = cal.getTime();
+					
+					int participants = (int) addEditParticipants.getSelectedItem();
+					Room room = (Room) addEditRoom.getSelectedItem();
+					
+					// Participants
+					ArrayList<Employee> participantsArr = new ArrayList<Employee>();
+					for (int i = 0; i < addEditParticipantsListInvited.size(); i++) {
+						participantsArr.add(addEditParticipantsListInvited.get(i));
+					}
+					
+					// Send info
+					calendar.createAppointment(
+							title, description,
+							fromTimeAsDate, toTimeAsDate,
+							participants, room,
+							participantsArr);
 				}
 			}
 		});
