@@ -906,7 +906,7 @@ public class ViewMain extends JFrame {
 	}
 	
 	/*
-	 * Display information about one appointment (TODO)
+	 * Display information about one appointment
 	 */
 	
 	protected void showAppointment(int id) {

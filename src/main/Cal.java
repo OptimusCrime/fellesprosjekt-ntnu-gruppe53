@@ -179,7 +179,6 @@ public class Cal {
 								a.setAlarm((boolean) thisAppointment.get("alarm"));
 								a.setAlarmTime(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse((String) thisAppointment.get("alarm_time")));
 								
-								
 								// Room
 								int appointmentRoom = new BigDecimal((long) thisAppointment.get("room")).intValueExact();
 								for (int j = 0; j < this.rooms.size(); j++) {
@@ -489,7 +488,15 @@ public class Cal {
 		for (int i = 0; i < participantsArr.size(); i++) {
 			innerInnerAppointmentArray.add(participantsArr.get(i).getId());
 		}
-		innerAppointmentObj.put("participants_list_num", participantsArr.size());
+		
+		// Add self
+		for (int i = 0; i < this.getEmployees().size(); i++) {
+			if (this.getEmployees().get(i).getName().equals(this.getUsername())) {
+				innerInnerAppointmentArray.add(this.getEmployees().get(i).getId());
+			}
+		}
+		
+		innerAppointmentObj.put("participants_list_num", innerInnerAppointmentArray.size());
 		innerAppointmentObj.put("participants_list", innerInnerAppointmentArray);
 		
 		appointmentObj.put("data", innerAppointmentObj);
