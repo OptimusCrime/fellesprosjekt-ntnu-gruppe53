@@ -491,7 +491,7 @@ public class Cal {
 		
 		// Add self
 		for (int i = 0; i < this.getEmployees().size(); i++) {
-			if (this.getEmployees().get(i).getName().equals(this.getUsername())) {
+			if (this.getEmployees().get(i).getEmail().equals(this.getUsername())) {
 				innerInnerAppointmentArray.add(this.getEmployees().get(i).getId());
 			}
 		}

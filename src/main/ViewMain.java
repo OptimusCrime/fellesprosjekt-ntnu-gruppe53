@@ -1294,6 +1294,13 @@ public class ViewMain extends JFrame {
 							fromTimeAsDate, toTimeAsDate,
 							participants, room,
 							participantsArr);
+					
+					// Reset fields
+					addEditTitle.setText("");
+					addEditDesc.setText("");
+					
+					// Switch panel
+					displayLeftPanel("notifications");
 				}
 			}
 		});
