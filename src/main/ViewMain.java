@@ -638,9 +638,15 @@ public class ViewMain extends JFrame {
 					}
 					
 					// Create text for the appointment
-					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />12:00 - 15:00</html>";
-					
-					System.out.println("Adding this = " + thisAppointment.getTitle());
+					String startMin=Integer.toString(thisAppointment.getStart().getMinutes());
+					if (startMin.equals("0"))
+						startMin="00";
+					String endMin=Integer.toString(thisAppointment.getEnd().getMinutes());
+					if (endMin.equals("0"))
+						endMin="00";
+					String thisAppointmentToolTip = "<html>" + thisAppointment.getDescription() + "<br /><br />"
+					+ thisAppointment.getStart().getHours()+":"+startMin+" - "
+					+ thisAppointment.getEnd().getHours()+":"+endMin+"</html>";
 					
 					// Create new square for this appointment
 					thisSquare.addObj(new GraphicAppointment(0, 0, (this.column_width - 1), ((int) heightValue - 1), thisAppointmentColor, thisAppointment.getTitle(), thisAppointmentToolTip));
